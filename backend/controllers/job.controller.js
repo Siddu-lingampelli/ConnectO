@@ -1,5 +1,6 @@
 import Job from '../models/Job.model.js';
 import User from '../models/User.model.js';
+import Proposal from '../models/Proposal.model.js';
 
 // @desc    Create new job
 // @route   POST /api/jobs
@@ -73,8 +74,9 @@ export const getAllJobs = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const jobs = await Job.find(query)
-      .populate('client', 'fullName email phone city area')
+      .populate('client', 'fullName email phone city area rating profilePicture')
       .populate('assignedProvider', 'fullName email phone rating')
+      .populate('proposals')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
@@ -107,8 +109,9 @@ export const getAllJobs = async (req, res) => {
 export const getJobById = async (req, res) => {
   try {
     const job = await Job.findById(req.params.id)
-      .populate('client', 'fullName email phone city area')
-      .populate('assignedProvider', 'fullName email phone rating');
+      .populate('client', 'fullName email phone city area rating profilePicture')
+      .populate('assignedProvider', 'fullName email phone rating')
+      .populate('proposals');
 
     if (!job) {
       return res.status(404).json({

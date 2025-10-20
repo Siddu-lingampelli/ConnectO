@@ -39,6 +39,11 @@ const jobSchema = new mongoose.Schema({
     required: [true, 'Budget is required'],
     min: [0, 'Budget must be positive']
   },
+  budgetType: {
+    type: String,
+    enum: ['fixed', 'hourly'],
+    default: 'fixed'
+  },
   deadline: {
     type: Date,
     required: [true, 'Deadline is required']
@@ -90,6 +95,13 @@ const jobSchema = new mongoose.Schema({
 // Virtual for id field
 jobSchema.virtual('id').get(function() {
   return this._id.toHexString();
+});
+
+// Virtual populate proposals
+jobSchema.virtual('proposals', {
+  ref: 'Proposal',
+  localField: '_id',
+  foreignField: 'job'
 });
 
 // Index for better query performance

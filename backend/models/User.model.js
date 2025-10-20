@@ -66,11 +66,11 @@ const userSchema = new mongoose.Schema({
   }],
   
   // Preferences
-  availability: {
+  availability: [{
     type: String,
-    enum: ['Full Time', 'Part Time', 'Weekends Only', 'Flexible', ''],
-    default: ''
-  },
+    enum: ['Full Time', 'Part Time', 'Weekends Only', 'Flexible', 'Monday - Friday', ''],
+    trim: true
+  }],
   preferredCategories: [{
     type: String,
     trim: true

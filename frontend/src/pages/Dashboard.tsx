@@ -24,10 +24,8 @@ const Dashboard = () => {
       }
     };
 
-    if (user) {
-      refreshUserData();
-    }
-  }, []); // Empty dependency array - only run once on mount
+    refreshUserData();
+  }, [dispatch]); // Run on mount and when dispatch changes
 
   if (!user) {
     return (
@@ -141,6 +139,99 @@ const Dashboard = () => {
               <SearchClients />
             ) : (
               <SearchProviders />
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {user.role === 'provider' ? (
+              <>
+                <button
+                  onClick={() => navigate('/jobs')}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">🔍</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Browse Jobs</h3>
+                  <p className="text-blue-100 text-sm">Find new job opportunities</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/my-orders')}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">💼</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">My Active Work</h3>
+                  <p className="text-green-100 text-sm">View ongoing jobs & deliveries</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/messages')}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">💬</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Messages</h3>
+                  <p className="text-purple-100 text-sm">Chat with clients</p>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate('/post-job')}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">➕</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Post a Job</h3>
+                  <p className="text-blue-100 text-sm">Hire service providers</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/jobs')}
+                  className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">📋</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">My Jobs</h3>
+                  <p className="text-indigo-100 text-sm">Manage posted jobs</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/ongoing-jobs')}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">⚙️</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Ongoing Work</h3>
+                  <p className="text-green-100 text-sm">Track work progress</p>
+                </button>
+              </>
             )}
           </div>
 

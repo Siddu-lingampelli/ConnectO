@@ -347,39 +347,55 @@ const Jobs = () => {
                             </button>
                             {currentUser.role === 'provider' && (
                               <button
-                                onClick={() => navigate(`/jobs/${job._id}`)}
+                                onClick={() => navigate(`/jobs/${job._id}/apply`)}
                                 className="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
                               >
                                 Apply Now
+                              </button>
+                            )}
+                            {currentUser.role === 'client' && proposalsCount > 0 && (
+                              <button
+                                onClick={() => navigate(`/jobs/${job._id}/proposals`)}
+                                className="px-6 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors font-medium"
+                              >
+                                View Proposals ({proposalsCount})
                               </button>
                             )}
                           </div>
                         </div>
 
                         {/* Client Info */}
-                        {client && (
+                        {client && currentUser.role === 'provider' && (
                           <div className="mt-4 pt-4 border-t border-gray-200">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
-                                {client.profilePicture ? (
-                                  <img 
-                                    src={client.profilePicture} 
-                                    alt={client.fullName}
-                                    className="w-full h-full rounded-full object-cover"
-                                  />
-                                ) : (
-                                  client.fullName?.charAt(0).toUpperCase()
-                                )}
-                              </div>
-                              <div>
-                                <p className="font-semibold text-gray-900">{client.fullName}</p>
-                                <div className="flex items-center text-sm text-gray-600">
-                                  {client.city && <span>📍 {client.city}</span>}
-                                  {client.rating && (
-                                    <span className="ml-3">⭐ {client.rating.toFixed(1)}</span>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                                  {client.profilePicture ? (
+                                    <img 
+                                      src={client.profilePicture} 
+                                      alt={client.fullName}
+                                      className="w-full h-full rounded-full object-cover"
+                                    />
+                                  ) : (
+                                    client.fullName?.charAt(0).toUpperCase()
                                   )}
                                 </div>
+                                <div>
+                                  <p className="font-semibold text-gray-900">{client.fullName}</p>
+                                  <div className="flex items-center text-sm text-gray-600">
+                                    {client.city && <span>📍 {client.city}</span>}
+                                    {client.rating && (
+                                      <span className="ml-3">⭐ {client.rating.toFixed(1)}</span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
+                              <button
+                                onClick={() => navigate(`/profile/${client.id || client._id}`)}
+                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                              >
+                                👤 View Profile
+                              </button>
                             </div>
                           </div>
                         )}

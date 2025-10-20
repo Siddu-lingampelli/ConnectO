@@ -185,9 +185,7 @@ export const getMe = async (req, res) => {
     
     res.status(200).json({
       success: true,
-      data: {
-        user
-      }
+      data: user
     });
   } catch (error) {
     console.error('Get me error:', error);

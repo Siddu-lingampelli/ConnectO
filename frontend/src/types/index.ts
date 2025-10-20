@@ -130,11 +130,27 @@ export interface Order {
   client: User | string;
   provider: User | string;
   proposal: Proposal | string;
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled' | 'disputed';
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
   amount: number;
-  paymentStatus: 'pending' | 'paid' | 'refunded';
   startDate?: string;
-  completionDate?: string;
+  deadline: string;
+  completedDate?: string;
+  payment?: {
+    status: 'pending' | 'paid' | 'released' | 'refunded';
+    paidAt?: string;
+    releasedAt?: string;
+  };
+  paymentStatus?: 'pending' | 'paid' | 'refunded'; // Legacy field
+  milestones?: Array<{
+    _id: string;
+    title: string;
+    description: string;
+    amount: number;
+    status: 'pending' | 'completed';
+    completedAt?: string;
+  }>;
+  notes?: string;
+  completionDate?: string; // Legacy field
   createdAt: string;
   updatedAt: string;
 }

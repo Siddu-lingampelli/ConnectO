@@ -11,6 +11,11 @@ import Settings from './pages/Settings';
 import Verification from './pages/Verification';
 import PostJob from './pages/PostJob';
 import Jobs from './pages/Jobs';
+import ApplyJob from './pages/ApplyJob';
+import JobProposals from './pages/JobProposals';
+import MyOrders from './pages/MyOrders';
+import OngoingJobs from './pages/OngoingJobs';
+import OrderDetails from './pages/OrderDetails';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -79,6 +84,46 @@ function App() {
           element={
             <ProtectedRoute>
               <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:id/apply"
+          element={
+            <ProtectedRoute>
+              <ApplyJob />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:id/proposals"
+          element={
+            <ProtectedRoute>
+              <JobProposals />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-orders"
+          element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ongoing-jobs"
+          element={
+            <ProtectedRoute>
+              <OngoingJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            <ProtectedRoute>
+              <OrderDetails />
             </ProtectedRoute>
           }
         />

@@ -59,6 +59,13 @@ export const updateProfile = async (req, res) => {
       }
     });
 
+    // Sanitize availability field - flatten nested arrays and remove empty strings
+    if (updates.availability && Array.isArray(updates.availability)) {
+      updates.availability = updates.availability
+        .flat(Infinity) // Flatten nested arrays
+        .filter(item => item && item.trim() !== ''); // Remove empty strings
+    }
+
     // Auto-mark profile as completed if sent explicitly
     if (req.body.profileCompleted === true) {
       updates.profileCompleted = true;
@@ -81,7 +88,7 @@ export const updateProfile = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Profile updated successfully in MongoDB',
-      data: { user }
+      data: user
     });
   } catch (error) {
     console.error('❌ MongoDB save error:', error);

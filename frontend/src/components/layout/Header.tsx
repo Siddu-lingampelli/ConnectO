@@ -27,17 +27,29 @@ const Header = () => {
                 Dashboard
               </Link>
               <Link to="/jobs" className="hover:text-blue-600 transition-colors">
-                Jobs
+                {user.role === 'client' ? 'My Jobs' : 'Browse Jobs'}
               </Link>
+              {user.role === 'provider' && (
+                <Link to="/my-orders" className="hover:text-blue-600 transition-colors">
+                  My Work
+                </Link>
+              )}
+              {user.role === 'client' && (
+                <Link to="/ongoing-jobs" className="hover:text-blue-600 transition-colors">
+                  Ongoing Work
+                </Link>
+              )}
               <Link to="/messages" className="hover:text-blue-600 transition-colors">
                 Messages
               </Link>
               <Link to="/profile" className="hover:text-blue-600 transition-colors">
                 Profile
               </Link>
-              <Link to="/settings" className="hover:text-blue-600 transition-colors">
-                Settings
-              </Link>
+              {user.role === 'admin' && (
+                <Link to="/admin" className="hover:text-blue-600 transition-colors">
+                  Admin
+                </Link>
+              )}
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-600">
                   {user.fullName}
