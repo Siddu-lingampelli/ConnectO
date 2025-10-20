@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "MS-vsliveshare.vsliveshare",
+    "streetsidesoftware.code-spell-checker",
+    "usernamehw.errorlens",
+    "dsznajder.es7-react-js-snippets"
+  ]
+}
