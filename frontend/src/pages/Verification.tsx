@@ -46,10 +46,18 @@ const Verification = () => {
       const response = await verificationService.submitVerification(panCardUrl.trim(), aadharCardUrl.trim());
       
       toast.success(response.message);
-      loadVerificationStatus();
       
+      // Reload verification status to update UI
+      await loadVerificationStatus();
+      
+      // Clear form fields
       setPanCardUrl('');
       setAadharCardUrl('');
+      
+      // Redirect to dashboard after successful submission
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500); // Give user time to see the success message
     } catch (error: any) {
       console.error('Error submitting verification:', error);
       toast.error(error.response?.data?.message || 'Failed to submit verification');
