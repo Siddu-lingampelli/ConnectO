@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../store/authSlice';
 import Header from '../components/layout/Header';
@@ -12,6 +13,7 @@ import PaymentSettings from '../components/settings/PaymentSettings';
 type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment';
 
 const Settings = () => {
+  const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
   const [activeTab, setActiveTab] = useState<SettingsTab>('account');
 
@@ -57,6 +59,17 @@ const Settings = () => {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            ← Back to Dashboard
+          </button>
+
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { userService } from '../../services/userService';
+import { reviewService, Review, ReviewStats } from '../../services/reviewService';
 import { updateUser } from '../../store/authSlice';
 import type { User } from '../../types';
 import ProfileCompletion from './ProfileCompletion';
@@ -15,6 +16,11 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
   const [user, setUser] = useState<User>(initialUser);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [stats, setStats] = useState<ReviewStats | null>(null);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Fetch fresh profile data from MongoDB on mount
   useEffect(() => {
@@ -36,6 +42,28 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
     fetchProfile();
   }, [dispatch]);
 
+  // Load reviews if user is a provider
+  useEffect(() => {
+    if (user.role === 'provider') {
+      loadReviews();
+    }
+  }, [user.id, currentPage, user.role]);
+
+  const loadReviews = async () => {
+    try {
+      setLoadingReviews(true);
+      const userId = user._id || user.id;
+      const data = await reviewService.getProviderReviews(userId, currentPage, 5);
+      setReviews(data.reviews);
+      setStats(data.stats);
+      setTotalPages(data.pagination.pages);
+    } catch (error) {
+      console.error('Error loading reviews:', error);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
   const handleEditComplete = async () => {
     // Refetch profile after edit
     try {
@@ -47,6 +75,27 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
     } catch (error) {
       console.error('Error refreshing profile:', error);
     }
+  };
+
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span key={star} className="text-xl">
+            {star <= rating ? '⭐' : '☆'}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   if (loading) {
@@ -305,6 +354,180 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
             </div>
           )}
         </div>
+
+        {/* Reviews Section - Only for providers */}
+        {user.role === 'provider' && (
+          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                ⭐ My Reviews & Ratings
+              </h2>
+              {stats && (
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-blue-600">{stats.averageRating.toFixed(1)}</p>
+                  <p className="text-sm text-gray-600">{stats.totalReviews} reviews</p>
+                </div>
+              )}
+            </div>
+
+            {/* Rating Statistics */}
+            {stats && stats.totalReviews > 0 && (
+              <div className="mb-6 bg-gray-50 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-900 mb-3">Rating Distribution</h3>
+                <div className="space-y-2">
+                  {[5, 4, 3, 2, 1].map((star) => {
+                    const count = stats[`${['fiveStars', 'fourStars', 'threeStars', 'twoStars', 'oneStar'][5 - star]}` as keyof ReviewStats] as number;
+                    const percentage = stats.totalReviews > 0 ? (count / stats.totalReviews) * 100 : 0;
+                    return (
+                      <div key={star} className="flex items-center gap-3">
+                        <span className="text-sm text-gray-600 w-12">{star} ⭐</span>
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-yellow-400 h-2 rounded-full transition-all"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <span className="text-sm text-gray-600 w-12 text-right">{count}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Reviews List */}
+            {loadingReviews ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p className="text-gray-600 mt-2">Loading reviews...</p>
+              </div>
+            ) : reviews.length > 0 ? (
+              <div className="space-y-6">
+                {reviews.map((review) => (
+                  <div key={review._id} className="border-b border-gray-200 pb-6 last:border-b-0">
+                    {/* Review Header */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        {/* Client Avatar */}
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                          {review.reviewer.profilePicture ? (
+                            <img
+                              src={review.reviewer.profilePicture}
+                              alt={review.reviewer.fullName}
+                              className="w-full h-full rounded-full object-cover"
+                            />
+                          ) : (
+                            review.reviewer.fullName?.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">{review.reviewer.fullName}</p>
+                          <p className="text-sm text-gray-500">
+                            {review.reviewer.city && `${review.reviewer.city} • `}
+                            {formatDate(review.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                      {/* Rating */}
+                      <div className="text-right">
+                        {renderStars(review.rating)}
+                        <p className="text-sm text-gray-600 mt-1">{review.rating}/5</p>
+                      </div>
+                    </div>
+
+                    {/* Job Info */}
+                    {review.job && (
+                      <div className="mb-3 bg-blue-50 rounded-lg px-3 py-2 inline-block">
+                        <p className="text-sm text-blue-700">
+                          📋 {review.job.title} • {review.job.category}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Review Comment */}
+                    <p className="text-gray-700 mb-3">{review.comment}</p>
+
+                    {/* Category Ratings */}
+                    {review.categories && Object.keys(review.categories).length > 0 && (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                        {review.categories.quality && (
+                          <div className="text-sm">
+                            <span className="text-gray-600">Quality:</span>
+                            <span className="ml-1 font-semibold">{review.categories.quality}/5</span>
+                          </div>
+                        )}
+                        {review.categories.communication && (
+                          <div className="text-sm">
+                            <span className="text-gray-600">Communication:</span>
+                            <span className="ml-1 font-semibold">{review.categories.communication}/5</span>
+                          </div>
+                        )}
+                        {review.categories.timeliness && (
+                          <div className="text-sm">
+                            <span className="text-gray-600">Timeliness:</span>
+                            <span className="ml-1 font-semibold">{review.categories.timeliness}/5</span>
+                          </div>
+                        )}
+                        {review.categories.professionalism && (
+                          <div className="text-sm">
+                            <span className="text-gray-600">Professionalism:</span>
+                            <span className="ml-1 font-semibold">{review.categories.professionalism}/5</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Provider Response */}
+                    {review.response && review.response.comment && (
+                      <div className="mt-4 bg-blue-50 rounded-lg p-4 border-l-4 border-blue-600">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-sm font-semibold text-blue-600">Your Response</span>
+                          <span className="text-xs text-gray-500">
+                            {formatDate(review.response.createdAt)}
+                          </span>
+                        </div>
+                        <p className="text-gray-700 text-sm">{review.response.comment}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center gap-2 mt-6">
+                    <button
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <span className="px-4 py-2 text-gray-700">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-3xl">⭐</span>
+                </div>
+                <p className="text-gray-600 font-medium">No reviews yet</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Complete more jobs to receive reviews from clients
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

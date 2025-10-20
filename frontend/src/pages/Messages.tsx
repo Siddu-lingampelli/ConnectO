@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { selectCurrentUser } from '../store/authSlice';
@@ -11,6 +11,7 @@ import ChatWindow from '../components/messages/ChatWindow';
 
 const Messages = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -71,7 +72,18 @@ const Messages = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-6">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden" style={{ height: 'calc(100vh - 180px)' }}>
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+        >
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          ← Back to Dashboard
+        </button>
+
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden" style={{ height: 'calc(100vh - 220px)' }}>
           <div className="flex h-full">
             {/* Conversation List - Left Side */}
             <div className="w-1/3 border-r border-gray-200">

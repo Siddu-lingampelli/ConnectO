@@ -4,9 +4,12 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { selectCurrentUser } from '../store/authSlice';
 import { orderService } from '../services/orderService';
+import { reviewService } from '../services/reviewService';
 import type { Order } from '../types';
+import type { Review } from '../services/reviewService';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import ReviewModal from '../components/ReviewModal';
 
 const OrderDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,11 +17,14 @@ const OrderDetails = () => {
   const currentUser = useSelector(selectCurrentUser);
   
   const [order, setOrder] = useState<Order | null>(null);
+  const [review, setReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
 
   useEffect(() => {
     loadOrder();
+    loadReview();
   }, [id]);
 
   const loadOrder = async () => {
@@ -34,6 +40,21 @@ const OrderDetails = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadReview = async () => {
+    try {
+      if (!id) return;
+      const reviewData = await reviewService.getOrderReview(id);
+      setReview(reviewData);
+    } catch (error: any) {
+      console.error('Error loading review:', error);
+      // It's okay if review doesn't exist yet
+    }
+  };
+
+  const handleReviewSuccess = () => {
+    loadReview(); // Reload review after submission
   };
 
   const handleUpdateStatus = async (status: string) => {
@@ -413,6 +434,23 @@ const OrderDetails = () => {
                 </button>
               )}
 
+              {/* Leave Review Button - Only for clients on completed orders */}
+              {!isProvider && order.status === 'completed' && !review && (
+                <button
+                  onClick={() => setShowReviewModal(true)}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
+                >
+                  ⭐ Leave a Review
+                </button>
+              )}
+
+              {/* View Review Button - If review exists */}
+              {!isProvider && order.status === 'completed' && review && (
+                <div className="px-6 py-3 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center gap-2">
+                  ✅ Review Submitted
+                </div>
+              )}
+
               {/* Cancel Option */}
               {order.status !== 'completed' && order.status !== 'cancelled' && (
                 <button
@@ -436,6 +474,17 @@ const OrderDetails = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Review Modal */}
+      {showReviewModal && order && (
+        <ReviewModal
+          orderId={order._id}
+          providerName={typeof order.provider === 'string' ? 'Provider' : order.provider.fullName}
+          jobTitle={typeof order.job === 'string' ? 'Job' : order.job.title}
+          onClose={() => setShowReviewModal(false)}
+          onSuccess={handleReviewSuccess}
+        />
+      )}
     </div>
   );
 };

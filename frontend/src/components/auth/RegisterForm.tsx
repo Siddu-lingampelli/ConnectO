@@ -7,15 +7,16 @@ import { authService } from '../../services/authService';
 interface RegisterFormProps {
   onSuccess?: () => void;
   onSwitchToLogin?: () => void;
+  initialRole?: 'client' | 'provider';
 }
 
-const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
+const RegisterForm = ({ onSuccess, onSwitchToLogin, initialRole = 'client' }: RegisterFormProps) => {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'client' as 'client' | 'provider',
+    role: initialRole as 'client' | 'provider',
   });
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();

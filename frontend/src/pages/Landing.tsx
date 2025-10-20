@@ -1,13 +1,30 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import LoginForm from '../components/auth/LoginForm';
 import RegisterForm from '../components/auth/RegisterForm';
 
 const Landing = () => {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [showLogin, setShowLogin] = useState(true);
+  const [initialRole, setInitialRole] = useState<'client' | 'provider'>('client');
   const navigate = useNavigate();
+
+  // Check if we're on /login or /register route
+  useEffect(() => {
+    if (location.pathname === '/register') {
+      setShowLogin(false);
+      // Get role from URL parameter
+      const role = searchParams.get('role');
+      if (role === 'provider') {
+        setInitialRole('provider');
+      }
+    } else if (location.pathname === '/login') {
+      setShowLogin(true);
+    }
+  }, [location.pathname, searchParams]);
 
   const handleAuthSuccess = () => {
     navigate('/dashboard');
@@ -60,6 +77,7 @@ const Landing = () => {
                 <RegisterForm
                   onSuccess={handleAuthSuccess}
                   onSwitchToLogin={() => setShowLogin(true)}
+                  initialRole={initialRole}
                 />
               )}
             </div>

@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Pages
+import Home from './pages/Home';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
@@ -30,7 +31,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Landing />} />
+        <Route path="/register" element={<Landing />} />
         <Route
           path="/dashboard"
           element={
