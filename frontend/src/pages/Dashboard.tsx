@@ -1,6 +1,8 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { selectCurrentUser } from '../store/authSlice';
+import { selectCurrentUser, updateUser } from '../store/authSlice';
+import { authService } from '../services/authService';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import SearchProviders from '../components/search/SearchProviders';
@@ -9,6 +11,23 @@ import SearchClients from '../components/search/SearchClients';
 const Dashboard = () => {
   const user = useSelector(selectCurrentUser);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Fetch fresh user data on component mount to ensure verification status is up-to-date
+  useEffect(() => {
+    const refreshUserData = async () => {
+      try {
+        const freshUserData = await authService.getMe();
+        dispatch(updateUser(freshUserData));
+      } catch (error) {
+        console.error('Error refreshing user data:', error);
+      }
+    };
+
+    if (user) {
+      refreshUserData();
+    }
+  }, []); // Empty dependency array - only run once on mount
 
   if (!user) {
     return (
