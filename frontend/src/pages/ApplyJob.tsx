@@ -125,6 +125,55 @@ const ApplyJob = () => {
     );
   }
 
+  // Check if provider's demo project is verified
+  const demoStatus = currentUser.demoVerification?.status;
+  if (demoStatus !== 'verified') {
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+          <div className="max-w-2xl bg-white rounded-lg shadow-md p-8 text-center">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Demo Project Verification Required</h2>
+            <p className="text-gray-700 mb-6">
+              {demoStatus === 'not_assigned' || !demoStatus
+                ? 'You need to complete a demo project before applying for jobs. Please wait for admin to assign you a demo task.'
+                : demoStatus === 'pending'
+                ? 'Your demo project is pending submission. Please complete and submit it first.'
+                : demoStatus === 'under_review'
+                ? 'Your demo project is under review. Please wait for admin approval before applying for jobs.'
+                : demoStatus === 'rejected'
+                ? `Your demo project was rejected${currentUser.demoVerification?.score ? ` with a score of ${currentUser.demoVerification.score}/100` : ''}. You need a score of at least 60 to apply for jobs. Please resubmit your demo.`
+                : 'Your demo project status is unclear. Please contact admin.'}
+            </p>
+            {currentUser.demoVerification?.adminComments && (
+              <div className="bg-yellow-50 rounded-lg p-4 mb-6 text-left border border-yellow-200">
+                <p className="text-sm text-gray-700">
+                  <strong>Admin Feedback:</strong> {currentUser.demoVerification.adminComments}
+                </p>
+              </div>
+            )}
+            <div className="flex gap-4 justify-center">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Go to Dashboard
+              </button>
+              <button
+                onClick={() => navigate('/jobs')}
+                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              >
+                Browse Jobs
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">

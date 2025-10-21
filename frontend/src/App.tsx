@@ -11,18 +11,26 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Verification from './pages/Verification';
 import PostJob from './pages/PostJob';
+import EditJob from './pages/EditJob';
+import EditProposal from './pages/EditProposal';
 import Jobs from './pages/Jobs';
 import ApplyJob from './pages/ApplyJob';
 import JobProposals from './pages/JobProposals';
 import MyOrders from './pages/MyOrders';
+import MyProposals from './pages/MyProposals';
 import OngoingJobs from './pages/OngoingJobs';
 import OrderDetails from './pages/OrderDetails';
 import NotFound from './pages/NotFound';
+import NotificationsPage from './pages/NotificationsPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminVerifications from './pages/admin/AdminVerifications';
+import AdminJobs from './pages/admin/AdminJobs';
+import AdminAnalytics from './pages/admin/AdminAnalytics';
+import AdminProposals from './pages/admin/AdminProposals';
+import AdminDemos from './pages/admin/AdminDemos';
 
 // Middleware
 import ProtectedRoute from './middleware/protectedRoute';
@@ -47,6 +55,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Messages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
             </ProtectedRoute>
           }
         />
@@ -99,6 +115,22 @@ function App() {
           }
         />
         <Route
+          path="/jobs/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditJob />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/proposals/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditProposal />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/jobs/:id/proposals"
           element={
             <ProtectedRoute>
@@ -111,6 +143,14 @@ function App() {
           element={
             <ProtectedRoute>
               <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-proposals"
+          element={
+            <ProtectedRoute>
+              <MyProposals />
             </ProtectedRoute>
           }
         />
@@ -153,6 +193,38 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminVerifications />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/jobs"
+          element={
+            <ProtectedRoute>
+              <AdminJobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/analytics"
+          element={
+            <ProtectedRoute>
+              <AdminAnalytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/proposals"
+          element={
+            <ProtectedRoute>
+              <AdminProposals />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/demos"
+          element={
+            <ProtectedRoute>
+              <AdminDemos />
             </ProtectedRoute>
           }
         />

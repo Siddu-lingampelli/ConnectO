@@ -5,10 +5,10 @@ import type { User } from '../../types';
 
 interface PublicProfileProps {
   user: User;
-  currentUser: User;
+  currentUser?: User;
 }
 
-const PublicProfile = ({ user, currentUser }: PublicProfileProps) => {
+const PublicProfile = ({ user }: PublicProfileProps) => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState<ReviewStats | null>(null);

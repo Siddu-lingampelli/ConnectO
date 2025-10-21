@@ -7,6 +7,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import SearchProviders from '../components/search/SearchProviders';
 import SearchClients from '../components/search/SearchClients';
+import DemoStatusCard from '../components/demo/DemoStatusCard';
 
 const Dashboard = () => {
   const user = useSelector(selectCurrentUser);
@@ -142,9 +143,74 @@ const Dashboard = () => {
             )}
           </div>
 
+          {/* Demo Project Status for Providers */}
+          {user.role === 'provider' && (
+            <div className="mb-8">
+              <DemoStatusCard />
+            </div>
+          )}
+
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {user.role === 'provider' ? (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            {user.role === 'admin' ? (
+              <>
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">⚙️</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Admin Dashboard</h3>
+                  <p className="text-red-100 text-sm">Platform overview & stats</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/users')}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">👥</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Manage Users</h3>
+                  <p className="text-blue-100 text-sm">View all clients & providers</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/verifications')}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">✅</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Verifications</h3>
+                  <p className="text-green-100 text-sm">Review & approve requests</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/jobs')}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">📋</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">All Jobs</h3>
+                  <p className="text-purple-100 text-sm">Monitor platform jobs</p>
+                </button>
+              </>
+            ) : user.role === 'provider' ? (
               <>
                 <button
                   onClick={() => navigate('/jobs')}
@@ -158,6 +224,20 @@ const Dashboard = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-1">Browse Jobs</h3>
                   <p className="text-blue-100 text-sm">Find new job opportunities</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/my-proposals')}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">📝</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">My Proposals</h3>
+                  <p className="text-orange-100 text-sm">View & edit your proposals</p>
                 </button>
 
                 <button

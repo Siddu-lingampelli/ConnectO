@@ -18,6 +18,7 @@ interface ProfileData {
   area?: string;
   bio?: string;
   profilePicture?: string;
+  providerType?: string;
   
   // Provider specific
   services?: string[];
@@ -70,6 +71,7 @@ const ProfileCompletion = ({ initialData, onComplete, isEditing = false }: Profi
         area: initialData.area,
         bio: initialData.bio,
         profilePicture: initialData.profilePicture,
+        providerType: initialData.providerType,
         services: initialData.services,
         skills: initialData.skills,
         experience: initialData.experience ? parseInt(initialData.experience) : undefined,

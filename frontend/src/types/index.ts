@@ -5,6 +5,7 @@ export interface User {
   fullName: string;
   email: string;
   role: 'client' | 'provider' | 'admin';
+  providerType?: 'Technical' | 'Non-Technical' | '';
   phone?: string;
   city?: string;
   area?: string;
@@ -54,6 +55,15 @@ export interface User {
     reviewedAt?: string;
     reviewedBy?: string;
     rejectionReason?: string;
+  };
+
+  // Demo Project Verification
+  demoVerification?: {
+    status?: 'not_assigned' | 'pending' | 'under_review' | 'verified' | 'rejected';
+    score?: number;
+    demoProject?: string;
+    lastUpdated?: string;
+    adminComments?: string;
   };
   
   // Notifications

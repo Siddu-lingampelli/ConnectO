@@ -82,10 +82,10 @@ export const messageService = {
   },
 
   // Get unread count
-  getUnreadCount: async (): Promise<number> => {
+  getUnreadCount: async (): Promise<{ count: number }> => {
     const response = await api.get<{ success: boolean; data: { count: number } }>(
       '/messages/unread'
     );
-    return response.data.data.count;
+    return response.data.data;
   },
 };

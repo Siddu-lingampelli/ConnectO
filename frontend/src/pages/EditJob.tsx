@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { selectCurrentUser } from '../store/authSlice';
 import { jobService } from '../services/jobService';
-import { verificationService } from '../services/verificationService';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 
@@ -26,43 +25,66 @@ const categories = [
   'Other Services'
 ];
 
-const PostJob = () => {
+const EditJob = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const currentUser = useSelector(selectCurrentUser);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
-    providerType: '',
     budget: '',
-    deadline: '',
-    city: currentUser?.city || '',
-    area: currentUser?.area || '',
-    address: ''
+    city: '',
+    area: ''
   });
 
   useEffect(() => {
-    checkVerification();
-  }, []);
+    loadJob();
+  }, [id]);
 
-  const checkVerification = async () => {
+  const loadJob = async () => {
     try {
       setLoading(true);
-      const data = await verificationService.getVerificationStatus();
-      const verified = data.verification.status === 'verified';
-      setIsVerified(verified);
       
-      if (!verified) {
-        toast.error('You must be verified to post a job');
-        setTimeout(() => navigate('/verification'), 2000);
+      if (!id) {
+        toast.error('Invalid job ID');
+        navigate('/jobs');
+        return;
       }
-    } catch (error) {
-      console.error('Error checking verification:', error);
-      toast.error('Failed to verify account status');
+
+      const job = await jobService.getJob(id);
+
+      // Check if user owns this job
+      const clientId = typeof job.client === 'object' ? job.client._id : job.client;
+      if (clientId !== currentUser?._id) {
+        toast.error('You can only edit your own jobs');
+        navigate('/jobs');
+        return;
+      }
+
+      // Check if job status allows editing
+      if (job.status !== 'open') {
+        toast.error('Cannot edit jobs that are not open');
+        navigate('/jobs');
+        return;
+      }
+
+      // Pre-fill form with existing job data
+      setFormData({
+        title: job.title,
+        description: job.description,
+        category: job.category,
+        budget: job.budget.toString(),
+        city: job.location.city,
+        area: job.location.area
+      });
+    } catch (error: any) {
+      console.error('Error loading job:', error);
+      toast.error(error.response?.data?.message || 'Failed to load job');
+      navigate('/jobs');
     } finally {
       setLoading(false);
     }
@@ -78,12 +100,6 @@ const PostJob = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!isVerified) {
-      toast.error('You must be verified to post a job');
-      navigate('/verification');
-      return;
-    }
 
     // Validation
     if (formData.title.length < 10) {
@@ -106,12 +122,6 @@ const PostJob = () => {
       return;
     }
 
-    const deadlineDate = new Date(formData.deadline);
-    if (deadlineDate <= new Date()) {
-      toast.error('Deadline must be in the future');
-      return;
-    }
-
     try {
       setSubmitting(true);
 
@@ -119,29 +129,20 @@ const PostJob = () => {
         title: formData.title.trim(),
         description: formData.description.trim(),
         category: formData.category,
-        providerType: formData.providerType,
         budget: Number(formData.budget),
-        deadline: formData.deadline,
         location: {
           city: formData.city.trim(),
-          area: formData.area.trim(),
-          address: formData.address.trim() || undefined
+          area: formData.area.trim()
         }
       };
 
-      await jobService.createJob(jobData);
+      await jobService.updateJob(id!, jobData);
       
-      toast.success('Job posted successfully! 🎉');
+      toast.success('Job updated successfully! ✅');
       navigate('/jobs');
     } catch (error: any) {
-      console.error('Error creating job:', error);
-      
-      if (error.response?.data?.requiresVerification) {
-        toast.error('You must be verified to post a job');
-        navigate('/verification');
-      } else {
-        toast.error(error.response?.data?.message || 'Failed to post job');
-      }
+      console.error('Error updating job:', error);
+      toast.error(error.response?.data?.message || 'Failed to update job');
     } finally {
       setSubmitting(false);
     }
@@ -152,7 +153,7 @@ const PostJob = () => {
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to post a job.</p>
+          <p className="text-gray-600">Please login to edit a job.</p>
         </main>
         <Footer />
       </div>
@@ -166,7 +167,7 @@ const PostJob = () => {
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-            <p className="text-gray-600">Only clients can post jobs.</p>
+            <p className="text-gray-600">Only clients can edit jobs.</p>
             <button
               onClick={() => navigate('/jobs')}
               className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -187,7 +188,7 @@ const PostJob = () => {
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Verifying account...</p>
+            <p className="text-gray-600">Loading job details...</p>
           </div>
         </main>
         <Footer />
@@ -208,26 +209,11 @@ const PostJob = () => {
             >
               ← Back
             </button>
-            <h1 className="text-3xl font-bold text-gray-900">Post a New Job</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Edit Job</h1>
             <p className="text-gray-600 mt-2">
-              Describe your job requirements and connect with verified service providers
+              Update your job details and requirements
             </p>
           </div>
-
-          {/* Verified Badge */}
-          {isVerified && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <div>
-                  <h3 className="text-green-900 font-semibold">Verified Client ✓</h3>
-                  <p className="text-green-700 text-sm">Your account is verified. You can post jobs.</p>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Form */}
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -271,27 +257,6 @@ const PostJob = () => {
                 </select>
               </div>
 
-              {/* Provider Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Service Provider Type *
-                </label>
-                <select
-                  name="providerType"
-                  value={formData.providerType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Select provider type</option>
-                  <option value="Technical">💻 Technical (Online/Remote Work)</option>
-                  <option value="Non-Technical">🔧 Non-Technical (Field/On-site Work)</option>
-                </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  Technical: Software, IT, Design, etc. | Non-Technical: Plumbing, Electrical, Carpentry, etc.
-                </p>
-              </div>
-
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -333,25 +298,6 @@ const PostJob = () => {
                 </p>
               </div>
 
-              {/* Deadline */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Deadline *
-                </label>
-                <input
-                  type="date"
-                  name="deadline"
-                  value={formData.deadline}
-                  onChange={handleChange}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  When do you need this job completed?
-                </p>
-              </div>
-
               {/* Location Section */}
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Job Location</h3>
@@ -389,21 +335,6 @@ const PostJob = () => {
                     />
                   </div>
                 </div>
-
-                {/* Address (Optional) */}
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Complete Address (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="Building name, street, landmark..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
               </div>
 
               {/* Submit Button */}
@@ -418,10 +349,10 @@ const PostJob = () => {
                   </button>
                   <button
                     type="submit"
-                    disabled={submitting || !isVerified}
+                    disabled={submitting}
                     className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 font-medium"
                   >
-                    {submitting ? 'Posting Job...' : 'Post Job'}
+                    {submitting ? 'Updating Job...' : 'Update Job'}
                   </button>
                 </div>
               </div>
@@ -434,4 +365,4 @@ const PostJob = () => {
   );
 };
 
-export default PostJob;
+export default EditJob;

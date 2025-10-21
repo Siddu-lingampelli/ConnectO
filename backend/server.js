@@ -16,6 +16,8 @@ import walletRoutes from './routes/wallet.routes.js';
 import reviewRoutes from './routes/review.routes.js';
 import verificationRoutes from './routes/verification.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import demoRoutes from './routes/demo.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -64,6 +66,8 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/verification', verificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/demo', demoRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

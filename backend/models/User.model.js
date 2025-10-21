@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema({
     enum: ['client', 'provider', 'admin'],
     default: 'client'
   },
+  
+  // Provider Type (for service providers)
+  providerType: {
+    type: String,
+    enum: ['Technical', 'Non-Technical', ''],
+    default: ''
+  },
+  
   city: {
     type: String,
     trim: true
@@ -158,6 +166,19 @@ const userSchema = new mongoose.Schema({
         trim: true
       }
     }
+  },
+  
+  // Demo Project Verification (for service providers)
+  demoVerification: {
+    status: {
+      type: String,
+      enum: ['not_assigned', 'pending', 'under_review', 'verified', 'rejected'],
+      default: 'not_assigned'
+    },
+    score: { type: Number, min: 0, max: 100 },
+    demoProject: { type: mongoose.Schema.Types.ObjectId, ref: 'DemoProject' },
+    lastUpdated: { type: Date },
+    adminComments: { type: String, trim: true }
   },
   
   // Additional location fields

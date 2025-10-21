@@ -314,6 +314,15 @@ const Jobs = () => {
                               <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
                                 {job.category}
                               </span>
+                              {job.providerType && (
+                                <span className={`inline-flex items-center px-3 py-1 rounded-full font-medium ${
+                                  job.providerType === 'Technical' 
+                                    ? 'bg-purple-100 text-purple-700' 
+                                    : 'bg-orange-100 text-orange-700'
+                                }`}>
+                                  {job.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
+                                </span>
+                              )}
                               <span className="inline-flex items-center">
                                 📍 {job.location.city}, {job.location.area}
                               </span>
@@ -362,6 +371,14 @@ const Jobs = () => {
                                 className="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
                               >
                                 Apply Now
+                              </button>
+                            )}
+                            {currentUser.role === 'client' && (typeof job.client === 'object' ? job.client._id === currentUser._id : job.client === currentUser._id) && (
+                              <button
+                                onClick={() => navigate(`/jobs/${job._id}/edit`)}
+                                className="px-6 py-2 border border-orange-600 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors font-medium"
+                              >
+                                Edit Job
                               </button>
                             )}
                             {currentUser.role === 'client' && proposalsCount > 0 && (

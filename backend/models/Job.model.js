@@ -34,6 +34,11 @@ const jobSchema = new mongoose.Schema({
       'Other Services'
     ]
   },
+  providerType: {
+    type: String,
+    required: [true, 'Provider type is required'],
+    enum: ['Technical', 'Non-Technical']
+  },
   budget: {
     type: Number,
     required: [true, 'Budget is required'],

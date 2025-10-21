@@ -1,6 +1,8 @@
 import Proposal from '../models/Proposal.model.js';
 import Job from '../models/Job.model.js';
 import Order from '../models/Order.model.js';
+import User from '../models/User.model.js';
+import notificationHelper from '../utils/notificationHelper.js';
 
 // @desc    Create new proposal (Provider only)
 // @route   POST /api/proposals
@@ -15,6 +17,20 @@ export const createProposal = async (req, res) => {
         success: false,
         message: 'Please provide all required fields'
       });
+    }
+
+    // Check if provider's demo is verified
+    const provider = await User.findById(req.user._id);
+    if (provider && provider.role === 'provider') {
+      const demoStatus = provider.demoVerification?.status;
+      if (demoStatus !== 'verified') {
+        return res.status(403).json({
+          success: false,
+          message: 'You must complete and pass the demo project verification before applying for jobs',
+          requiresDemoVerification: true,
+          demoStatus: demoStatus || 'not_assigned'
+        });
+      }
     }
 
     // Check if job exists and is open
@@ -70,6 +86,19 @@ export const createProposal = async (req, res) => {
       { path: 'job', select: 'title category budget budgetType location' },
       { path: 'provider', select: 'fullName email profilePicture city rating' }
     ]);
+
+    // Send notification to client
+    try {
+      await notificationHelper.proposalReceived(
+        job.client,
+        job.title,
+        req.user.fullName,
+        proposal._id,
+        jobId
+      );
+    } catch (notifError) {
+      console.error('Error sending notification:', notifError);
+    }
 
     res.status(201).json({
       success: true,
@@ -422,6 +451,29 @@ export const updateProposalStatus = async (req, res) => {
           status: 'pending'
         }
       });
+
+      // Send notification to provider
+      try {
+        await notificationHelper.proposalAccepted(
+          proposal.provider,
+          proposal.job.title,
+          proposal._id,
+          proposal.job._id
+        );
+      } catch (notifError) {
+        console.error('Error sending notification:', notifError);
+      }
+    } else if (status === 'rejected') {
+      // Send rejection notification to provider
+      try {
+        await notificationHelper.proposalRejected(
+          proposal.provider,
+          proposal.job.title,
+          proposal._id
+        );
+      } catch (notifError) {
+        console.error('Error sending notification:', notifError);
+      }
     }
 
     await proposal.populate([

@@ -7,28 +7,148 @@ interface ServicesStepProps {
   onBack: () => void;
 }
 
-const serviceCategories = [
-  'Plumbing',
-  'Electrical',
-  'Carpentry',
-  'Painting',
-  'Cleaning',
-  'Appliance Repair',
-  'AC Repair',
-  'Computer Repair',
-  'Mobile Repair',
-  'Pest Control',
-  'Gardening',
-  'Home Renovation',
-  'Interior Design',
-  'Photography',
-  'Videography',
-  'Catering',
-  'Event Planning',
-  'Tutoring',
-  'Fitness Training',
-  'Beauty & Salon',
-  'Others',
+// Technical and Non-Technical fields (category + subcategories)
+export const serviceCategories = [
+  {
+    type: 'Technical',
+    label: 'Technical Fields (Online/Remote)',
+    categories: [
+      {
+        name: 'Software Development & IT',
+        subcategories: [
+          'Frontend Web Development',
+          'Backend Web Development',
+          'Full-Stack Development',
+          'E-commerce Development',
+          'iOS App Development',
+          'Android App Development',
+          'Cross-Platform App Development',
+          'Data Science & Analytics',
+          'Machine Learning Engineering',
+          'Deep Learning',
+          'NLP',
+          'Cloud Architecture',
+          'CI/CD & Automation',
+          'Containerization',
+          'Ethical Hacking',
+          'Security Analysis',
+          'IT Support',
+          'Database Administration',
+          'QA & Software Testing',
+        ],
+      },
+      {
+        name: 'Design & Creative',
+        subcategories: [
+          'Logo Design & Branding',
+          'Social Media Graphics',
+          'Print Design',
+          'Packaging Design',
+          'UI Design',
+          'UX Design',
+          'Prototyping & Wireframing',
+          'Video Editing',
+          'Motion Graphics & Animation',
+          '3D Modeling & Rendering',
+          'VFX',
+          'Digital Illustration',
+          'Character Design',
+          'NFT Art',
+        ],
+      },
+      {
+        name: 'Writing & Translation',
+        subcategories: [
+          'Article & Blog Writing',
+          'Copywriting',
+          'Technical Writing',
+          'Editing & Proofreading',
+          'Translation & Localization',
+          'Transcription',
+        ],
+      },
+      {
+        name: 'Digital Marketing',
+        subcategories: [
+          'SEO',
+          'Social Media Marketing',
+          'PPC Campaign Management',
+          'Email Marketing',
+          'Content Strategy',
+          'Marketing Analytics',
+        ],
+      },
+      {
+        name: 'Business & Admin Support',
+        subcategories: [
+          'Virtual Assistance',
+          'Data Entry & Web Research',
+          'Customer Support',
+          'Project Management',
+        ],
+      },
+    ],
+  },
+  {
+    type: 'Non-Technical',
+    label: 'Non-Technical Fields (On-Site)',
+    categories: [
+      {
+        name: 'Home Services & Repairs',
+        subcategories: [
+          'Plumbing',
+          'Electrical Work',
+          'Carpentry & Woodworking',
+          'Painting',
+          'HVAC Repair',
+          'Handyman Services',
+          'Appliance Repair',
+          'Furniture Assembly',
+          'Pest Control',
+        ],
+      },
+      {
+        name: 'Events & Personal Services',
+        subcategories: [
+          'Event Planning',
+          'Photography',
+          'Videography',
+          'DJ Services',
+          'Catering',
+          'Personal Chef',
+          'Makeup Artistry',
+          'Hair Styling',
+        ],
+      },
+      {
+        name: 'Cleaning & Maintenance',
+        subcategories: [
+          'Home Cleaning',
+          'Office Cleaning',
+          'Gardening & Landscaping',
+          'Car Washing & Detailing',
+        ],
+      },
+      {
+        name: 'Lessons & Tutoring',
+        subcategories: [
+          'Academic Tutoring',
+          'Music Lessons',
+          'Art Classes',
+          'Fitness Training',
+          'Yoga & Meditation',
+        ],
+      },
+      {
+        name: 'Health & Pet Care',
+        subcategories: [
+          'Massage Therapy',
+          'Pet Grooming',
+          'Pet Sitting & Dog Walking',
+        ],
+      },
+    ],
+  },
 ];
 
 const ServicesStep = ({ data, onNext, onBack }: ServicesStepProps) => {
@@ -107,27 +227,38 @@ const ServicesStep = ({ data, onNext, onBack }: ServicesStepProps) => {
         </div>
       )}
 
-      {/* Service Categories Grid */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          Choose from popular services:
-        </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {serviceCategories.map((service) => (
-            <button
-              key={service}
-              type="button"
-              onClick={() => toggleService(service)}
-              className={`p-3 rounded-lg border-2 font-medium transition-all ${
-                selectedServices.includes(service)
-                  ? 'border-blue-600 bg-blue-50 text-blue-600'
-                  : 'border-gray-300 hover:border-blue-400 text-gray-700'
-              }`}
-            >
-              {service}
-            </button>
-          ))}
-        </div>
+      {/* Service Categories by Type */}
+      <div className="space-y-6">
+        {serviceCategories.map((serviceType) => (
+          <div key={serviceType.type}>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              {serviceType.label}
+            </h3>
+            <div className="space-y-4">
+              {serviceType.categories.map((category) => (
+                <div key={category.name} className="border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-medium text-gray-700 mb-2">{category.name}</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {category.subcategories.map((subcategory) => (
+                      <button
+                        key={subcategory}
+                        type="button"
+                        onClick={() => toggleService(subcategory)}
+                        className={`p-2 rounded-lg border text-sm font-medium transition-all ${
+                          selectedServices.includes(subcategory)
+                            ? 'border-blue-600 bg-blue-50 text-blue-600'
+                            : 'border-gray-300 hover:border-blue-400 text-gray-700'
+                        }`}
+                      >
+                        {subcategory}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Custom Service Input */}

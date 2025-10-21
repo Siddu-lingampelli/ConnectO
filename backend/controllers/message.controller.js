@@ -1,6 +1,7 @@
 import Message from '../models/Message.model.js';
 import Conversation from '../models/Conversation.model.js';
 import User from '../models/User.model.js';
+import notificationHelper from '../utils/notificationHelper.js';
 
 // Helper to get or create conversation ID
 const getConversationId = (userId1, userId2) => {
@@ -159,6 +160,19 @@ export const sendMessage = async (req, res) => {
     }
 
     console.log('✅ Message sent successfully');
+
+    // Send notification to receiver
+    try {
+      await notificationHelper.messageReceived(
+        receiverId,
+        req.user.fullName,
+        senderId,
+        conversationId
+      );
+      console.log('📬 Notification sent to receiver');
+    } catch (notifError) {
+      console.error('⚠️ Error sending notification:', notifError);
+    }
 
     res.status(201).json({
       success: true,

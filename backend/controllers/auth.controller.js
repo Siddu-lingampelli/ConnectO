@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.model.js';
 import { Wallet } from '../models/Wallet.model.js';
+import notificationHelper from '../utils/notificationHelper.js';
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -140,6 +141,15 @@ export const login = async (req, res) => {
     // Update last login
     user.lastLogin = new Date();
     await user.save();
+
+    // Send profile incomplete notification if profile not completed
+    if (!user.profileCompleted) {
+      try {
+        await notificationHelper.profileIncomplete(user._id);
+      } catch (notifError) {
+        console.error('Error sending profile notification:', notifError);
+      }
+    }
 
     // Generate tokens
     const token = generateToken(user._id);

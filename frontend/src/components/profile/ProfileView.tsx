@@ -153,7 +153,21 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
                 <div className="flex items-start justify-between">
                   <div>
                     <h1 className="text-3xl font-bold text-gray-900">{user.fullName}</h1>
-                    <p className="text-gray-600 capitalize mt-1">{user.role}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <p className="text-gray-600 capitalize">{user.role}</p>
+                      {user.role === 'provider' && user.providerType && (
+                        <>
+                          <span className="text-gray-400">•</span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                            user.providerType === 'Technical' 
+                              ? 'bg-blue-100 text-blue-700' 
+                              : 'bg-green-100 text-green-700'
+                          }`}>
+                            {user.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={() => setIsEditing(true)}
@@ -185,6 +199,26 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
                 <p className="text-2xl font-bold text-gray-900">{user.completedJobs || 0}</p>
                 <p className="text-sm text-gray-600">Jobs Completed</p>
               </div>
+              {user.role === 'provider' && user.demoVerification && (
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className={`text-2xl font-bold ${
+                      user.demoVerification.status === 'verified' ? 'text-green-600' :
+                      user.demoVerification.status === 'under_review' ? 'text-yellow-600' :
+                      user.demoVerification.status === 'rejected' ? 'text-red-600' :
+                      'text-gray-600'
+                    }`}>
+                      {user.demoVerification.score || '--'}
+                    </span>
+                    <span className="text-xl">
+                      {user.demoVerification.status === 'verified' ? '✅' :
+                       user.demoVerification.status === 'under_review' ? '⏳' :
+                       user.demoVerification.status === 'rejected' ? '❌' : '📋'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600">Demo Score</p>
+                </div>
+              )}
               {user.hourlyRate && (
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-600">₹{user.hourlyRate}/hr</p>
@@ -335,6 +369,83 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
                 <span>🕒</span> Availability
               </h2>
               <p className="text-gray-700 capitalize">{user.availability}</p>
+            </div>
+          )}
+
+          {/* Demo Verification Status - Only for providers */}
+          {user.role === 'provider' && user.demoVerification && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <span>🎯</span> Demo Verification
+              </h2>
+              <div className="space-y-4">
+                {/* Status Badge */}
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Status</p>
+                  <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
+                    user.demoVerification.status === 'verified' 
+                      ? 'bg-green-100 text-green-700'
+                    : user.demoVerification.status === 'under_review'
+                      ? 'bg-yellow-100 text-yellow-700'
+                    : user.demoVerification.status === 'rejected'
+                      ? 'bg-red-100 text-red-700'
+                    : user.demoVerification.status === 'pending'
+                      ? 'bg-blue-100 text-blue-700'
+                    : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    {user.demoVerification.status === 'verified' && '✅ Verified'}
+                    {user.demoVerification.status === 'under_review' && '⏳ Under Review'}
+                    {user.demoVerification.status === 'rejected' && '❌ Rejected'}
+                    {user.demoVerification.status === 'pending' && '📋 Pending'}
+                    {user.demoVerification.status === 'not_assigned' && '⚪ Not Assigned'}
+                  </span>
+                </div>
+
+                {/* Score */}
+                {user.demoVerification.score !== undefined && user.demoVerification.score !== null && (
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Score</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 bg-gray-200 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full transition-all ${
+                            user.demoVerification.score >= 60 ? 'bg-green-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${user.demoVerification.score}%` }}
+                        />
+                      </div>
+                      <span className={`text-2xl font-bold ${
+                        user.demoVerification.score >= 60 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {user.demoVerification.score}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {user.demoVerification.score >= 60 ? '✓ Passing Score' : '✗ Below Threshold (60)'}
+                    </p>
+                  </div>
+                )}
+
+                {/* Admin Comments */}
+                {user.demoVerification.adminComments && (
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Admin Feedback</p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <p className="text-sm text-gray-700">{user.demoVerification.adminComments}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Last Updated */}
+                {user.demoVerification.lastUpdated && (
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Last Updated</p>
+                    <p className="text-sm text-gray-700">
+                      {formatDate(user.demoVerification.lastUpdated)}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

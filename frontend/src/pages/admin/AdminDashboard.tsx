@@ -186,6 +186,72 @@ const AdminDashboard = () => {
               </svg>
             </div>
           </div>
+
+          {/* Platform Analytics */}
+          <div
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
+            onClick={() => navigate('/admin/analytics')}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center text-3xl">
+                📊
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900">Platform Analytics</h3>
+                <p className="text-sm text-gray-600">View insights and trends</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <span className="text-sm text-gray-500">Real-time data</span>
+              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Manage Proposals */}
+          <div
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
+            onClick={() => navigate('/admin/proposals')}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-pink-100 rounded-lg flex items-center justify-center text-3xl">
+                📝
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900">Manage Proposals</h3>
+                <p className="text-sm text-gray-600">Review all proposals</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <span className="text-sm text-gray-500">{stats?.proposals.total} total proposals</span>
+              <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Demo Projects */}
+          <div
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
+            onClick={() => navigate('/admin/demos')}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-14 h-14 bg-orange-100 rounded-lg flex items-center justify-center text-3xl">
+                🎯
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900">Demo Projects</h3>
+                <p className="text-sm text-gray-600">Review freelancer demos</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <span className="text-sm text-gray-500">Verify freelancer skills</span>
+              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Recent Activity Section */}
