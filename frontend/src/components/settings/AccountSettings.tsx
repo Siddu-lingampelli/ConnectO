@@ -20,7 +20,19 @@ const AccountSettings = ({ user }: AccountSettingsProps) => {
     city: user.city || '',
     area: user.area || '',
     bio: user.bio || '',
+    // Provider-specific fields
+    providerType: user.providerType || '',
+    skills: user.skills || [],
+    services: user.services || [],
+    experience: user.experience || '',
+    hourlyRate: user.hourlyRate || 0,
+    availability: user.availability || [],
+    // Client-specific fields
+    preferences: user.preferences || { categories: [], budget: '', communicationPreference: '' },
   });
+  
+  const [skillInput, setSkillInput] = useState('');
+  const [serviceInput, setServiceInput] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -32,7 +44,29 @@ const AccountSettings = ({ user }: AccountSettingsProps) => {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const updatedUser = await userService.updateProfile(formData);
+      const dataToUpdate: any = {
+        fullName: formData.fullName,
+        phone: formData.phone,
+        city: formData.city,
+        area: formData.area,
+        bio: formData.bio,
+      };
+      
+      // Add provider-specific fields
+      if (user.role === 'provider') {
+        dataToUpdate.providerType = formData.providerType;
+        dataToUpdate.skills = formData.skills;
+        dataToUpdate.services = formData.services;
+        dataToUpdate.experience = formData.experience;
+        dataToUpdate.hourlyRate = formData.hourlyRate;
+      }
+      
+      // Add client-specific fields
+      if (user.role === 'client') {
+        dataToUpdate.preferences = formData.preferences;
+      }
+      
+      const updatedUser = await userService.updateProfile(dataToUpdate);
       dispatch(updateUser(updatedUser));
       toast.success('Account settings updated successfully!');
       setIsEditing(false);
@@ -51,8 +85,49 @@ const AccountSettings = ({ user }: AccountSettingsProps) => {
       city: user.city || '',
       area: user.area || '',
       bio: user.bio || '',
+      providerType: user.providerType || '',
+      skills: user.skills || [],
+      services: user.services || [],
+      experience: user.experience || '',
+      hourlyRate: user.hourlyRate || 0,
+      availability: user.availability || [],
+      preferences: user.preferences || { categories: [], budget: '', communicationPreference: '' },
     });
     setIsEditing(false);
+  };
+  
+  const handleAddSkill = () => {
+    if (skillInput.trim() && !formData.skills.includes(skillInput.trim())) {
+      setFormData({
+        ...formData,
+        skills: [...formData.skills, skillInput.trim()]
+      });
+      setSkillInput('');
+    }
+  };
+  
+  const handleRemoveSkill = (skill: string) => {
+    setFormData({
+      ...formData,
+      skills: formData.skills.filter(s => s !== skill)
+    });
+  };
+  
+  const handleAddService = () => {
+    if (serviceInput.trim() && !formData.services.includes(serviceInput.trim())) {
+      setFormData({
+        ...formData,
+        services: [...formData.services, serviceInput.trim()]
+      });
+      setServiceInput('');
+    }
+  };
+  
+  const handleRemoveService = (service: string) => {
+    setFormData({
+      ...formData,
+      services: formData.services.filter(s => s !== service)
+    });
   };
 
   return (
@@ -188,9 +263,222 @@ const AccountSettings = ({ user }: AccountSettingsProps) => {
             Account Type
           </label>
           <div className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-600">
-            {user.role === 'provider' ? '🔧 Service Provider' : '👤 Client'}
+            {user.role === 'provider' ? '🔧 Service Provider' : user.role === 'client' ? '👤 Client' : '👑 Admin'}
           </div>
         </div>
+
+        {/* Service Provider Specific Fields */}
+        {user.role === 'provider' && (
+          <>
+            <div className="pt-6 mt-6 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Professional Information</h3>
+            </div>
+
+            {/* Provider Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Provider Type
+              </label>
+              <select
+                name="providerType"
+                value={formData.providerType}
+                onChange={(e) => setFormData({ ...formData, providerType: e.target.value as 'Technical' | 'Non-Technical' | '' })}
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-600"
+              >
+                <option value="">Select Type</option>
+                <option value="Technical">💻 Technical (IT, Software, Tech Support)</option>
+                <option value="Non-Technical">🔧 Non-Technical (Plumbing, Electrical, etc.)</option>
+              </select>
+            </div>
+
+            {/* Skills */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Skills
+              </label>
+              {isEditing && (
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSkill())}
+                    placeholder="Add a skill (e.g., Plumbing, Electrical)"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddSkill}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {formData.skills.length > 0 ? (
+                  formData.skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex items-center gap-2"
+                    >
+                      {skill}
+                      {isEditing && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(skill)}
+                          className="text-blue-700 hover:text-blue-900"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-500 text-sm">No skills added yet</span>
+                )}
+              </div>
+            </div>
+
+            {/* Services */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Services Offered
+              </label>
+              {isEditing && (
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={serviceInput}
+                    onChange={(e) => setServiceInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddService())}
+                    placeholder="Add a service (e.g., AC Repair, House Painting)"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddService}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Add
+                  </button>
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {formData.services.length > 0 ? (
+                  formData.services.map((service, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm flex items-center gap-2"
+                    >
+                      {service}
+                      {isEditing && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveService(service)}
+                          className="text-green-700 hover:text-green-900"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-500 text-sm">No services added yet</span>
+                )}
+              </div>
+            </div>
+
+            {/* Experience */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Years of Experience
+              </label>
+              <input
+                type="text"
+                name="experience"
+                value={formData.experience}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="e.g., 5 years"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-600"
+              />
+            </div>
+
+            {/* Hourly Rate */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hourly Rate (₹)
+              </label>
+              <input
+                type="number"
+                name="hourlyRate"
+                value={formData.hourlyRate}
+                onChange={handleChange}
+                disabled={!isEditing}
+                placeholder="e.g., 500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-600"
+              />
+            </div>
+          </>
+        )}
+
+        {/* Client Specific Fields */}
+        {user.role === 'client' && (
+          <>
+            <div className="pt-6 mt-6 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Preferences</h3>
+            </div>
+
+            {/* Preferred Budget Range */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Typical Budget Range
+              </label>
+              <select
+                name="budget"
+                value={formData.preferences.budget}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  preferences: { ...formData.preferences, budget: e.target.value }
+                })}
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-600"
+              >
+                <option value="">Select Budget Range</option>
+                <option value="0-1000">₹0 - ₹1,000</option>
+                <option value="1000-5000">₹1,000 - ₹5,000</option>
+                <option value="5000-10000">₹5,000 - ₹10,000</option>
+                <option value="10000-25000">₹10,000 - ₹25,000</option>
+                <option value="25000+">₹25,000+</option>
+              </select>
+            </div>
+
+            {/* Communication Preference */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Preferred Communication Method
+              </label>
+              <select
+                name="communicationPreference"
+                value={formData.preferences.communicationPreference}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  preferences: { ...formData.preferences, communicationPreference: e.target.value }
+                })}
+                disabled={!isEditing}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-600"
+              >
+                <option value="">Select Method</option>
+                <option value="chat">💬 In-App Chat</option>
+                <option value="phone">📞 Phone Call</option>
+                <option value="email">📧 Email</option>
+                <option value="any">✅ Any Method</option>
+              </select>
+            </div>
+          </>
+        )}
 
         {/* Action Buttons */}
         {isEditing && (

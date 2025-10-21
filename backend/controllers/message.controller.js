@@ -105,7 +105,7 @@ export const getMessages = async (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const senderId = req.user._id;
-    const { receiverId, content, type = 'text' } = req.body;
+    const { receiverId, content, type = 'text', attachments } = req.body;
 
     console.log('📤 Sending message from:', senderId, 'to:', receiverId);
 
@@ -120,13 +120,20 @@ export const sendMessage = async (req, res) => {
 
     const conversationId = getConversationId(senderId, receiverId);
 
+    // Parse attachments if sent as string
+    let parsedAttachments = [];
+    if (attachments) {
+      parsedAttachments = typeof attachments === 'string' ? JSON.parse(attachments) : attachments;
+    }
+
     // Create message
     const message = await Message.create({
       conversation: conversationId,
       sender: senderId,
       receiver: receiverId,
-      content,
-      type
+      content: content || '',
+      type,
+      attachments: parsedAttachments
     });
 
     // Populate sender and receiver info
@@ -241,6 +248,167 @@ export const getUnreadCount = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Get unread count error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update online status
+// @route   PUT /api/messages/status/online
+// @access  Private
+export const updateOnlineStatus = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { isOnline } = req.body;
+
+    await User.findByIdAndUpdate(userId, {
+      isOnline,
+      lastSeen: new Date()
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Online status updated'
+    });
+  } catch (error) {
+    console.error('❌ Update online status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Update typing status
+// @route   PUT /api/messages/status/typing
+// @access  Private
+export const updateTypingStatus = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { receiverId, isTyping } = req.body;
+
+    await User.findByIdAndUpdate(userId, {
+      typingTo: isTyping ? receiverId : null
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Typing status updated'
+    });
+  } catch (error) {
+    console.error('❌ Update typing status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get user status (online, typing)
+// @route   GET /api/messages/status/:userId
+// @access  Private
+export const getUserStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.user._id;
+
+    const user = await User.findById(userId).select('isOnline lastSeen typingTo');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    const isTypingToMe = user.typingTo && user.typingTo.toString() === currentUserId.toString();
+
+    res.status(200).json({
+      success: true,
+      data: {
+        isOnline: user.isOnline,
+        lastSeen: user.lastSeen,
+        isTyping: isTypingToMe
+      }
+    });
+  } catch (error) {
+    console.error('❌ Get user status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Upload file attachment
+// @route   POST /api/messages/upload
+// @access  Private
+export const uploadAttachment = async (req, res) => {
+  try {
+    if (!req.files || !req.files.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No file uploaded'
+      });
+    }
+
+    const file = req.files.file;
+    
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return res.status(400).json({
+        success: false,
+        message: 'File size exceeds 10MB limit'
+      });
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+      'application/pdf', 'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
+
+    if (!allowedTypes.includes(file.mimetype)) {
+      return res.status(400).json({
+        success: false,
+        message: 'File type not allowed'
+      });
+    }
+
+    // Create unique filename
+    const timestamp = Date.now();
+    const filename = `${timestamp}_${file.name.replace(/\s+/g, '_')}`;
+    const uploadPath = `uploads/messages/${filename}`;
+
+    // Move file to upload directory
+    await file.mv(uploadPath);
+
+    // Return file info
+    const fileInfo = {
+      filename,
+      originalName: file.name,
+      mimetype: file.mimetype,
+      size: file.size,
+      url: `/uploads/messages/${filename}`
+    };
+
+    res.status(200).json({
+      success: true,
+      message: 'File uploaded successfully',
+      data: { file: fileInfo }
+    });
+  } catch (error) {
+    console.error('❌ Upload attachment error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

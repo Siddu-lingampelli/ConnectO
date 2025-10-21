@@ -42,8 +42,12 @@ const PostJob = () => {
     deadline: '',
     city: currentUser?.city || '',
     area: currentUser?.area || '',
-    address: ''
+    address: '',
+    latitude: undefined as number | undefined,
+    longitude: undefined as number | undefined
   });
+
+  const [gettingLocation, setGettingLocation] = useState(false);
 
   useEffect(() => {
     checkVerification();
@@ -74,6 +78,35 @@ const PostJob = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const detectLocation = () => {
+    if ('geolocation' in navigator) {
+      setGettingLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFormData(prev => ({
+            ...prev,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          }));
+          setGettingLocation(false);
+          toast.success('📍 Location detected successfully!');
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setGettingLocation(false);
+          toast.error('Could not detect location. Please enable location access.');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      toast.error('Geolocation is not supported by your browser');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,17 +148,25 @@ const PostJob = () => {
     try {
       setSubmitting(true);
 
-      const jobData = {
+      const jobData: any = {
         title: formData.title.trim(),
         description: formData.description.trim(),
         category: formData.category,
-        providerType: formData.providerType,
+        providerType: formData.providerType as 'Technical' | 'Non-Technical',
         budget: Number(formData.budget),
         deadline: formData.deadline,
         location: {
           city: formData.city.trim(),
           area: formData.area.trim(),
-          address: formData.address.trim() || undefined
+          address: formData.address.trim() || undefined,
+          ...(formData.latitude && formData.longitude && {
+            latitude: formData.latitude,
+            longitude: formData.longitude,
+            coordinates: {
+              type: 'Point',
+              coordinates: [formData.longitude, formData.latitude] as [number, number]
+            }
+          })
         }
       };
 
@@ -403,6 +444,34 @@ const PostJob = () => {
                     placeholder="Building name, street, landmark..."
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                </div>
+
+                {/* GPS Location (Optional) */}
+                <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">📍</span>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Enable GPS Location (Optional)</h4>
+                        <p className="text-xs text-gray-600">
+                          Help nearby providers find your job faster
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={detectLocation}
+                      disabled={gettingLocation}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium disabled:bg-gray-400"
+                    >
+                      {gettingLocation ? '⏳ Detecting...' : formData.latitude ? '✓ Located' : '📡 Detect'}
+                    </button>
+                  </div>
+                  {formData.latitude && formData.longitude && (
+                    <div className="mt-2 text-xs text-green-700 bg-green-100 px-3 py-2 rounded">
+                      ✓ Location detected: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
+                    </div>
+                  )}
                 </div>
               </div>
 

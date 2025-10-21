@@ -39,6 +39,17 @@ export interface User {
     communicationPreference?: string;
   };
   
+  // Portfolio (Provider showcase)
+  portfolio?: Array<{
+    title: string;
+    description?: string;
+    type: 'image' | 'video' | 'link' | 'github';
+    url: string;
+    thumbnail?: string;
+    tags?: string[];
+    createdAt?: Date | string;
+  }>;
+  
   // Documents
   documents?: {
     idProof?: string;
@@ -105,12 +116,22 @@ export interface Job {
   title: string;
   description: string;
   category: string;
+  providerType?: 'Technical' | 'Non-Technical';
   budget: number;
   budgetType: 'fixed' | 'hourly';
   location: {
     city: string;
     area: string;
+    address?: string;
+    latitude?: number;
+    longitude?: number;
+    coordinates?: {
+      type: string;
+      coordinates: [number, number]; // [longitude, latitude]
+    };
   };
+  distance?: number; // Distance in meters (for nearby search)
+  distanceInKm?: number; // Distance in kilometers
   status: 'open' | 'in-progress' | 'completed' | 'cancelled';
   client: User | string;
   requirements?: string[];
@@ -238,6 +259,7 @@ export interface SelectOption {
 // Filter Types
 export interface JobFilter {
   category?: string;
+  providerType?: 'Technical' | 'Non-Technical';
   budgetMin?: number;
   budgetMax?: number;
   budgetType?: 'fixed' | 'hourly';

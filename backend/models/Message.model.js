@@ -18,11 +18,18 @@ const messageSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    required: [true, 'Message content is required'],
     trim: true
   },
   attachments: [{
-    type: String
+    filename: String,
+    originalName: String,
+    mimetype: String,
+    size: Number,
+    url: String,
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    }
   }],
   isRead: {
     type: Boolean,

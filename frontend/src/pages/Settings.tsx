@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../store/authSlice';
 import Header from '../components/layout/Header';
@@ -9,13 +9,23 @@ import SecuritySettings from '../components/settings/SecuritySettings';
 import NotificationSettings from '../components/settings/NotificationSettings';
 import PrivacySettings from '../components/settings/PrivacySettings';
 import PaymentSettings from '../components/settings/PaymentSettings';
+import PortfolioSettings from '../components/settings/PortfolioSettings';
 
-type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment';
+type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment' | 'portfolio';
 
 const Settings = () => {
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
-  const [activeTab, setActiveTab] = useState<SettingsTab>('account');
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab') as SettingsTab | null;
+  const [activeTab, setActiveTab] = useState<SettingsTab>(tabParam || 'account');
+
+  // Update active tab when URL parameter changes
+  useEffect(() => {
+    if (tabParam && ['account', 'security', 'notifications', 'privacy', 'payment', 'portfolio'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   if (!user) {
     return (
@@ -35,6 +45,7 @@ const Settings = () => {
     { id: 'notifications', label: 'Notifications', icon: '🔔' },
     { id: 'privacy', label: 'Privacy', icon: '🛡️' },
     { id: 'payment', label: 'Payment', icon: '💳' },
+    ...(user.role === 'provider' ? [{ id: 'portfolio' as SettingsTab, label: 'Portfolio', icon: '💼' }] : []),
   ];
 
   const renderTabContent = () => {
@@ -49,6 +60,8 @@ const Settings = () => {
         return <PrivacySettings user={user} />;
       case 'payment':
         return <PaymentSettings user={user} />;
+      case 'portfolio':
+        return user.role === 'provider' ? <PortfolioSettings user={user} /> : null;
       default:
         return null;
     }

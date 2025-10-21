@@ -1,4 +1,5 @@
-import { type Conversation } from '../../services/messageService';
+import { useState, useEffect } from 'react';
+import { type Conversation, messageService, type UserStatus } from '../../services/messageService';
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -15,6 +16,8 @@ const ConversationList = ({
   onSelectConversation,
   loading
 }: ConversationListProps) => {
+  const [userStatuses, setUserStatuses] = useState<Record<string, UserStatus>>({});
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -34,6 +37,36 @@ const ConversationList = ({
   const getOtherParticipant = (conversation: Conversation) => {
     return conversation.participants.find(p => p.id !== currentUserId && p._id !== currentUserId);
   };
+
+  // Load online statuses for all users
+  useEffect(() => {
+    const loadStatuses = async () => {
+      const statuses: Record<string, UserStatus> = {};
+      
+      for (const conversation of conversations) {
+        const otherUser = getOtherParticipant(conversation);
+        if (otherUser) {
+          try {
+            const userId = otherUser.id || otherUser._id!;
+            const status = await messageService.getUserStatus(userId);
+            statuses[userId] = status;
+          } catch (error) {
+            console.error('Error loading status:', error);
+          }
+        }
+      }
+      
+      setUserStatuses(statuses);
+    };
+
+    if (conversations.length > 0) {
+      loadStatuses();
+      
+      // Refresh statuses every 5 seconds
+      const interval = setInterval(loadStatuses, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [conversations]);
 
   if (loading && conversations.length === 0) {
     return (
@@ -85,8 +118,8 @@ const ConversationList = ({
                 }`}
               >
                 <div className="flex items-start space-x-3">
-                  {/* Avatar */}
-                  <div className="flex-shrink-0">
+                  {/* Avatar with online indicator */}
+                  <div className="flex-shrink-0 relative">
                     {otherUser.profilePicture ? (
                       <img
                         src={otherUser.profilePicture}
@@ -97,6 +130,10 @@ const ConversationList = ({
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                         {otherUser.fullName.charAt(0).toUpperCase()}
                       </div>
+                    )}
+                    {/* Online status indicator */}
+                    {userStatuses[otherUser.id || otherUser._id!]?.isOnline && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                     )}
                   </div>
 
@@ -115,7 +152,11 @@ const ConversationList = ({
                     
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-600 truncate">
-                        {conversation.lastMessage?.content || 'No messages yet'}
+                        {userStatuses[otherUser.id || otherUser._id!]?.isTyping ? (
+                          <span className="italic text-blue-600">typing...</span>
+                        ) : (
+                          conversation.lastMessage?.content || 'No messages yet'
+                        )}
                       </p>
                       {unreadCount > 0 && (
                         <span className="ml-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full flex-shrink-0">

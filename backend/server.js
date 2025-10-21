@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fileUpload from 'express-fileupload';
 
 // Import routes
 import authRoutes from './routes/auth.routes.js';
@@ -18,6 +19,7 @@ import verificationRoutes from './routes/verification.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import demoRoutes from './routes/demo.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
+import recommendationRoutes from './routes/recommendation.routes.js';
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -36,6 +38,11 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload({
+  createParentPath: true,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+  abortOnLimit: true
+}));
 
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -68,6 +75,7 @@ app.use('/api/verification', verificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/demo', demoRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/recommend', recommendationRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

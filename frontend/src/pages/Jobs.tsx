@@ -7,6 +7,7 @@ import { jobService } from '../services/jobService';
 import type { Job } from '../types';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import VoiceSearch from '../components/search/VoiceSearch';
 
 const categories = [
   'All Categories',
@@ -45,15 +46,101 @@ const Jobs = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
+  const [nearbyJobs, setNearbyJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingRecommended, setLoadingRecommended] = useState(false);
+  const [loadingNearby, setLoadingNearby] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedCity, setSelectedCity] = useState('All Cities');
+  const [selectedProviderType, setSelectedProviderType] = useState('All Types');
+  const [selectedBudgetType, setSelectedBudgetType] = useState('All Types');
+  const [budgetMin, setBudgetMin] = useState('');
+  const [budgetMax, setBudgetMax] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [showRecommended, setShowRecommended] = useState(true);
+  const [showNearby, setShowNearby] = useState(true);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [searchRadius, setSearchRadius] = useState(10); // Default 10km
+  const [locationPermission, setLocationPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
 
   useEffect(() => {
     loadJobs();
-  }, [selectedCategory, selectedCity]);
+    if (currentUser?.role === 'provider') {
+      loadRecommendedJobs();
+      // Don't auto-request location on page load
+      // User must click "Enable Location" button
+    }
+  }, [selectedCategory, selectedCity, selectedProviderType, selectedBudgetType, budgetMin, budgetMax]);
+
+  useEffect(() => {
+    // Load nearby jobs when location changes
+    if (userLocation && currentUser?.role === 'provider') {
+      loadNearbyJobs();
+    }
+  }, [userLocation, searchRadius]);
+
+  const requestLocation = () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          setLocationPermission('granted');
+          toast.success('📍 Location detected! Showing nearby jobs.');
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setLocationPermission('denied');
+          
+          if (error.code === error.PERMISSION_DENIED) {
+            toast.info('Enable location access to see nearby jobs');
+          } else {
+            toast.error('Could not detect your location');
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // Cache for 5 minutes
+        }
+      );
+    } else {
+      toast.error('Geolocation is not supported by your browser');
+      setLocationPermission('denied');
+    }
+  };
+
+  const loadNearbyJobs = async () => {
+    if (!userLocation) return;
+    
+    try {
+      setLoadingNearby(true);
+      const response = await jobService.getNearbyJobs(
+        userLocation.lat,
+        userLocation.lng,
+        searchRadius,
+        1,
+        10
+      );
+      const jobsData = response?.data || [];
+      
+      if (Array.isArray(jobsData)) {
+        setNearbyJobs(jobsData);
+      }
+    } catch (error: any) {
+      console.error('Error loading nearby jobs:', error);
+      // Don't show error toast if no jobs found
+      if (error.response?.status !== 404) {
+        console.log('Could not load nearby jobs');
+      }
+    } finally {
+      setLoadingNearby(false);
+    }
+  };
 
   const loadJobs = async () => {
     try {
@@ -69,6 +156,22 @@ const Jobs = () => {
 
       if (selectedCity !== 'All Cities') {
         params.city = selectedCity;
+      }
+
+      if (selectedProviderType !== 'All Types') {
+        params.providerType = selectedProviderType;
+      }
+
+      if (selectedBudgetType !== 'All Types') {
+        params.budgetType = selectedBudgetType === 'Fixed' ? 'fixed' : 'hourly';
+      }
+
+      if (budgetMin) {
+        params.budgetMin = parseInt(budgetMin);
+      }
+
+      if (budgetMax) {
+        params.budgetMax = parseInt(budgetMax);
       }
 
       if (searchQuery.trim()) {
@@ -97,8 +200,34 @@ const Jobs = () => {
     }
   };
 
+  const loadRecommendedJobs = async () => {
+    try {
+      setLoadingRecommended(true);
+      const response = await jobService.getRecommendedJobs(1, 5);
+      const jobsData = response?.data || [];
+      
+      if (Array.isArray(jobsData)) {
+        setRecommendedJobs(jobsData);
+      }
+    } catch (error: any) {
+      console.error('Error loading recommended jobs:', error);
+    } finally {
+      setLoadingRecommended(false);
+    }
+  };
+
   const handleSearch = () => {
     loadJobs();
+  };
+
+  const clearFilters = () => {
+    setSelectedCategory('All Categories');
+    setSelectedCity('All Cities');
+    setSelectedProviderType('All Types');
+    setSelectedBudgetType('All Types');
+    setBudgetMin('');
+    setBudgetMax('');
+    setSearchQuery('');
   };
 
   const formatDate = (dateString: string) => {
@@ -180,32 +309,35 @@ const Jobs = () => {
           {/* Search and Filters */}
           {currentUser.role === 'provider' && (
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="flex gap-3 mb-4">
-                <input
-                  type="text"
+              {/* Voice Search */}
+              <div className="mb-4 relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">🎤</span>
+                  <h3 className="text-sm font-semibold text-gray-700">Voice Search - Multiple Languages</h3>
+                </div>
+                <VoiceSearch
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  placeholder="Search jobs by title or description..."
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onSearch={(text) => {
+                    setSearchQuery(text);
+                    handleSearch();
+                  }}
+                  placeholder="Search jobs by title, description, or category..."
                 />
-                <button
-                  onClick={handleSearch}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                >
-                  Search
-                </button>
+              </div>
+
+              {/* Filters Toggle */}
+              <div className="flex justify-end">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
                 >
-                  {showFilters ? '✕ Hide' : '⚙️ Filters'}
+                  {showFilters ? '✕ Hide Filters' : '⚙️ Show Filters'}
                 </button>
               </div>
 
               {showFilters && (
                 <div className="border-t border-gray-200 pt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Category
@@ -235,20 +367,320 @@ const Jobs = () => {
                         ))}
                       </select>
                     </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Provider Type
+                      </label>
+                      <select
+                        value={selectedProviderType}
+                        onChange={(e) => setSelectedProviderType(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="All Types">All Types</option>
+                        <option value="Technical">💻 Technical</option>
+                        <option value="Non-Technical">🔧 Non-Technical</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Budget Type
+                      </label>
+                      <select
+                        value={selectedBudgetType}
+                        onChange={(e) => setSelectedBudgetType(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="All Types">All Types</option>
+                        <option value="Fixed">Fixed Price</option>
+                        <option value="Hourly">Hourly Rate</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Min Budget (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={budgetMin}
+                        onChange={(e) => setBudgetMin(e.target.value)}
+                        placeholder="Min amount"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Max Budget (₹)
+                      </label>
+                      <input
+                        type="number"
+                        value={budgetMax}
+                        onChange={(e) => setBudgetMax(e.target.value)}
+                        placeholder="Max amount"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
                   </div>
 
                   <div className="flex justify-end mt-4">
                     <button
-                      onClick={() => {
-                        setSelectedCategory('All Categories');
-                        setSelectedCity('All Cities');
-                        setSearchQuery('');
-                      }}
+                      onClick={clearFilters}
                       className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
                     >
                       Clear Filters
                     </button>
                   </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Near Me Jobs Section - GPS-based - Only for Providers */}
+          {currentUser.role === 'provider' && (
+            <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-lg shadow-md p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">📍</span>
+                  <h2 className="text-xl font-bold text-gray-900">Jobs Near You</h2>
+                  {userLocation && (
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                      📡 Live Location Active
+                    </span>
+                  )}
+                </div>
+                {nearbyJobs.length > 0 && (
+                  <button
+                    onClick={() => setShowNearby(!showNearby)}
+                    className="text-gray-500 hover:text-gray-700"
+                    title={showNearby ? "Hide nearby jobs" : "Show nearby jobs"}
+                  >
+                    {showNearby ? '✕' : '👁️'}
+                  </button>
+                )}
+              </div>
+
+              {!userLocation && locationPermission === 'prompt' && (
+                <div className="text-center py-8">
+                  <div className="w-20 h-20 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-4xl">📍</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Enable Location to See Nearby Jobs
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    We'll show you jobs within {searchRadius}km of your current location
+                  </p>
+                  <button
+                    onClick={requestLocation}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                  >
+                    📍 Enable Location Access
+                  </button>
+                </div>
+              )}
+
+              {locationPermission === 'denied' && (
+                <div className="text-center py-6 bg-yellow-50 rounded-lg">
+                  <span className="text-3xl mb-2 block">⚠️</span>
+                  <p className="text-gray-700 mb-2">
+                    Location access is blocked. Please enable it in your browser settings.
+                  </p>
+                  <button
+                    onClick={requestLocation}
+                    className="text-green-600 hover:text-green-700 font-medium text-sm"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              )}
+
+              {userLocation && showNearby && (
+                <>
+                  <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-200 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Search Radius:
+                      </label>
+                      <select
+                        value={searchRadius}
+                        onChange={(e) => setSearchRadius(parseInt(e.target.value))}
+                        className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                      >
+                        <option value={5}>5 km</option>
+                        <option value={10}>10 km</option>
+                        <option value={20}>20 km</option>
+                        <option value={50}>50 km</option>
+                        <option value={100}>100 km</option>
+                      </select>
+                    </div>
+                    <button
+                      onClick={loadNearbyJobs}
+                      className="px-4 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
+                    >
+                      🔄 Refresh
+                    </button>
+                    <button
+                      onClick={() => {
+                        setUserLocation(null);
+                        setNearbyJobs([]);
+                        setLocationPermission('prompt');
+                        toast.info('Location turned off');
+                      }}
+                      className="px-4 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
+                    >
+                      📍 Turn Off Location
+                    </button>
+                    <div className="text-xs text-gray-500">
+                      📌 Lat: {userLocation.lat.toFixed(4)}, Lng: {userLocation.lng.toFixed(4)}
+                    </div>
+                  </div>
+
+                  {loadingNearby ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                    </div>
+                  ) : nearbyJobs.length === 0 ? (
+                    <div className="text-center py-6">
+                      <span className="text-3xl mb-2 block">🔍</span>
+                      <p className="text-gray-600">
+                        No jobs found within {searchRadius}km. Try increasing the search radius.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {nearbyJobs.map((job) => {
+                        const distanceKm = job.distanceInKm || 0;
+                        
+                        return (
+                          <div 
+                            key={job._id} 
+                            className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer border-l-4 border-green-500"
+                            onClick={() => navigate(`/jobs/${job._id}`)}
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <h3 className="font-semibold text-gray-900 line-clamp-2 flex-1">
+                                {job.title}
+                              </h3>
+                              <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold whitespace-nowrap">
+                                📍 {distanceKm.toFixed(1)}km
+                              </span>
+                            </div>
+                            
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                                {job.category}
+                              </span>
+                              {job.providerType && (
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                  job.providerType === 'Technical' 
+                                    ? 'bg-purple-100 text-purple-700' 
+                                    : 'bg-orange-100 text-orange-700'
+                                }`}>
+                                  {job.providerType === 'Technical' ? '💻' : '🔧'}
+                                </span>
+                              )}
+                            </div>
+
+                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                              {job.description}
+                            </p>
+
+                            <div className="flex items-center justify-between">
+                              <div className="text-lg font-bold text-green-600">
+                                {formatBudget(job.budget)}
+                              </div>
+                              <span className="text-xs text-gray-500">
+                                📍 {job.location.city}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Recommended Jobs Section - Only for Providers */}
+          {currentUser.role === 'provider' && recommendedJobs.length > 0 && showRecommended && (
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg shadow-md p-6 mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">✨</span>
+                  <h2 className="text-xl font-bold text-gray-900">Recommended For You</h2>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                    Based on your profile
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowRecommended(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                  title="Hide recommendations"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {loadingRecommended ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recommendedJobs.slice(0, 3).map((job) => {
+                    return (
+                      <div 
+                        key={job._id} 
+                        className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 cursor-pointer"
+                        onClick={() => navigate(`/jobs/${job._id}`)}
+                      >
+                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                          {job.title}
+                        </h3>
+                        
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                            {job.category}
+                          </span>
+                          {job.providerType && (
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              job.providerType === 'Technical' 
+                                ? 'bg-purple-100 text-purple-700' 
+                                : 'bg-orange-100 text-orange-700'
+                            }`}>
+                              {job.providerType === 'Technical' ? '💻' : '🔧'}
+                            </span>
+                          )}
+                        </div>
+
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                          {job.description}
+                        </p>
+
+                        <div className="flex items-center justify-between">
+                          <div className="text-lg font-bold text-green-600">
+                            {formatBudget(job.budget)}
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            📍 {job.location.city}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {recommendedJobs.length > 3 && (
+                <div className="mt-4 text-center">
+                  <p className="text-sm text-gray-600">
+                    + {recommendedJobs.length - 3} more recommended jobs below
+                  </p>
                 </div>
               )}
             </div>

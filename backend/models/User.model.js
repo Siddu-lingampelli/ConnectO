@@ -98,6 +98,41 @@ const userSchema = new mongoose.Schema({
     trim: true
   }],
   
+  // Portfolio (for providers)
+  portfolio: [{
+    title: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    description: {
+      type: String,
+      trim: true
+    },
+    type: {
+      type: String,
+      enum: ['image', 'video', 'link', 'github'],
+      required: true
+    },
+    url: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    thumbnail: {
+      type: String,
+      trim: true
+    },
+    tags: [{
+      type: String,
+      trim: true
+    }],
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  
   // Client preferences
   preferences: {
     categories: [{
@@ -229,6 +264,21 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   
+  // Online status
+  isOnline: {
+    type: Boolean,
+    default: false
+  },
+  lastSeen: {
+    type: Date,
+    default: Date.now
+  },
+  typingTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  
   // Stats for providers
   rating: {
     type: Number,
@@ -290,6 +340,14 @@ userSchema.methods.toJSON = function() {
   delete obj.password;
   return obj;
 };
+
+// Text indexes for recommendation system
+userSchema.index({ 
+  fullName: 'text', 
+  skills: 'text', 
+  services: 'text',
+  bio: 'text'
+});
 
 const User = mongoose.model('User', userSchema);
 

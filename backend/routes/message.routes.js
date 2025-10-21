@@ -5,7 +5,11 @@ import {
   getMessages,
   sendMessage,
   markAsRead,
-  getUnreadCount
+  getUnreadCount,
+  updateOnlineStatus,
+  updateTypingStatus,
+  getUserStatus,
+  uploadAttachment
 } from '../controllers/message.controller.js';
 
 const router = express.Router();
@@ -19,5 +23,13 @@ router.get('/conversation/:userId', getMessages);
 router.post('/send', sendMessage);
 router.put('/read/:conversationId', markAsRead);
 router.get('/unread', getUnreadCount);
+
+// Status routes
+router.put('/status/online', updateOnlineStatus);
+router.put('/status/typing', updateTypingStatus);
+router.get('/status/:userId', getUserStatus);
+
+// File upload
+router.post('/upload', uploadAttachment);
 
 export default router;

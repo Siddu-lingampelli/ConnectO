@@ -22,6 +22,7 @@ import OngoingJobs from './pages/OngoingJobs';
 import OrderDetails from './pages/OrderDetails';
 import NotFound from './pages/NotFound';
 import NotificationsPage from './pages/NotificationsPage';
+import BrowseProviders from './pages/BrowseProviders';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -103,6 +104,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/browse-providers"
+          element={
+            <ProtectedRoute>
+              <BrowseProviders />
             </ProtectedRoute>
           }
         />

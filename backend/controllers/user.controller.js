@@ -1,5 +1,86 @@
 import User from '../models/User.model.js';
 
+// @desc    Get users with filters
+// @route   GET /api/users
+// @access  Private
+export const getUsers = async (req, res) => {
+  try {
+    const { role, city, search, providerType, category } = req.query;
+    
+    console.log('🔍 Getting users with params:', { role, city, search, providerType, category });
+    
+    const query = { isActive: true };
+
+    // Role filter
+    if (role) {
+      query.role = role;
+    }
+
+    // Provider type filter
+    if (providerType) {
+      query.providerType = providerType;
+    }
+
+    // City filter
+    if (city) {
+      query.city = new RegExp(city, 'i');
+    }
+
+    // Category filter (for providers)
+    if (category) {
+      query.$or = [
+        { skills: { $regex: category, $options: 'i' } },
+        { services: { $regex: category, $options: 'i' } },
+        { preferredCategories: { $regex: category, $options: 'i' } }
+      ];
+    }
+
+    // Search filter
+    if (search) {
+      const searchConditions = [
+        { fullName: new RegExp(search, 'i') },
+        { bio: new RegExp(search, 'i') },
+        { skills: { $regex: search, $options: 'i' } },
+        { services: { $regex: search, $options: 'i' } },
+        { city: new RegExp(search, 'i') },
+        { area: new RegExp(search, 'i') }
+      ];
+      
+      if (query.$or) {
+        query.$and = [
+          { $or: query.$or },
+          { $or: searchConditions }
+        ];
+        delete query.$or;
+      } else {
+        query.$or = searchConditions;
+      }
+    }
+
+    console.log('📋 MongoDB query:', JSON.stringify(query, null, 2));
+
+    const users = await User.find(query)
+      .select('-password')
+      .sort({ rating: -1, completedJobs: -1, createdAt: -1 })
+      .limit(100);
+
+    console.log(`✅ Found ${users.length} users`);
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users
+    });
+  } catch (error) {
+    console.error('❌ Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
+  }
+};
+
 // @desc    Get current user profile
 // @route   GET /api/users/profile
 // @access  Private
@@ -30,7 +111,7 @@ export const updateProfile = async (req, res) => {
       'fullName', 'phone', 'city', 'area', 'profilePicture', 'bio',
       
       // Provider fields
-      'skills', 'experience', 'education', 'languages',
+      'providerType', 'skills', 'experience', 'education', 'languages',
       'availability', 'preferredCategories', 'hourlyRate', 'serviceRadius',
       
       // Client preferences
@@ -44,6 +125,9 @@ export const updateProfile = async (req, res) => {
       
       // Services (provider)
       'services',
+      
+      // Portfolio (provider)
+      'portfolio',
       
       // Notifications
       'notifications',
@@ -88,7 +172,7 @@ export const updateProfile = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Profile updated successfully in MongoDB',
-      data: user
+      data: { user }
     });
   } catch (error) {
     console.error('❌ MongoDB save error:', error);

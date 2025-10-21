@@ -466,6 +466,145 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
           )}
         </div>
 
+        {/* Portfolio Section - Only for providers */}
+        {user.role === 'provider' && (
+          <div className="md:col-span-3 bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                💼 My Portfolio
+              </h2>
+              <button
+                onClick={() => window.location.href = '/settings?tab=portfolio'}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Manage Portfolio →
+              </button>
+            </div>
+            
+            {user.portfolio && user.portfolio.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {user.portfolio.map((item, index) => {
+                const typeInfo = {
+                  image: { icon: '🖼️', color: 'blue', bgColor: 'bg-blue-50', textColor: 'text-blue-600' },
+                  video: { icon: '🎥', color: 'purple', bgColor: 'bg-purple-50', textColor: 'text-purple-600' },
+                  link: { icon: '🔗', color: 'green', bgColor: 'bg-green-50', textColor: 'text-green-600' },
+                  github: { icon: '💻', color: 'gray', bgColor: 'bg-gray-50', textColor: 'text-gray-600' }
+                }[item.type];
+
+                return (
+                  <div key={index} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                    {/* Preview Image */}
+                    {item.type === 'image' ? (
+                      <div className="h-48 bg-gray-100">
+                        <img
+                          src={item.url}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-400 text-6xl">${typeInfo.icon}</div>`;
+                          }}
+                        />
+                      </div>
+                    ) : item.thumbnail ? (
+                      <div className="h-48 bg-gray-100">
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement!.innerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-400 text-6xl">${typeInfo.icon}</div>`;
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className={`h-48 ${typeInfo.bgColor} flex items-center justify-center`}>
+                        <span className="text-6xl">{typeInfo.icon}</span>
+                      </div>
+                    )}
+
+                    <div className="p-4">
+                      {/* Type Badge */}
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`px-2 py-1 ${typeInfo.bgColor} ${typeInfo.textColor} text-xs rounded-full flex items-center gap-1`}>
+                          <span>{typeInfo.icon}</span>
+                          <span className="capitalize">{item.type}</span>
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="font-semibold text-gray-900 mb-2 truncate">
+                        {item.title}
+                      </h3>
+
+                      {/* Description */}
+                      {item.description && (
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                          {item.description}
+                        </p>
+                      )}
+
+                      {/* Tags */}
+                      {item.tags && item.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {item.tags.slice(0, 3).map((tag, tagIndex) => (
+                            <span
+                              key={tagIndex}
+                              className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {item.tags.length > 3 && (
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
+                              +{item.tags.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* View Button */}
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`block w-full text-center px-4 py-2 text-white rounded-lg transition-colors text-sm font-medium ${
+                          item.type === 'image' ? 'bg-blue-600 hover:bg-blue-700' :
+                          item.type === 'video' ? 'bg-purple-600 hover:bg-purple-700' :
+                          item.type === 'link' ? 'bg-green-600 hover:bg-green-700' :
+                          'bg-gray-600 hover:bg-gray-700'
+                        }`}
+                      >
+                        View {item.type === 'github' ? 'Repository' : item.type === 'link' ? 'Website' : 'Project'}
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-dashed border-blue-300">
+                <div className="w-20 h-20 bg-white rounded-full mx-auto mb-4 flex items-center justify-center shadow-md">
+                  <span className="text-4xl">💼</span>
+                </div>
+                <p className="text-gray-900 font-semibold text-lg mb-2">Showcase Your Work</p>
+                <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">
+                  Add portfolio items to showcase your projects, code samples, and achievements to attract more clients
+                </p>
+                <button
+                  onClick={() => window.location.href = '/settings?tab=portfolio'}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  Add Portfolio Items
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Reviews Section - Only for providers */}
         {user.role === 'provider' && (
           <div className="bg-white rounded-lg shadow-md p-6 mt-6">

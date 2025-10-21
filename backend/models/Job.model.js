@@ -64,7 +64,19 @@ const jobSchema = new mongoose.Schema({
     },
     address: {
       type: String
-    }
+    },
+    coordinates: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point'
+      },
+      coordinates: {
+        type: [Number] // [longitude, latitude]
+      }
+    },
+    latitude: Number,
+    longitude: Number
   },
   client: {
     type: mongoose.Schema.Types.ObjectId,
@@ -113,6 +125,14 @@ jobSchema.virtual('proposals', {
 jobSchema.index({ client: 1, status: 1 });
 jobSchema.index({ category: 1, status: 1 });
 jobSchema.index({ createdAt: -1 });
+jobSchema.index({ 'location.coordinates': '2dsphere' }); // Geospatial index for nearby search
+
+// Text indexes for recommendation system
+jobSchema.index({ 
+  title: 'text', 
+  description: 'text', 
+  category: 'text' 
+});
 
 const Job = mongoose.model('Job', jobSchema);
 

@@ -1,5 +1,14 @@
 import api from '../lib/api';
 
+export interface FileAttachment {
+  filename: string;
+  originalName: string;
+  mimetype: string;
+  size: number;
+  url: string;
+  uploadedAt?: string;
+}
+
 export interface Message {
   id: string;
   _id?: string;
@@ -20,11 +29,17 @@ export interface Message {
   };
   content: string;
   type?: 'text' | 'file' | 'image';
-  attachments?: string[];
+  attachments?: FileAttachment[];
   isRead: boolean;
   readAt?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface UserStatus {
+  isOnline: boolean;
+  lastSeen: string;
+  isTyping: boolean;
 }
 
 export interface Conversation {
@@ -64,13 +79,19 @@ export const messageService = {
   },
 
   // Send message
-  sendMessage: async (receiverId: string, content: string, type = 'text'): Promise<Message> => {
+  sendMessage: async (
+    receiverId: string, 
+    content: string, 
+    type = 'text',
+    attachments?: FileAttachment[]
+  ): Promise<Message> => {
     const response = await api.post<{ success: boolean; data: { message: Message } }>(
       '/messages/send',
       {
         receiverId,
         content,
         type,
+        attachments
       }
     );
     return response.data.data.message;
@@ -87,5 +108,40 @@ export const messageService = {
       '/messages/unread'
     );
     return response.data.data;
+  },
+
+  // Update online status
+  updateOnlineStatus: async (isOnline: boolean): Promise<void> => {
+    await api.put('/messages/status/online', { isOnline });
+  },
+
+  // Update typing status
+  updateTypingStatus: async (receiverId: string, isTyping: boolean): Promise<void> => {
+    await api.put('/messages/status/typing', { receiverId, isTyping });
+  },
+
+  // Get user status
+  getUserStatus: async (userId: string): Promise<UserStatus> => {
+    const response = await api.get<{ success: boolean; data: UserStatus }>(
+      `/messages/status/${userId}`
+    );
+    return response.data.data;
+  },
+
+  // Upload file
+  uploadFile: async (file: File): Promise<FileAttachment> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.post<{ success: boolean; data: { file: FileAttachment } }>(
+      '/messages/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+    return response.data.data.file;
   },
 };

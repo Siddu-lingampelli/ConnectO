@@ -8,6 +8,7 @@ import Footer from '../components/layout/Footer';
 import SearchProviders from '../components/search/SearchProviders';
 import SearchClients from '../components/search/SearchClients';
 import DemoStatusCard from '../components/demo/DemoStatusCard';
+import RecommendationsCard from '../components/recommendations/RecommendationsCard';
 
 const Dashboard = () => {
   const user = useSelector(selectCurrentUser);
@@ -151,7 +152,7 @@ const Dashboard = () => {
           )}
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
             {user.role === 'admin' ? (
               <>
                 <button
@@ -267,6 +268,20 @@ const Dashboard = () => {
                   <h3 className="text-xl font-bold mb-1">Messages</h3>
                   <p className="text-purple-100 text-sm">Chat with clients</p>
                 </button>
+
+                <button
+                  onClick={() => navigate('/settings')}
+                  className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">⚙️</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Settings & Portfolio</h3>
+                  <p className="text-gray-100 text-sm">Manage profile & showcase work</p>
+                </button>
               </>
             ) : (
               <>
@@ -282,6 +297,20 @@ const Dashboard = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-1">Post a Job</h3>
                   <p className="text-blue-100 text-sm">Hire service providers</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/browse-providers')}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">🔍</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Browse Providers</h3>
+                  <p className="text-purple-100 text-sm">Find service providers</p>
                 </button>
 
                 <button
@@ -310,6 +339,20 @@ const Dashboard = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-1">Ongoing Work</h3>
                   <p className="text-green-100 text-sm">Track work progress</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/settings')}
+                  className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">⚙️</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Settings</h3>
+                  <p className="text-gray-100 text-sm">Manage your preferences</p>
                 </button>
               </>
             )}
@@ -368,6 +411,11 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* AI-Powered Recommendations */}
+          <div className="mb-8">
+            <RecommendationsCard />
           </div>
 
           {/* Recent Activity */}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { userService } from '../../services/userService';
 import type { User } from '../../types';
+import VoiceSearch from './VoiceSearch';
 
 const SearchProviders = () => {
   const navigate = useNavigate();
@@ -64,32 +65,32 @@ const SearchProviders = () => {
     <div>
       {/* Search Header */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          🔍 Find Service Providers
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-2xl">🎤</span>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Find Service Providers with Voice Search
+          </h2>
+        </div>
         
-        {/* Main Search Bar */}
-        <div className="flex gap-3 mb-4">
-          <input
-            type="text"
+        {/* Voice Search */}
+        <div className="mb-4">
+          <VoiceSearch
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            onSearch={(text) => {
+              setSearchQuery(text);
+              handleSearch();
+            }}
             placeholder="Search by name, skills, or service..."
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button
-            onClick={handleSearch}
-            disabled={loading}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 font-medium"
-          >
-            {loading ? 'Searching...' : 'Search'}
-          </button>
+        </div>
+
+        {/* Filters Toggle */}
+        <div className="flex justify-end">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
           >
-            {showFilters ? '✕ Hide Filters' : '⚙️ Filters'}
+            {showFilters ? '✕ Hide Filters' : '⚙️ Show Filters'}
           </button>
         </div>
 
@@ -288,8 +289,16 @@ const SearchProviders = () => {
             Search for Service Providers
           </h3>
           <p className="text-gray-600 mb-6">
-            Use the search bar above to find skilled professionals for your needs
+            Use voice search or type to find skilled professionals for your needs
           </p>
+          <div className="mb-6">
+            <button
+              onClick={() => navigate('/browse-providers')}
+              className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold shadow-md"
+            >
+              🔍 Browse All Service Providers
+            </button>
+          </div>
           <div className="flex flex-wrap justify-center gap-2">
             {categories.slice(0, 6).map((cat) => (
               <button

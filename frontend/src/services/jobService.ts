@@ -12,6 +12,28 @@ export const jobService = {
     return response.data;
   },
 
+  // Get recommended jobs based on provider's profile
+  getRecommendedJobs: async (page = 1, limit = 10): Promise<PaginatedResponse<Job>> => {
+    const response = await api.get<PaginatedResponse<Job>>('/jobs/recommendations', {
+      params: { page, limit },
+    });
+    return response.data;
+  },
+
+  // Get nearby jobs based on GPS location
+  getNearbyJobs: async (
+    latitude: number, 
+    longitude: number, 
+    radius = 10, 
+    page = 1, 
+    limit = 20
+  ): Promise<PaginatedResponse<Job>> => {
+    const response = await api.get<PaginatedResponse<Job>>('/jobs/nearby', {
+      params: { latitude, longitude, radius, page, limit },
+    });
+    return response.data;
+  },
+
   // Get single job
   getJob: async (jobId: string): Promise<Job> => {
     const response = await api.get<ApiResponse<Job>>(`/jobs/${jobId}`);
