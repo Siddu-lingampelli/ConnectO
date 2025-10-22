@@ -10,8 +10,9 @@ import NotificationSettings from '../components/settings/NotificationSettings';
 import PrivacySettings from '../components/settings/PrivacySettings';
 import PaymentSettings from '../components/settings/PaymentSettings';
 import PortfolioSettings from '../components/settings/PortfolioSettings';
+import LocationSettings from '../components/LocationSettings';
 
-type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment' | 'portfolio';
+type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment' | 'portfolio' | 'location';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Settings = () => {
 
   // Update active tab when URL parameter changes
   useEffect(() => {
-    if (tabParam && ['account', 'security', 'notifications', 'privacy', 'payment', 'portfolio'].includes(tabParam)) {
+    if (tabParam && ['account', 'security', 'notifications', 'privacy', 'payment', 'portfolio', 'location'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
@@ -44,8 +45,11 @@ const Settings = () => {
     { id: 'security', label: 'Security', icon: '🔒' },
     { id: 'notifications', label: 'Notifications', icon: '🔔' },
     { id: 'privacy', label: 'Privacy', icon: '🛡️' },
-    { id: 'payment', label: 'Payment', icon: '💳' },
+    // Only show payment and portfolio for clients and providers
+    ...(user.role !== 'admin' ? [{ id: 'payment' as SettingsTab, label: 'Payment', icon: '💳' }] : []),
     ...(user.role === 'provider' ? [{ id: 'portfolio' as SettingsTab, label: 'Portfolio', icon: '💼' }] : []),
+    // Location settings for all users
+    { id: 'location', label: 'Location', icon: '🗺️' },
   ];
 
   const renderTabContent = () => {
@@ -62,6 +66,8 @@ const Settings = () => {
         return <PaymentSettings user={user} />;
       case 'portfolio':
         return user.role === 'provider' ? <PortfolioSettings user={user} /> : null;
+      case 'location':
+        return <LocationSettings />;
       default:
         return null;
     }

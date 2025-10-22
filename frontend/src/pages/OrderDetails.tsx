@@ -10,6 +10,7 @@ import type { Review } from '../services/reviewService';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ReviewModal from '../components/ReviewModal';
+import OrderLocationMap from '../components/OrderLocationMap';
 
 const OrderDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -363,6 +364,18 @@ const OrderDetails = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Location Map - Show both client and provider locations */}
+          {(order.status === 'in_progress' || order.status === 'completed') && client && provider && (
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">🗺️ Location Sharing</h2>
+              <OrderLocationMap
+                client={client}
+                provider={provider}
+                currentUserRole={currentUser.role as 'client' | 'provider'}
+              />
             </div>
           )}
 

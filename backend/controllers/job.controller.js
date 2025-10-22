@@ -7,7 +7,7 @@ import Proposal from '../models/Proposal.model.js';
 // @access  Private (Client only)
 export const createJob = async (req, res) => {
   try {
-    const { title, description, category, budget, deadline, location } = req.body;
+    const { title, description, category, providerType, budget, deadline, location } = req.body;
 
     // ✅ VERIFICATION CHECK: User must be verified to post jobs
     const user = await User.findById(req.user._id);
@@ -25,6 +25,7 @@ export const createJob = async (req, res) => {
       title,
       description,
       category,
+      providerType,
       budget,
       deadline,
       location,

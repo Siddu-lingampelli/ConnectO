@@ -51,6 +51,12 @@ const ApplyJob = () => {
       return;
     }
 
+    // Check provider type match
+    if (currentUser?.providerType !== job.providerType) {
+      toast.error(`This job requires ${job.providerType} service providers. Your profile is set as ${currentUser?.providerType}.`);
+      return;
+    }
+
     if (coverLetter.length < 50) {
       toast.error('Cover letter must be at least 50 characters');
       return;
@@ -84,7 +90,13 @@ const ApplyJob = () => {
       }, 1500);
     } catch (error: any) {
       console.error('Error submitting proposal:', error);
-      toast.error(error.response?.data?.message || 'Failed to submit proposal');
+      
+      // Show specific error message for provider type mismatch
+      if (error.response?.data?.providerTypeMismatch) {
+        toast.error(`❌ ${error.response.data.message}`, { autoClose: 5000 });
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to submit proposal');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -203,6 +215,9 @@ const ApplyJob = () => {
 
   const client = typeof job.client !== 'string' ? job.client : null;
 
+  // Check if provider type matches job requirement
+  const providerTypeMismatch = currentUser?.providerType !== job.providerType;
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
@@ -219,6 +234,32 @@ const ApplyJob = () => {
             <h1 className="text-3xl font-bold text-gray-900">Apply for Job</h1>
             <p className="text-gray-600 mt-2">Submit your proposal to the client</p>
           </div>
+
+          {/* Provider Type Mismatch Warning */}
+          {providerTypeMismatch && (
+            <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+              <div className="flex items-start">
+                <div className="text-3xl mr-4">🚫</div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-red-900 mb-2">Cannot Apply - Provider Type Mismatch</h3>
+                  <p className="text-red-800 mb-3">
+                    This job requires <strong>{job.providerType}</strong> service providers, 
+                    but your profile is set as <strong>{currentUser?.providerType}</strong>.
+                  </p>
+                  <p className="text-sm text-red-700">
+                    You can only apply to jobs that match your provider type. 
+                    Please browse jobs suitable for {currentUser?.providerType} providers.
+                  </p>
+                  <button
+                    onClick={() => navigate('/jobs')}
+                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                  >
+                    Browse Suitable Jobs
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Job Details Card */}
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -286,7 +327,7 @@ const ApplyJob = () => {
           </div>
 
           {/* Proposal Form */}
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className={`bg-white rounded-lg shadow-md p-6 ${providerTypeMismatch ? 'opacity-50 pointer-events-none' : ''}`}>
             <h2 className="text-xl font-bold text-gray-900 mb-4">Your Proposal</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -302,6 +343,7 @@ const ApplyJob = () => {
                   rows={8}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={providerTypeMismatch}
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   {coverLetter.length}/50 characters minimum
@@ -317,6 +359,7 @@ const ApplyJob = () => {
                   type="number"
                   value={proposedBudget}
                   onChange={(e) => setProposedBudget(e.target.value)}
+                  disabled={providerTypeMismatch}
                   placeholder="Enter your proposed budget"
                   min="0"
                   step="1"
@@ -340,6 +383,7 @@ const ApplyJob = () => {
                   placeholder="e.g., 2-3 days, 1 week, 2 weeks"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                  disabled={providerTypeMismatch}
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   How long will it take to complete this job?
@@ -361,10 +405,14 @@ const ApplyJob = () => {
               <div className="flex space-x-3">
                 <button
                   type="submit"
-                  disabled={submitting}
-                  className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 font-medium"
+                  disabled={submitting || providerTypeMismatch}
+                  className={`flex-1 px-6 py-3 rounded-lg transition-colors font-medium ${
+                    providerTypeMismatch 
+                      ? 'bg-gray-400 cursor-not-allowed text-white' 
+                      : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400'
+                  }`}
                 >
-                  {submitting ? 'Submitting...' : 'Submit Proposal'}
+                  {submitting ? 'Submitting...' : providerTypeMismatch ? 'Cannot Apply' : 'Submit Proposal'}
                 </button>
                 <button
                   type="button"

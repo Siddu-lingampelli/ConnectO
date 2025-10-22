@@ -2,6 +2,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Components
+import Chatbot from './components/Chatbot';
+
 // Pages
 import Home from './pages/Home';
 import Landing from './pages/Landing';
@@ -14,6 +17,7 @@ import PostJob from './pages/PostJob';
 import EditJob from './pages/EditJob';
 import EditProposal from './pages/EditProposal';
 import Jobs from './pages/Jobs';
+import JobDetails from './pages/JobDetails';
 import ApplyJob from './pages/ApplyJob';
 import JobProposals from './pages/JobProposals';
 import MyOrders from './pages/MyOrders';
@@ -23,6 +27,9 @@ import OrderDetails from './pages/OrderDetails';
 import NotFound from './pages/NotFound';
 import NotificationsPage from './pages/NotificationsPage';
 import BrowseProviders from './pages/BrowseProviders';
+import Leaderboard from './pages/Leaderboard';
+import Referrals from './pages/Referrals';
+import FindNearbyProviders from './pages/FindNearbyProviders';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -39,6 +46,9 @@ import ProtectedRoute from './middleware/protectedRoute';
 function App() {
   return (
     <>
+      {/* AI Chatbot Assistant - Available on all pages */}
+      <Chatbot />
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Landing />} />
@@ -112,6 +122,38 @@ function App() {
           element={
             <ProtectedRoute>
               <BrowseProviders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/leaderboard"
+          element={
+            <ProtectedRoute>
+              <Leaderboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/referrals"
+          element={
+            <ProtectedRoute>
+              <Referrals />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/find-nearby"
+          element={
+            <ProtectedRoute>
+              <FindNearbyProviders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs/:id"
+          element={
+            <ProtectedRoute>
+              <JobDetails />
             </ProtectedRoute>
           }
         />

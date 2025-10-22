@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { adminService } from '../../services/adminService';
 import type { User } from '../../types';
+import VoiceSearch from '../../components/search/VoiceSearch';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -100,24 +101,16 @@ const AdminUsers = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search
+                <span className="text-lg">🎤</span> Search with Voice
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={filters.search}
-                  onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  placeholder="Search by name, email, phone..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  onClick={handleSearch}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Search
-                </button>
-              </div>
+              <VoiceSearch
+                value={filters.search}
+                onSearch={(text) => {
+                  setFilters(prev => ({ ...prev, search: text }));
+                  handleSearch();
+                }}
+                placeholder="Search by name, email, phone..."
+              />
             </div>
 
             <div>

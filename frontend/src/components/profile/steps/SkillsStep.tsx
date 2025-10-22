@@ -15,6 +15,101 @@ const availabilityOptions = [
   'By Appointment',
 ];
 
+// Technical Skills by Category
+const technicalSkills = {
+  'Programming Languages': [
+    'JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'C#', 'PHP', 'Ruby',
+    'Go', 'Swift', 'Kotlin', 'Rust', 'Scala', 'Perl', 'R', 'MATLAB'
+  ],
+  'Frontend Development': [
+    'React', 'Angular', 'Vue.js', 'Next.js', 'HTML5', 'CSS3', 'Tailwind CSS',
+    'Bootstrap', 'jQuery', 'Redux', 'Webpack', 'Sass', 'Less', 'Material-UI'
+  ],
+  'Backend Development': [
+    'Node.js', 'Express.js', 'Django', 'Flask', 'Spring Boot', 'ASP.NET',
+    'Ruby on Rails', 'Laravel', 'FastAPI', 'NestJS', 'GraphQL', 'REST API'
+  ],
+  'Mobile Development': [
+    'React Native', 'Flutter', 'iOS Development', 'Android Development',
+    'Ionic', 'Xamarin', 'Swift UI', 'Jetpack Compose'
+  ],
+  'Database': [
+    'MongoDB', 'MySQL', 'PostgreSQL', 'SQL Server', 'Oracle', 'Redis',
+    'Cassandra', 'DynamoDB', 'Firebase', 'SQLite', 'MariaDB'
+  ],
+  'Design & Creative': [
+    'UI Design', 'UX Design', 'Figma', 'Adobe XD', 'Sketch', 'Adobe Photoshop',
+    'Adobe Illustrator', 'Canva', 'InDesign', 'After Effects', 'Premiere Pro',
+    'Blender', '3D Modeling', 'Animation', 'Logo Design', 'Brand Identity'
+  ],
+  'Digital Marketing': [
+    'SEO', 'SEM', 'Social Media Marketing', 'Content Marketing', 'Email Marketing',
+    'Google Ads', 'Facebook Ads', 'Instagram Marketing', 'LinkedIn Marketing',
+    'Analytics', 'Copywriting', 'Marketing Strategy', 'PPC'
+  ],
+  'Writing & Content': [
+    'Content Writing', 'Technical Writing', 'Copywriting', 'Blog Writing',
+    'Article Writing', 'SEO Writing', 'Proofreading', 'Editing', 'Translation'
+  ],
+  'Business & Admin': [
+    'Project Management', 'Data Entry', 'Virtual Assistant', 'Excel',
+    'PowerPoint', 'Research', 'Customer Service', 'Accounting', 'Bookkeeping'
+  ],
+  'DevOps & Cloud': [
+    'AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'CI/CD',
+    'Jenkins', 'Git', 'Linux', 'Terraform', 'Ansible'
+  ]
+};
+
+// Non-Technical Skills by Category
+const nonTechnicalSkills = {
+  'Home Services': [
+    'Plumbing', 'Pipe Fitting', 'Leak Repair', 'Drain Cleaning', 'Electrical Work',
+    'Wiring', 'Appliance Repair', 'Carpentry', 'Furniture Assembly', 'Painting',
+    'Wall Painting', 'Home Renovation', 'Ceiling Work', 'Door Installation',
+    'Window Installation', 'Flooring', 'Tiling', 'Masonry', 'Welding'
+  ],
+  'Cleaning Services': [
+    'House Cleaning', 'Deep Cleaning', 'Office Cleaning', 'Carpet Cleaning',
+    'Window Cleaning', 'Kitchen Cleaning', 'Bathroom Cleaning', 'Move-in/Move-out Cleaning',
+    'Sanitization', 'Pest Control', 'Laundry', 'Ironing'
+  ],
+  'Events & Personal': [
+    'Event Planning', 'Catering', 'Photography', 'Videography', 'DJ Services',
+    'Decoration', 'Wedding Planning', 'Birthday Planning', 'Party Planning',
+    'MC/Host', 'Makeup Artist', 'Hair Styling', 'Mehendi Artist'
+  ],
+  'Tutoring & Education': [
+    'Mathematics Tutoring', 'Science Tutoring', 'English Tutoring', 'Physics',
+    'Chemistry', 'Biology', 'History', 'Geography', 'Computer Basics',
+    'Music Lessons', 'Dance Classes', 'Art Classes', 'Yoga', 'Fitness Training'
+  ],
+  'Health & Wellness': [
+    'Nursing', 'Physiotherapy', 'Massage Therapy', 'Nutritionist', 'Counseling',
+    'Personal Training', 'Yoga Instructor', 'Meditation', 'First Aid'
+  ],
+  'Pet Care': [
+    'Dog Walking', 'Pet Sitting', 'Pet Grooming', 'Pet Training', 'Veterinary Care',
+    'Pet Boarding', 'Aquarium Maintenance'
+  ],
+  'Beauty & Personal Care': [
+    'Hair Cutting', 'Hair Styling', 'Makeup', 'Facial', 'Manicure', 'Pedicure',
+    'Waxing', 'Threading', 'Spa Services', 'Massage'
+  ],
+  'Automotive': [
+    'Car Repair', 'Car Wash', 'Car Detailing', 'Bike Repair', 'Tire Service',
+    'Oil Change', 'AC Repair', 'Denting & Painting'
+  ],
+  'Delivery & Transport': [
+    'Delivery Service', 'Moving & Packing', 'Driver Service', 'Courier Service',
+    'Logistics', 'Warehouse'
+  ],
+  'Security & Safety': [
+    'Security Guard', 'CCTV Installation', 'Fire Safety', 'First Aid Training',
+    'Home Security', 'Watchman'
+  ]
+};
+
 const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
   const [formData, setFormData] = useState({
     skills: data.skills || [],
@@ -24,6 +119,14 @@ const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
   });
 
   const [skillInput, setSkillInput] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Get provider type from previous step
+  const providerType = data.providerType || '';
+  
+  // Get relevant skills based on provider type
+  const relevantSkills: Record<string, string[]> = providerType === 'Technical' ? technicalSkills : nonTechnicalSkills;
+  const skillCategories = Object.keys(relevantSkills);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -32,24 +135,27 @@ const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
     });
   };
 
-  const addSkill = () => {
-    if (!skillInput.trim()) return;
+  const addSkill = (skill?: string) => {
+    const skillToAdd = skill || skillInput.trim();
     
-    if (formData.skills.includes(skillInput)) {
+    if (!skillToAdd) return;
+    
+    if (formData.skills.includes(skillToAdd)) {
       toast.error('Skill already added');
       return;
     }
 
-    if (formData.skills.length >= 10) {
-      toast.warning('Maximum 10 skills allowed');
+    if (formData.skills.length >= 15) {
+      toast.warning('Maximum 15 skills allowed');
       return;
     }
 
     setFormData({
       ...formData,
-      skills: [...formData.skills, skillInput],
+      skills: [...formData.skills, skillToAdd],
     });
     setSkillInput('');
+    toast.success(`Added ${skillToAdd}`);
   };
 
   const removeSkill = (skill: string) => {
@@ -107,9 +213,74 @@ const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Skills & Rates</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {providerType && (
+            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium mr-3 ${
+              providerType === 'Technical' 
+                ? 'bg-blue-100 text-blue-700' 
+                : 'bg-green-100 text-green-700'
+            }`}>
+              {providerType === 'Technical' ? '💻' : '🔧'} {providerType} Skills
+            </span>
+          )}
+          Skills & Rates
+        </h2>
         <p className="text-gray-600">Tell us about your expertise and pricing</p>
       </div>
+
+      {!providerType && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p className="text-yellow-800 font-medium">⚠️ Please select a provider type in the previous step to see relevant skills</p>
+        </div>
+      )}
+
+      {/* Skill Categories */}
+      {providerType && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Select Skills by Category
+          </label>
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            {skillCategories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
+                className={`p-3 rounded-lg border-2 font-medium transition-all text-sm ${
+                  selectedCategory === category
+                    ? 'border-blue-600 bg-blue-50 text-blue-600'
+                    : 'border-gray-300 hover:border-blue-400 text-gray-700'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          {/* Skill Suggestions */}
+          {selectedCategory && (
+            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+              <p className="text-sm font-medium text-gray-700 mb-3">
+                📌 {selectedCategory} Skills - Click to add:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {(relevantSkills[selectedCategory] || [])
+                  .filter((skill: string) => !formData.skills.includes(skill))
+                  .map((skill: string) => (
+                    <button
+                      key={skill}
+                      type="button"
+                      onClick={() => addSkill(skill)}
+                      className="px-3 py-1.5 bg-white border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-600 transition-all"
+                    >
+                      + {skill}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Skills */}
       <div>
@@ -122,13 +293,15 @@ const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
             value={skillInput}
             onChange={(e) => setSkillInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
-            placeholder="e.g., Pipe Fitting, Leak Repair"
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={providerType === 'Technical' ? 'e.g., React, Python, UI Design' : 'e.g., Plumbing, Cleaning, Catering'}
+            disabled={!providerType}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           />
           <button
             type="button"
-            onClick={addSkill}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            onClick={() => addSkill()}
+            disabled={!providerType}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Add
           </button>
@@ -138,13 +311,13 @@ const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
             {formData.skills.map((skill: string) => (
               <span
                 key={skill}
-                className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
+                className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm"
               >
                 ✓ {skill}
                 <button
                   type="button"
                   onClick={() => removeSkill(skill)}
-                  className="hover:bg-green-200 rounded-full p-0.5"
+                  className="hover:bg-green-200 rounded-full p-0.5 transition-colors"
                 >
                   ✕
                 </button>
@@ -153,7 +326,7 @@ const SkillsStep = ({ data, onNext, onBack }: SkillsStepProps) => {
           </div>
         )}
         <p className="text-sm text-gray-500 mt-1">
-          Added {formData.skills.length}/10 skills
+          Added {formData.skills.length}/15 skills {formData.skills.length === 0 && '(Add at least 1)'}
         </p>
       </div>
 

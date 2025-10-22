@@ -42,6 +42,35 @@ const Header = () => {
                 </Link>
               )}
               
+              {/* Find Nearby Providers - Map Feature (Only for Non-Technical) */}
+              {(user.role === 'client' || (user.role === 'provider' && user.providerType === 'Non-Technical')) && (
+                <Link 
+                  to="/find-nearby" 
+                  className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-sm hover:shadow-md font-medium"
+                >
+                  <span>🗺️</span>
+                  <span>Nearby</span>
+                </Link>
+              )}
+              
+              {/* Leaderboard - Available for both providers and clients */}
+              <Link 
+                to="/leaderboard" 
+                className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all shadow-sm hover:shadow-md font-medium"
+              >
+                <span>🏆</span>
+                <span>Leaderboard</span>
+              </Link>
+              
+              {/* Referrals - Available for both providers and clients */}
+              <Link 
+                to="/referrals" 
+                className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-green-400 to-emerald-500 text-white rounded-lg hover:from-green-500 hover:to-emerald-600 transition-all shadow-sm hover:shadow-md font-medium"
+              >
+                <span>🎁</span>
+                <span>Referrals</span>
+              </Link>
+              
               {/* Message Icon with Badge */}
               <MessageIcon />
               

@@ -10,6 +10,46 @@ const PaymentSettings = ({ user }: PaymentSettingsProps) => {
   const [showAddCard, setShowAddCard] = useState(false);
   const [showAddBank, setShowAddBank] = useState(false);
 
+  // Admin users don't need payment settings
+  if (user.role === 'admin') {
+    return (
+      <div>
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Payment Settings</h2>
+          <p className="text-gray-600 mt-1">Administrator account - payment settings not applicable</p>
+        </div>
+
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl flex-shrink-0">
+              👑
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Administrator Account</h3>
+              <p className="text-gray-600 mb-4">
+                As an administrator, you manage the platform and don't need payment methods configured. 
+                Payment settings are only applicable for:
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-center gap-2">
+                  <span className="text-green-600">✓</span>
+                  <span><strong>Service Providers:</strong> To receive payments for completed work</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-600">✓</span>
+                  <span><strong>Clients:</strong> To pay for services they hire</span>
+                </li>
+              </ul>
+              <p className="text-gray-600 mt-4">
+                You can view and manage all platform transactions from the admin dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const savedCards = [
     {
       id: 1,

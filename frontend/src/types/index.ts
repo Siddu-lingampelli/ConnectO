@@ -21,6 +21,14 @@ export interface User {
   isVerified?: boolean;
   isActive?: boolean;
   
+  // Location fields (for map-based search)
+  location?: {
+    type: string;
+    coordinates: [number, number]; // [longitude, latitude]
+  };
+  locationEnabled?: boolean;
+  lastLocationUpdate?: string;
+  
   // Provider-specific fields
   skills?: string[];
   services?: string[];
@@ -84,6 +92,19 @@ export interface User {
     push?: boolean;
   };
   
+  // Gamification fields
+  xp?: number;
+  level?: number;
+  badges?: Array<{
+    name: string;
+    icon: string;
+    description: string;
+    earnedAt: Date | string;
+  }>;
+  lastActive?: Date | string;
+  totalReviews?: number;
+  totalEarnings?: number;
+  
   createdAt?: string;
   updatedAt?: string;
 }
@@ -102,6 +123,7 @@ export interface RegisterRequest {
   phone?: string;
   city?: string;
   area?: string;
+  referralCode?: string;
 }
 
 export interface AuthResponse {
@@ -119,6 +141,7 @@ export interface Job {
   providerType?: 'Technical' | 'Non-Technical';
   budget: number;
   budgetType: 'fixed' | 'hourly';
+  deadline: string;
   location: {
     city: string;
     area: string;
@@ -134,9 +157,12 @@ export interface Job {
   distanceInKm?: number; // Distance in kilometers
   status: 'open' | 'in-progress' | 'completed' | 'cancelled';
   client: User | string;
+  assignedProvider?: User | string;
+  proposalsCount?: number;
   requirements?: string[];
   attachments?: string[];
   proposals: string[];
+  isActive?: boolean;
   createdAt: string;
   updatedAt: string;
 }

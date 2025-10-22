@@ -1,8 +1,10 @@
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/User.model.js';
 import { Wallet } from '../models/Wallet.model.js';
 import notificationHelper from '../utils/notificationHelper.js';
+import { applyReferralCode } from './referral.controller.js';
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -33,7 +35,7 @@ export const register = async (req, res) => {
       });
     }
 
-    const { fullName, email, password, role, phone, city, area } = req.body;
+    const { fullName, email, password, role, phone, city, area, referralCode } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -44,6 +46,18 @@ export const register = async (req, res) => {
       });
     }
 
+    // Generate unique referral code for new user
+    let newUserReferralCode;
+    let isUnique = false;
+    
+    while (!isUnique) {
+      newUserReferralCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+      const existingCode = await User.findOne({ referralCode: newUserReferralCode });
+      if (!existingCode) {
+        isUnique = true;
+      }
+    }
+
     // Create user
     const user = await User.create({
       fullName,
@@ -52,8 +66,15 @@ export const register = async (req, res) => {
       role,
       phone,
       city,
-      area
+      area,
+      referralCode: newUserReferralCode
     });
+
+    // Apply referral code if provided
+    let referralResult = null;
+    if (referralCode && referralCode.trim()) {
+      referralResult = await applyReferralCode(user._id, referralCode.trim(), user.role);
+    }
 
     // Create wallet for user
     await Wallet.create({
@@ -77,10 +98,12 @@ export const register = async (req, res) => {
           phone: user.phone,
           city: user.city,
           area: user.area,
-          profileCompleted: user.profileCompleted
+          profileCompleted: user.profileCompleted,
+          referralCode: user.referralCode
         },
         token,
-        refreshToken
+        refreshToken,
+        referral: referralResult
       }
     });
   } catch (error) {

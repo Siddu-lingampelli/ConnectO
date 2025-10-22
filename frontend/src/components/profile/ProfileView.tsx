@@ -294,8 +294,8 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
             </div>
           )}
 
-          {/* Preferences (for clients) */}
-          {user.preferences && (
+          {/* Preferences (for clients only) */}
+          {user.role === 'client' && user.preferences && (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <span>⚙️</span> Preferences

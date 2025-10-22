@@ -270,6 +270,34 @@ const Dashboard = () => {
                 </button>
 
                 <button
+                  onClick={() => navigate('/leaderboard')}
+                  className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">🏆</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Leaderboard</h3>
+                  <p className="text-yellow-100 text-sm">See your ranking & earn XP</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/referrals')}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">🎁</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Referrals</h3>
+                  <p className="text-green-100 text-sm">Invite friends & earn ₹50 + 100 XP</p>
+                </button>
+
+                <button
                   onClick={() => navigate('/settings')}
                   className="bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
                 >
@@ -339,6 +367,34 @@ const Dashboard = () => {
                   </div>
                   <h3 className="text-xl font-bold mb-1">Ongoing Work</h3>
                   <p className="text-green-100 text-sm">Track work progress</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/leaderboard')}
+                  className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">🏆</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Leaderboard</h3>
+                  <p className="text-yellow-100 text-sm">See top contributors & rankings</p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/referrals')}
+                  className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow text-left"
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-3xl">🎁</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">Referrals</h3>
+                  <p className="text-green-100 text-sm">Invite friends & earn ₹100 + 120 XP</p>
                 </button>
 
                 <button

@@ -154,6 +154,14 @@ export const serviceCategories = [
 const ServicesStep = ({ data, onNext, onBack }: ServicesStepProps) => {
   const [selectedServices, setSelectedServices] = useState<string[]>(data.services || []);
   const [customService, setCustomService] = useState('');
+  
+  // Get provider type from data
+  const providerType = data.providerType || '';
+  
+  // Filter service categories based on provider type
+  const relevantCategories = serviceCategories.filter(
+    (serviceType) => serviceType.type === providerType
+  );
 
   const toggleService = (service: string) => {
     if (selectedServices.includes(service)) {
@@ -198,8 +206,24 @@ const ServicesStep = ({ data, onNext, onBack }: ServicesStepProps) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Services You Offer</h2>
-        <p className="text-gray-600">Select the services you provide (max 5)</p>
+        <p className="text-gray-600">
+          Select the services you provide (max 5)
+          {providerType && (
+            <span className="ml-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700">
+              {providerType === 'Technical' ? '💻 Technical Services' : '🔧 Non-Technical Services'}
+            </span>
+          )}
+        </p>
       </div>
+
+      {/* Provider Type Warning */}
+      {!providerType && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p className="text-yellow-800 font-medium">
+            ⚠️ Please go back and select your provider type (Technical or Non-Technical) first.
+          </p>
+        </div>
+      )}
 
       {/* Selected Services Summary */}
       {selectedServices.length > 0 && (
@@ -227,38 +251,53 @@ const ServicesStep = ({ data, onNext, onBack }: ServicesStepProps) => {
         </div>
       )}
 
-      {/* Service Categories by Type */}
+      {/* Service Categories by Type - Only show relevant ones */}
       <div className="space-y-6">
-        {serviceCategories.map((serviceType) => (
-          <div key={serviceType.type}>
-            <h3 className="text-lg font-semibold text-gray-800 mb-3">
-              {serviceType.label}
-            </h3>
-            <div className="space-y-4">
-              {serviceType.categories.map((category) => (
-                <div key={category.name} className="border border-gray-200 rounded-lg p-4">
-                  <h4 className="font-medium text-gray-700 mb-2">{category.name}</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {category.subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory}
-                        type="button"
-                        onClick={() => toggleService(subcategory)}
-                        className={`p-2 rounded-lg border text-sm font-medium transition-all ${
-                          selectedServices.includes(subcategory)
-                            ? 'border-blue-600 bg-blue-50 text-blue-600'
-                            : 'border-gray-300 hover:border-blue-400 text-gray-700'
-                        }`}
-                      >
-                        {subcategory}
-                      </button>
-                    ))}
+        {relevantCategories.length > 0 ? (
+          relevantCategories.map((serviceType) => (
+            <div key={serviceType.type}>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <span>{serviceType.type === 'Technical' ? '💻' : '🔧'}</span>
+                {serviceType.label}
+              </h3>
+              <div className="space-y-4">
+                {serviceType.categories.map((category) => (
+                  <div key={category.name} className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
+                    <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <span className="text-blue-600">▶</span>
+                      {category.name}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {category.subcategories.map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          type="button"
+                          onClick={() => toggleService(subcategory)}
+                          disabled={!providerType}
+                          className={`p-3 rounded-lg border text-sm font-medium transition-all text-left ${
+                            selectedServices.includes(subcategory)
+                              ? 'border-blue-600 bg-blue-50 text-blue-600 ring-2 ring-blue-200'
+                              : 'border-gray-300 hover:border-blue-400 text-gray-700 hover:bg-gray-50'
+                          } ${!providerType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          {subcategory}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+          ))
+        ) : (
+          <div className="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-gray-600">
+              {!providerType 
+                ? 'Please select your provider type in the previous step to see available services.'
+                : 'No services available for the selected type.'}
+            </p>
           </div>
-        ))}
+        )}
       </div>
 
       {/* Custom Service Input */}

@@ -17,6 +17,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, initialRole = 'client' }: Re
     password: '',
     confirmPassword: '',
     role: initialRole as 'client' | 'provider',
+    referralCode: '',
   });
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, initialRole = 'client' }: Re
         email: formData.email,
         password: formData.password,
         role: formData.role,
+        referralCode: formData.referralCode || undefined,
       });
 
       console.log('Registration response:', response);
@@ -149,6 +151,26 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin, initialRole = 'client' }: Re
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="••••••••"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+          Referral Code 
+          <span className="text-xs text-gray-500 font-normal">(Optional)</span>
+          <span className="text-green-600">🎁</span>
+        </label>
+        <input
+          type="text"
+          name="referralCode"
+          value={formData.referralCode}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="Enter referral code (e.g., ABC123)"
+          maxLength={8}
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Have a referral code? Enter it to earn bonus rewards! 🎉
+        </p>
       </div>
 
       <button

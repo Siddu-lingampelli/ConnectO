@@ -57,6 +57,17 @@ export const createProposal = async (req, res) => {
       });
     }
 
+    // Check if provider type matches job requirement
+    if (provider.providerType !== job.providerType) {
+      return res.status(403).json({
+        success: false,
+        message: `This job is for ${job.providerType} service providers only. Your profile is set as ${provider.providerType}.`,
+        providerTypeMismatch: true,
+        requiredType: job.providerType,
+        yourType: provider.providerType
+      });
+    }
+
     // Check if provider already submitted a proposal for this job
     const existingProposal = await Proposal.findOne({
       job: jobId,

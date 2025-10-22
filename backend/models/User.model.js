@@ -230,6 +230,26 @@ const userSchema = new mongoose.Schema({
     trim: true
   },
   
+  // GeoJSON Location for map-based search (for service providers)
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      default: [0, 0]
+    }
+  },
+  locationEnabled: {
+    type: Boolean,
+    default: false
+  },
+  lastLocationUpdate: {
+    type: Date
+  },
+  
   // Notifications
   notifications: {
     email: {
@@ -299,6 +319,69 @@ const userSchema = new mongoose.Schema({
     default: 0
   },
   
+  // Gamification fields
+  xp: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  level: {
+    type: Number,
+    default: 1,
+    min: 1
+  },
+  badges: [{
+    name: {
+      type: String,
+      trim: true
+    },
+    icon: {
+      type: String,
+      trim: true
+    },
+    description: {
+      type: String,
+      trim: true
+    },
+    earnedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  lastActive: {
+    type: Date,
+    default: Date.now
+  },
+  
+  // Referral System
+  referralCode: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true,
+    uppercase: true
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  referralCredits: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  referralCount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  referralEarnings: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  
   // Last login
   lastLogin: {
     type: Date
@@ -348,6 +431,9 @@ userSchema.index({
   services: 'text',
   bio: 'text'
 });
+
+// Geospatial index for location-based queries
+userSchema.index({ location: '2dsphere' });
 
 const User = mongoose.model('User', userSchema);
 

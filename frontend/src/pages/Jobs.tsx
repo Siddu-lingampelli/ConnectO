@@ -158,7 +158,12 @@ const Jobs = () => {
         params.city = selectedCity;
       }
 
-      if (selectedProviderType !== 'All Types') {
+      // Auto-filter by provider type if user is a provider
+      if (currentUser?.role === 'provider' && currentUser?.providerType) {
+        // Always filter by user's provider type for providers
+        params.providerType = currentUser.providerType;
+      } else if (selectedProviderType !== 'All Types') {
+        // For clients or when manually filtering
         params.providerType = selectedProviderType;
       }
 
@@ -372,15 +377,24 @@ const Jobs = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Provider Type
                       </label>
-                      <select
-                        value={selectedProviderType}
-                        onChange={(e) => setSelectedProviderType(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="All Types">All Types</option>
-                        <option value="Technical">💻 Technical</option>
-                        <option value="Non-Technical">🔧 Non-Technical</option>
-                      </select>
+                      {currentUser?.role === 'provider' && currentUser?.providerType ? (
+                        <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-between">
+                          <span>
+                            {currentUser.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
+                          </span>
+                          <span className="text-xs text-gray-500">(Your Type)</span>
+                        </div>
+                      ) : (
+                        <select
+                          value={selectedProviderType}
+                          onChange={(e) => setSelectedProviderType(e.target.value)}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="All Types">All Types</option>
+                          <option value="Technical">💻 Technical</option>
+                          <option value="Non-Technical">🔧 Non-Technical</option>
+                        </select>
+                      )}
                     </div>
 
                     <div>

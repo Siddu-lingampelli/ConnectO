@@ -262,9 +262,14 @@ const AccountSettings = ({ user }: AccountSettingsProps) => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Account Type
           </label>
-          <div className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-600">
-            {user.role === 'provider' ? '🔧 Service Provider' : user.role === 'client' ? '👤 Client' : '👑 Admin'}
+          <div className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-300 rounded-lg text-purple-700 font-medium">
+            {user.role === 'provider' ? '🔧 Service Provider' : user.role === 'client' ? '👤 Client' : '👑 Administrator'}
           </div>
+          {user.role === 'admin' && (
+            <p className="text-sm text-gray-500 mt-2">
+              ℹ️ As an administrator, you have full access to manage the platform. Professional settings are not applicable.
+            </p>
+          )}
         </div>
 
         {/* Service Provider Specific Fields */}

@@ -20,6 +20,11 @@ import adminRoutes from './routes/admin.routes.js';
 import demoRoutes from './routes/demo.routes.js';
 import notificationRoutes from './routes/notification.routes.js';
 import recommendationRoutes from './routes/recommendation.routes.js';
+import gamificationRoutes from './routes/gamification.routes.js';
+import leaderboardRoutes from './routes/leaderboard.routes.js';
+import referralRoutes from './routes/referral.routes.js';
+import chatRoutes from './routes/chat.routes.js';
+import locationRoutes from './routes/location.routes.js';
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -76,6 +81,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/demo', demoRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/recommend', recommendationRoutes);
+app.use('/api/gamification', gamificationRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/referral', referralRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/location', locationRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {
