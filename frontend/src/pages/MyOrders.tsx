@@ -82,9 +82,9 @@ const MyOrders = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: '⏳ Pending', icon: '⏳' },
-      in_progress: { bg: 'bg-blue-100', text: 'text-blue-800', label: '🔨 In Progress', icon: '🔨' },
-      completed: { bg: 'bg-green-100', text: 'text-green-800', label: '✅ Completed', icon: '✅' },
+      pending: { bg: 'bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0]', text: 'text-[#345635]', label: '⏳ Pending', icon: '⏳' },
+      in_progress: { bg: 'bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0]', text: 'text-white', label: '🔨 In Progress', icon: '🔨' },
+      completed: { bg: 'bg-gradient-to-r from-[#345635] to-[#6B8F71]', text: 'text-white', label: '✅ Completed', icon: '✅' },
       cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: '❌ Cancelled', icon: '❌' },
       disputed: { bg: 'bg-orange-100', text: 'text-orange-800', label: '⚠️ Disputed', icon: '⚠️' }
     };
@@ -117,13 +117,15 @@ const MyOrders = () => {
 
   if (!currentUser || currentUser.role !== 'provider') {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🚫</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
-            <p className="text-gray-600">This page is only for service providers.</p>
+          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">🚫</span>
+            </div>
+            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-3">Access Denied</h2>
+            <p className="text-[#6B8F71]">This page is only for service providers.</p>
           </div>
         </main>
         <Footer />
@@ -132,53 +134,60 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Back Button */}
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-6 transition-all duration-300 group"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            ← Back to Dashboard
+            <span className="font-medium">Back to Dashboard</span>
           </button>
 
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
-            <p className="text-gray-600 mt-2">Track and manage your ongoing work</p>
+            <div className="flex items-center mb-3">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                <span className="text-3xl">📦</span>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">My Orders</h1>
+                <p className="text-[#6B8F71] mt-1">Track and manage your ongoing work</p>
+              </div>
+            </div>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <div className="text-sm text-gray-600 mb-1">Total Orders</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+            <div className="bg-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#6B8F71] mb-1 font-medium">Total Orders</div>
+              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.total}</div>
             </div>
-            <div className="bg-yellow-50 rounded-lg shadow-md p-4 border border-yellow-200">
-              <div className="text-sm text-yellow-700 mb-1">⏳ Pending</div>
-              <div className="text-2xl font-bold text-yellow-900">{stats.pending}</div>
+            <div className="bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#345635] mb-1 font-medium">⏳ Pending</div>
+              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.pending}</div>
             </div>
-            <div className="bg-blue-50 rounded-lg shadow-md p-4 border border-blue-200">
-              <div className="text-sm text-blue-700 mb-1">🔨 In Progress</div>
-              <div className="text-2xl font-bold text-blue-900">{stats.in_progress}</div>
+            <div className="bg-gradient-to-br from-[#6B8F71]/10 to-white rounded-xl shadow-lg p-5 border-2 border-[#6B8F71] hover:border-[#345635] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#345635] mb-1 font-medium">🔨 In Progress</div>
+              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.in_progress}</div>
             </div>
-            <div className="bg-green-50 rounded-lg shadow-md p-4 border border-green-200">
-              <div className="text-sm text-green-700 mb-1">✅ Completed</div>
-              <div className="text-2xl font-bold text-green-900">{stats.completed}</div>
+            <div className="bg-gradient-to-br from-[#6B8F71]/20 to-white rounded-xl shadow-lg p-5 border-2 border-[#6B8F71] hover:border-[#345635] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#345635] mb-1 font-medium">✅ Completed</div>
+              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.completed}</div>
             </div>
-            <div className="bg-gradient-to-br from-green-500 to-teal-600 rounded-lg shadow-md p-4 text-white">
-              <div className="text-sm opacity-90 mb-1">💰 Total Earnings</div>
+            <div className="bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl shadow-xl p-5 text-white hover:shadow-2xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm opacity-90 mb-1 font-medium">💰 Total Earnings</div>
               <div className="text-2xl font-bold">₹{stats.totalEarnings.toLocaleString()}</div>
             </div>
           </div>
 
           {/* Filter Tabs */}
-          <div className="bg-white rounded-lg shadow-md p-2 mb-6">
+          <div className="bg-white rounded-xl shadow-lg p-3 mb-8 border-2 border-[#AEC3B0]">
             <div className="flex space-x-2">
               {[
                 { value: 'all', label: 'All Orders' },
@@ -190,10 +199,10 @@ const MyOrders = () => {
                 <button
                   key={filter.value}
                   onClick={() => setActiveFilter(filter.value)}
-                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                  className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
                     activeFilter === filter.value
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105'
+                      : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
                   }`}
                 >
                   {filter.label}
@@ -206,20 +215,20 @@ const MyOrders = () => {
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading orders...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
+                <p className="text-[#6B8F71] font-medium">Loading orders...</p>
               </div>
             </div>
           ) : orders.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-5xl">📦</span>
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 text-center">
+              <div className="w-28 h-28 bg-gradient-to-br from-[#E3EFD3] to-[#AEC3B0] rounded-full mx-auto mb-6 flex items-center justify-center">
+                <span className="text-6xl">📦</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Orders Yet</h3>
-              <p className="text-gray-600 mb-6">Start applying to jobs to get your first order!</p>
+              <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">No Orders Yet</h3>
+              <p className="text-[#6B8F71] mb-8 text-lg">Start applying to jobs to get your first order!</p>
               <button
                 onClick={() => navigate('/jobs')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-8 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
               >
                 Browse Jobs
               </button>

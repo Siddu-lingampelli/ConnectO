@@ -7,6 +7,7 @@ import { orderService } from '../services/orderService';
 import type { Order } from '../types';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import RehireButton from '../components/rehire/RehireButton';
 
 const OngoingJobs = () => {
   const navigate = useNavigate();
@@ -89,17 +90,17 @@ const OngoingJobs = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: '⏳ Pending Start', icon: '⏳' },
-      in_progress: { bg: 'bg-blue-100', text: 'text-blue-800', label: '🔨 In Progress', icon: '🔨' },
-      completed: { bg: 'bg-green-100', text: 'text-green-800', label: '✅ Completed', icon: '✅' },
-      cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: '❌ Cancelled', icon: '❌' },
+      pending: { bg: 'bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0]', text: 'text-[#345635]', label: '⏳ Pending Start', icon: '⏳' },
+      in_progress: { bg: 'bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0]', text: 'text-white', label: '🔨 In Progress', icon: '🔨' },
+      completed: { bg: 'bg-gradient-to-r from-[#345635] to-[#6B8F71]', text: 'text-white', label: '✅ Completed', icon: '✅' },
+      cancelled: { bg: 'bg-gray-100', text: 'text-gray-700', label: '❌ Cancelled', icon: '❌' },
       disputed: { bg: 'bg-orange-100', text: 'text-orange-800', label: '⚠️ Disputed', icon: '⚠️' }
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
 
     return (
-      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}>
+      <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold ${config.bg} ${config.text} shadow-md`}>
         {config.label}
       </span>
     );
@@ -107,16 +108,16 @@ const OngoingJobs = () => {
 
   const getPaymentStatusBadge = (paymentStatus: string) => {
     const config = {
-      pending: { bg: 'bg-gray-100', text: 'text-gray-800', label: '💰 Payment Pending' },
-      paid: { bg: 'bg-blue-100', text: 'text-blue-800', label: '💳 Escrowed' },
-      released: { bg: 'bg-green-100', text: 'text-green-800', label: '✅ Paid to Provider' },
-      refunded: { bg: 'bg-red-100', text: 'text-red-800', label: '↩️ Refunded' }
+      pending: { bg: 'bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0]', text: 'text-[#345635]', label: '💰 Payment Pending' },
+      paid: { bg: 'bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0]', text: 'text-white', label: '💳 Escrowed' },
+      released: { bg: 'bg-gradient-to-r from-[#345635] to-[#6B8F71]', text: 'text-white', label: '✅ Paid to Provider' },
+      refunded: { bg: 'bg-gray-100', text: 'text-gray-700', label: '↩️ Refunded' }
     };
 
     const paymentConfig = config[paymentStatus as keyof typeof config] || config.pending;
 
     return (
-      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${paymentConfig.bg} ${paymentConfig.text}`}>
+      <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold ${paymentConfig.bg} ${paymentConfig.text} shadow-md`}>
         {paymentConfig.label}
       </span>
     );
@@ -124,13 +125,15 @@ const OngoingJobs = () => {
 
   if (!currentUser || currentUser.role !== 'client') {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🚫</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
-            <p className="text-gray-600">This page is only for clients.</p>
+          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 animate-fade-in-up">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">🚫</span>
+            </div>
+            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-2">Access Denied</h2>
+            <p className="text-[#345635]">This page is only for clients.</p>
           </div>
         </main>
         <Footer />
@@ -139,54 +142,61 @@ const OngoingJobs = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Back Button */}
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-6 transition-all duration-300 group animate-fade-in-up"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            ← Back to Dashboard
+            <span className="font-medium">Back to Dashboard</span>
           </button>
 
           {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Ongoing Jobs</h1>
-            <p className="text-gray-600 mt-2">Track your hired service providers and project progress</p>
+          <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <div className="flex items-center mb-3">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                <span className="text-3xl">💼</span>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">Ongoing Jobs</h1>
+                <p className="text-[#6B8F71] mt-1">Track your hired service providers and project progress</p>
+              </div>
+            </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <div className="text-sm text-gray-600 mb-1">Active Jobs</div>
-              <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="bg-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#6B8F71] mb-2 font-medium">Active Jobs</div>
+              <div className="text-3xl font-bold text-[#0D2B1D]">{stats.total}</div>
             </div>
-            <div className="bg-yellow-50 rounded-lg shadow-md p-4 border border-yellow-200">
-              <div className="text-sm text-yellow-700 mb-1">⏳ Starting Soon</div>
-              <div className="text-2xl font-bold text-yellow-900">{stats.pending}</div>
+            <div className="bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#345635] mb-2 font-medium">⏳ Starting Soon</div>
+              <div className="text-3xl font-bold text-[#0D2B1D]">{stats.pending}</div>
             </div>
-            <div className="bg-blue-50 rounded-lg shadow-md p-4 border border-blue-200">
-              <div className="text-sm text-blue-700 mb-1">🔨 In Progress</div>
-              <div className="text-2xl font-bold text-blue-900">{stats.in_progress}</div>
+            <div className="bg-gradient-to-br from-[#6B8F71]/10 to-white rounded-xl shadow-lg p-5 border-2 border-[#6B8F71] hover:border-[#345635] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#345635] mb-2 font-medium">🔨 In Progress</div>
+              <div className="text-3xl font-bold text-[#0D2B1D]">{stats.in_progress}</div>
             </div>
-            <div className="bg-green-50 rounded-lg shadow-md p-4 border border-green-200">
-              <div className="text-sm text-green-700 mb-1">✅ Completed</div>
-              <div className="text-2xl font-bold text-green-900">{stats.completed}</div>
+            <div className="bg-gradient-to-br from-[#AEC3B0]/20 to-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm text-[#345635] mb-2 font-medium">✅ Completed</div>
+              <div className="text-3xl font-bold text-[#0D2B1D]">{stats.completed}</div>
             </div>
-            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-md p-4 text-white">
-              <div className="text-sm opacity-90 mb-1">💳 Total Spent</div>
-              <div className="text-2xl font-bold">₹{stats.totalEarnings.toLocaleString()}</div>
+            <div className="bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl shadow-xl p-5 text-white hover:shadow-2xl transition-all duration-300 hover:scale-105">
+              <div className="text-sm opacity-90 mb-2 font-medium">💳 Total Spent</div>
+              <div className="text-3xl font-bold">₹{stats.totalEarnings.toLocaleString()}</div>
             </div>
           </div>
 
           {/* Filter Tabs */}
-          <div className="bg-white rounded-lg shadow-md p-2 mb-6">
-            <div className="flex space-x-2">
+          <div className="bg-white rounded-xl shadow-lg p-3 mb-8 border-2 border-[#AEC3B0] animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <div className="flex flex-wrap gap-2">
               {[
                 { value: 'all', label: 'All Jobs' },
                 { value: 'pending', label: '⏳ Pending' },
@@ -197,10 +207,10 @@ const OngoingJobs = () => {
                 <button
                   key={filter.value}
                   onClick={() => setActiveFilter(filter.value)}
-                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+                  className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
                     activeFilter === filter.value
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105'
+                      : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
                   }`}
                 >
                   {filter.label}
@@ -211,65 +221,69 @@ const OngoingJobs = () => {
 
           {/* Orders List */}
           {loading ? (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex items-center justify-center py-12 animate-fade-in-up">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading jobs...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
+                <p className="text-[#6B8F71] font-medium">Loading jobs...</p>
               </div>
             </div>
           ) : orders.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-5xl">📋</span>
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 text-center animate-fade-in-up">
+              <div className="w-28 h-28 bg-gradient-to-br from-[#E3EFD3] to-[#AEC3B0] rounded-full mx-auto mb-6 flex items-center justify-center">
+                <span className="text-6xl">📋</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Ongoing Jobs</h3>
-              <p className="text-gray-600 mb-6">Post a job and hire a service provider to get started!</p>
+              <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">No Ongoing Jobs</h3>
+              <p className="text-[#6B8F71] mb-8 text-lg">Post a job and hire a service provider to get started!</p>
               <button
                 onClick={() => navigate('/post-job')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-8 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium hover:scale-105"
               >
                 Post a Job
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {orders.map((order) => {
+            <div className="space-y-6">
+              {orders.map((order, index) => {
                 const job = typeof order.job !== 'string' ? order.job : null;
                 const provider = typeof order.provider !== 'string' ? order.provider : null;
 
                 return (
-                  <div key={order._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                  <div 
+                    key={order._id} 
+                    className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] overflow-hidden hover:shadow-2xl hover:border-[#6B8F71] transition-all duration-300 animate-fade-in-up"
+                    style={{ animationDelay: `${0.1 * index}s` }}
+                  >
                     <div className="p-6">
                       {/* Header */}
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-5">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
                             {job?.title || 'Job Title'}
                           </h3>
                           <div className="flex flex-wrap items-center gap-3">
                             {getStatusBadge(order.status)}
                             {getPaymentStatusBadge(order.payment?.status || 'pending')}
                             {job && (
-                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                              <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] text-[#345635] text-sm font-semibold shadow-md">
                                 {job.category}
                               </span>
                             )}
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-3xl font-bold text-blue-600">
+                        <div className="text-right ml-4">
+                          <div className="text-4xl font-bold bg-gradient-to-r from-[#345635] to-[#6B8F71] bg-clip-text text-transparent">
                             ₹{order.amount.toLocaleString()}
                           </div>
-                          <div className="text-sm text-gray-500">Project Budget</div>
+                          <div className="text-sm text-[#6B8F71] font-medium">Project Budget</div>
                         </div>
                       </div>
 
                       {/* Provider Info */}
                       {provider && (
-                        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        <div className="bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-5 mb-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] transition-all duration-300">
+                          <div className="flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex items-center space-x-4">
+                              <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg ring-2 ring-white">
                                 {provider.profilePicture ? (
                                   <img 
                                     src={provider.profilePicture} 
@@ -281,19 +295,19 @@ const OngoingJobs = () => {
                                 )}
                               </div>
                               <div>
-                                <p className="font-semibold text-gray-900">{provider.fullName}</p>
-                                <div className="flex items-center text-sm text-gray-600">
+                                <p className="font-bold text-[#0D2B1D] text-lg">{provider.fullName}</p>
+                                <div className="flex items-center text-sm text-[#6B8F71] font-medium">
                                   {provider.city && <span>📍 {provider.city}</span>}
                                   {provider.rating && (
                                     <span className="ml-3">⭐ {provider.rating.toFixed(1)}</span>
                                   )}
                                 </div>
                                 {provider.skills && provider.skills.length > 0 && (
-                                  <div className="flex flex-wrap gap-1 mt-2">
+                                  <div className="flex flex-wrap gap-2 mt-2">
                                     {provider.skills.slice(0, 3).map((skill, index) => (
                                       <span
                                         key={index}
-                                        className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded"
+                                        className="px-3 py-1 bg-gradient-to-r from-[#AEC3B0] to-[#E3EFD3] text-[#345635] text-xs rounded-full font-semibold"
                                       >
                                         {skill}
                                       </span>
@@ -304,7 +318,7 @@ const OngoingJobs = () => {
                             </div>
                             <button
                               onClick={() => navigate(`/messages?userId=${typeof order.provider === 'string' ? order.provider : provider._id}`)}
-                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                              className="px-6 py-2.5 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all duration-300 text-sm font-semibold hover:scale-105"
                             >
                               💬 Message Provider
                             </button>
@@ -313,63 +327,73 @@ const OngoingJobs = () => {
                       )}
 
                       {/* Timeline */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
-                        <div>
-                          <div className="text-gray-600">Started</div>
-                          <div className="font-semibold text-gray-900">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5 text-sm">
+                        <div className="bg-white rounded-lg p-4 border-2 border-[#AEC3B0]">
+                          <div className="text-[#6B8F71] mb-1 font-medium">Started</div>
+                          <div className="font-bold text-[#0D2B1D] text-base">
                             {order.startDate ? formatDate(order.startDate) : 'Not started'}
                           </div>
                         </div>
-                        <div>
-                          <div className="text-gray-600">Deadline</div>
-                          <div className="font-semibold text-gray-900">
+                        <div className="bg-white rounded-lg p-4 border-2 border-[#6B8F71]">
+                          <div className="text-[#6B8F71] mb-1 font-medium">Deadline</div>
+                          <div className="font-bold text-[#0D2B1D] text-base">
                             {formatDate(order.deadline)}
                           </div>
                         </div>
-                        <div>
-                          <div className="text-gray-600">Completed</div>
-                          <div className="font-semibold text-gray-900">
+                        <div className="bg-white rounded-lg p-4 border-2 border-[#AEC3B0]">
+                          <div className="text-[#6B8F71] mb-1 font-medium">Completed</div>
+                          <div className="font-bold text-[#0D2B1D] text-base">
                             {order.completedDate ? formatDate(order.completedDate) : 'Not completed'}
                           </div>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
+                      <div className="flex flex-wrap gap-3 pt-5 border-t-2 border-[#AEC3B0]">
                         {order.status === 'pending' && (
-                          <div className="flex items-center space-x-2 text-yellow-600">
+                          <div className="flex items-center space-x-3 bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] px-5 py-3 rounded-xl">
                             <span className="text-2xl">⏳</span>
-                            <span className="font-semibold">Waiting for provider to start work</span>
+                            <span className="font-semibold text-[#345635]">Waiting for provider to start work</span>
                           </div>
                         )}
                         
                         {order.status === 'in_progress' && (
-                          <div className="flex items-center space-x-2 text-blue-600">
+                          <div className="flex items-center space-x-3 bg-gradient-to-r from-[#6B8F71]/20 to-[#AEC3B0]/20 px-5 py-3 rounded-xl border-2 border-[#6B8F71]">
                             <span className="text-2xl">🔨</span>
-                            <span className="font-semibold">Provider is working on your job</span>
+                            <span className="font-semibold text-[#345635]">Provider is working on your job</span>
                           </div>
                         )}
 
                         {order.status === 'completed' && order.payment?.status !== 'released' && (
                           <button
                             onClick={() => handleAcceptDelivery(order._id)}
-                            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                            className="px-8 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all duration-300 font-semibold hover:scale-105"
                           >
                             ✅ Accept Delivery & Release Payment
                           </button>
                         )}
 
                         {order.status === 'completed' && order.payment?.status === 'released' && (
-                          <div className="flex items-center space-x-2 text-green-600">
-                            <span className="text-2xl">✅</span>
-                            <span className="font-semibold">Job completed! Payment released.</span>
-                          </div>
+                          <>
+                            <div className="flex items-center space-x-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] px-5 py-3 rounded-xl text-white">
+                              <span className="text-2xl">✅</span>
+                              <span className="font-semibold">Job completed! Payment released.</span>
+                            </div>
+                            {/* Rehire Button for Completed Orders */}
+                            {provider && provider._id && (
+                              <RehireButton
+                                providerId={provider._id}
+                                providerName={provider.fullName}
+                                size="md"
+                              />
+                            )}
+                          </>
                         )}
 
                         {(order.status === 'pending' || order.status === 'in_progress') && (
                           <button
                             onClick={() => handleCancelOrder(order._id)}
-                            className="px-6 py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-medium"
+                            className="px-6 py-3 border-2 border-red-500 text-red-600 rounded-xl hover:bg-red-50 transition-all duration-300 font-semibold hover:scale-105"
                           >
                             ❌ Cancel Order
                           </button>
@@ -377,7 +401,7 @@ const OngoingJobs = () => {
 
                         <button
                           onClick={() => navigate(`/orders/${order._id}`)}
-                          className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                          className="px-6 py-3 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all duration-300 font-semibold hover:scale-105"
                         >
                           View Details
                         </button>

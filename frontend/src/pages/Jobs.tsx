@@ -8,6 +8,7 @@ import type { Job } from '../types';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import VoiceSearch from '../components/search/VoiceSearch';
+import WishlistButton from '../components/wishlist/WishlistButton';
 
 const categories = [
   'All Categories',
@@ -262,10 +263,15 @@ const Jobs = () => {
     return `📅 Posted ${weeks} week${weeks > 1 ? 's' : ''} ago`;
   };  if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to browse jobs.</p>
+          <div className="text-center p-8 bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3]">
+            <div className="w-20 h-20 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-2xl mx-auto mb-4 flex items-center justify-center">
+              <span className="text-4xl">🔒</span>
+            </div>
+            <p className="text-[#6B8F71] text-lg font-medium">Please login to browse jobs.</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -273,28 +279,33 @@ const Jobs = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          {/* Back Button */}
+          {/* Back Button - Emerald Theme */}
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            className="flex items-center gap-2 text-[#345635] hover:text-[#0D2B1D] mb-6 transition-all hover:scale-105 group font-medium"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            ← Back to Dashboard
+            <span>Back to Dashboard</span>
           </button>
 
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          {/* Header - Emerald Theme */}
+          <div className="flex items-center justify-between mb-6 animate-fade-in-up">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                {currentUser.role === 'client' ? 'My Jobs' : 'Browse Jobs'}
-              </h1>
-              <p className="text-gray-600 mt-2">
+              <div className="flex items-center gap-4 mb-2">
+                <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center shadow-lg">
+                  <span className="text-3xl">{currentUser.role === 'client' ? '📋' : '🔍'}</span>
+                </div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">
+                  {currentUser.role === 'client' ? 'My Jobs' : 'Browse Jobs'}
+                </h1>
+              </div>
+              <p className="text-[#6B8F71] mt-2 text-lg ml-16">
                 {currentUser.role === 'client' 
                   ? 'Manage your posted jobs and track progress'
                   : 'Find jobs that match your skills and expertise'}
@@ -304,21 +315,23 @@ const Jobs = () => {
             {currentUser.role === 'client' && (
               <button
                 onClick={() => navigate('/post-job')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-8 py-4 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-2xl hover:scale-105 transition-all font-bold shadow-xl flex items-center gap-2"
               >
-                + Post New Job
+                <span className="text-2xl">+</span> Post New Job
               </button>
             )}
           </div>
 
-          {/* Search and Filters */}
+          {/* Search and Filters - Emerald Theme */}
           {currentUser.role === 'provider' && (
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-6 mb-6 animate-fade-in-up hover:shadow-2xl transition-all">
               {/* Voice Search */}
               <div className="mb-4 relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-lg">🎤</span>
-                  <h3 className="text-sm font-semibold text-gray-700">Voice Search - Multiple Languages</h3>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-lg flex items-center justify-center">
+                    <span className="text-lg">🎤</span>
+                  </div>
+                  <h3 className="text-sm font-bold text-[#0D2B1D]">Voice Search - Multiple Languages</h3>
                 </div>
                 <VoiceSearch
                   value={searchQuery}
@@ -334,23 +347,23 @@ const Jobs = () => {
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                  className="px-6 py-2 border-2 border-[#AEC3B0] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-bold text-sm hover:scale-105"
                 >
                   {showFilters ? '✕ Hide Filters' : '⚙️ Show Filters'}
                 </button>
               </div>
 
               {showFilters && (
-                <div className="border-t border-gray-200 pt-4">
+                <div className="border-t-2 border-[#E3EFD3] pt-4 mt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-[#345635] mb-2">
                         Category
                       </label>
                       <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] bg-white text-[#0D2B1D] font-medium"
                       >
                         {categories.map((cat) => (
                           <option key={cat} value={cat}>{cat}</option>
@@ -359,13 +372,13 @@ const Jobs = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-[#345635] mb-2">
                         City
                       </label>
                       <select
                         value={selectedCity}
                         onChange={(e) => setSelectedCity(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] bg-white text-[#0D2B1D] font-medium"
                       >
                         {cities.map((city) => (
                           <option key={city} value={city}>{city}</option>
@@ -374,21 +387,21 @@ const Jobs = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-[#345635] mb-2">
                         Provider Type
                       </label>
                       {currentUser?.role === 'provider' && currentUser?.providerType ? (
-                        <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-between">
+                        <div className="w-full px-4 py-2 border-2 border-[#6B8F71] rounded-xl bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] text-[#0D2B1D] flex items-center justify-between font-medium">
                           <span>
                             {currentUser.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
                           </span>
-                          <span className="text-xs text-gray-500">(Your Type)</span>
+                          <span className="text-xs text-[#6B8F71] font-bold">(Your Type)</span>
                         </div>
                       ) : (
                         <select
                           value={selectedProviderType}
                           onChange={(e) => setSelectedProviderType(e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] bg-white text-[#0D2B1D] font-medium"
                         >
                           <option value="All Types">All Types</option>
                           <option value="Technical">💻 Technical</option>
@@ -398,13 +411,13 @@ const Jobs = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-[#345635] mb-2">
                         Budget Type
                       </label>
                       <select
                         value={selectedBudgetType}
                         onChange={(e) => setSelectedBudgetType(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] bg-white text-[#0D2B1D] font-medium"
                       >
                         <option value="All Types">All Types</option>
                         <option value="Fixed">Fixed Price</option>
@@ -413,7 +426,7 @@ const Jobs = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-[#345635] mb-2">
                         Min Budget (₹)
                       </label>
                       <input
@@ -421,12 +434,12 @@ const Jobs = () => {
                         value={budgetMin}
                         onChange={(e) => setBudgetMin(e.target.value)}
                         placeholder="Min amount"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] bg-white text-[#0D2B1D]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-bold text-[#345635] mb-2">
                         Max Budget (₹)
                       </label>
                       <input
@@ -434,7 +447,7 @@ const Jobs = () => {
                         value={budgetMax}
                         onChange={(e) => setBudgetMax(e.target.value)}
                         placeholder="Max amount"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] bg-white text-[#0D2B1D]"
                       />
                     </div>
                   </div>
@@ -442,7 +455,7 @@ const Jobs = () => {
                   <div className="flex justify-end mt-4">
                     <button
                       onClick={clearFilters}
-                      className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                      className="px-6 py-2 text-[#6B8F71] hover:text-[#0D2B1D] font-bold hover:scale-105 transition-all"
                     >
                       Clear Filters
                     </button>
@@ -747,12 +760,23 @@ const Jobs = () => {
                   return (
                     <div 
                       key={job._id} 
-                      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+                      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden relative"
                     >
+                      {/* Wishlist Button - Only for Providers */}
+                      {currentUser.role === 'provider' && (
+                        <div className="absolute top-4 right-4 z-10">
+                          <WishlistButton
+                            itemType="job"
+                            itemId={job._id}
+                            size="sm"
+                          />
+                        </div>
+                      )}
+                      
                       <div className="p-6">
                         {/* Header */}
                         <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
+                          <div className="flex-1 pr-12">
                             <h3 className="text-xl font-bold text-gray-900 mb-2">
                               {job.title}
                             </h3>

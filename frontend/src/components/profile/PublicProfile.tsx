@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { reviewService, Review, ReviewStats } from '../../services/reviewService';
+import { followService } from '../../services/followService';
 import type { User } from '../../types';
+import WishlistButton from '../wishlist/WishlistButton';
+import RehireButton from '../rehire/RehireButton';
+import FollowButton from '../follow/FollowButton';
 
 interface PublicProfileProps {
   user: User;
@@ -15,13 +19,29 @@ const PublicProfile = ({ user }: PublicProfileProps) => {
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [followStats, setFollowStats] = useState({
+    followersCount: 0,
+    followingCount: 0,
+    mutualFollowsCount: 0
+  });
 
-  // Load reviews when component mounts or user changes
+  // Load reviews and follow stats when component mounts or user changes
   useEffect(() => {
     if (user.role === 'provider') {
       loadReviews();
     }
+    loadFollowStats();
   }, [user.id, currentPage]);
+
+  const loadFollowStats = async () => {
+    try {
+      const userId = user._id || user.id;
+      const data = await followService.getFollowStats(userId);
+      setFollowStats(data);
+    } catch (error) {
+      console.error('Error loading follow stats:', error);
+    }
+  };
 
   const loadReviews = async () => {
     try {
@@ -93,6 +113,31 @@ const PublicProfile = ({ user }: PublicProfileProps) => {
               
               {/* Actions */}
               <div className="ml-auto flex gap-3">
+                {/* Follow Button */}
+                <FollowButton
+                  userId={user._id || user.id}
+                  size="md"
+                  showLabel={true}
+                  onFollowChange={loadFollowStats}
+                />
+                
+                {/* Wishlist Button */}
+                <WishlistButton
+                  itemType={user.role === 'provider' ? 'provider' : 'client'}
+                  itemId={user._id || user.id}
+                  size="md"
+                  showLabel={true}
+                />
+                
+                {/* Rehire Button - Only show for providers */}
+                {user.role === 'provider' && (
+                  <RehireButton
+                    providerId={user._id || user.id}
+                    providerName={user.fullName}
+                    size="md"
+                  />
+                )}
+                
                 <button
                   onClick={() => navigate(`/messages?userId=${user.id}`)}
                   className={`px-6 py-2 ${
@@ -104,6 +149,24 @@ const PublicProfile = ({ user }: PublicProfileProps) => {
                   💬 Send Message
                 </button>
               </div>
+            </div>
+
+            {/* Follow Stats - Clickable */}
+            <div className="flex gap-6 mb-4">
+              <button
+                onClick={() => navigate(`/followers-following/${user._id || user.id}?tab=followers`)}
+                className="text-gray-700 hover:text-[#345635] transition-colors"
+              >
+                <span className="font-bold text-lg">{followStats.followersCount}</span>
+                <span className="text-sm ml-1">Followers</span>
+              </button>
+              <button
+                onClick={() => navigate(`/followers-following/${user._id || user.id}?tab=following`)}
+                className="text-gray-700 hover:text-[#345635] transition-colors"
+              >
+                <span className="font-bold text-lg">{followStats.followingCount}</span>
+                <span className="text-sm ml-1">Following</span>
+              </button>
             </div>
 
             {/* Name and Role */}

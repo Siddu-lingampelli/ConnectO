@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../store/authSlice';
@@ -11,9 +11,11 @@ import type { Job } from '../types';
 const JobDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const currentUser = useSelector(selectCurrentUser);
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
+  const rehireProviderId = searchParams.get('rehire');
 
   useEffect(() => {
     if (id) {
@@ -177,11 +179,16 @@ const JobDetails = () => {
                 )}
                 {isProvider && job.status === 'open' && (
                   <button
-                    onClick={() => navigate(`/jobs/${job._id}/apply`)}
+                    onClick={() => navigate(`/jobs/${job._id}/apply${rehireProviderId ? `?rehire=${rehireProviderId}` : ''}`)}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
                   >
-                    Apply Now
+                    {rehireProviderId ? '🔄 Submit Rehire Proposal' : 'Apply Now'}
                   </button>
+                )}
+                {rehireProviderId && !isProvider && (
+                  <div className="px-4 py-2 bg-purple-100 border border-purple-300 text-purple-700 rounded-lg text-sm font-medium">
+                    💼 Rehire request for this provider
+                  </div>
                 )}
               </div>
             </div>

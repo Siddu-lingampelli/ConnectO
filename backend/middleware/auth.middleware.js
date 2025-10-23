@@ -70,3 +70,7 @@ export const authorize = (...roles) => {
     next();
   };
 };
+
+// Alias for backward compatibility
+export const authenticateToken = authenticate;
+export const authorizeRole = authorize;

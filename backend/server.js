@@ -25,6 +25,9 @@ import leaderboardRoutes from './routes/leaderboard.routes.js';
 import referralRoutes from './routes/referral.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import locationRoutes from './routes/location.routes.js';
+import websiteReviewRoutes from './routes/websiteReview.routes.js';
+import wishlistRoutes from './routes/wishlist.js';
+import followRoutes from './routes/follow.routes.js';
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -86,6 +89,9 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/referral', referralRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/location', locationRoutes);
+app.use('/api/website-reviews', websiteReviewRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/follow', followRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

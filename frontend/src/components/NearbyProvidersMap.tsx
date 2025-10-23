@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import { toast } from 'react-toastify';
 import locationService, { Provider } from '../services/locationService';
-import { FaMapMarkerAlt, FaStar, FaPhone, FaEnvelope, FaRoute } from 'react-icons/fa';
+import { FaStar, FaPhone, FaRoute } from 'react-icons/fa';
 
 interface NearbyProvidersMapProps {
   category?: string;

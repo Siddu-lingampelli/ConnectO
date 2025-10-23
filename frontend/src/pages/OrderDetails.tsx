@@ -464,6 +464,16 @@ const OrderDetails = () => {
                 </div>
               )}
 
+              {/* Rehire Provider Button - Only for clients on completed orders */}
+              {!isProvider && order.status === 'completed' && provider && (
+                <button
+                  onClick={() => navigate(`/job-details/${order.job}?rehire=${provider._id}`)}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all font-medium flex items-center gap-2 shadow-md"
+                >
+                  🔄 Rehire {provider.fullName?.split(' ')[0]}
+                </button>
+              )}
+
               {/* Cancel Option */}
               {order.status !== 'completed' && order.status !== 'cancelled' && (
                 <button

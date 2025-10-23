@@ -7,6 +7,8 @@ import api from '../lib/api';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import VoiceSearch from '../components/search/VoiceSearch';
+import WishlistButton from '../components/wishlist/WishlistButton';
+import FollowButton from '../components/follow/FollowButton';
 
 interface Provider {
   _id: string;
@@ -139,10 +141,10 @@ const BrowseProviders = () => {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to browse service providers.</p>
+          <p className="text-[#6B8F71] font-medium">Please login to browse service providers.</p>
         </main>
         <Footer />
       </div>
@@ -150,38 +152,43 @@ const BrowseProviders = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Back Button */}
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-6 transition-all duration-300 group"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            ← Back to Dashboard
+            <span className="font-medium">Back to Dashboard</span>
           </button>
 
           {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Browse Service Providers
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Find verified professionals for your service needs
-            </p>
+          <div className="mb-6 flex items-center">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
+              <span className="text-3xl">👥</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-[#0D2B1D]">
+                Browse Service Providers
+              </h1>
+              <p className="text-[#6B8F71] mt-1">
+                Find verified professionals for your service needs
+              </p>
+            </div>
           </div>
 
           {/* Voice Search and Filters */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 mb-6">
             {/* Voice Search */}
             <div className="mb-4 relative">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-lg">🎤</span>
-                <h3 className="text-sm font-semibold text-gray-700">Voice Search - Multiple Languages</h3>
+                <h3 className="text-sm font-semibold text-[#345635]">Voice Search - Multiple Languages</h3>
               </div>
               <VoiceSearch
                 value={searchQuery}
@@ -197,23 +204,23 @@ const BrowseProviders = () => {
             <div className="flex justify-end">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
+                className="px-6 py-2 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium text-sm hover:scale-105"
               >
                 {showFilters ? '✕ Hide Filters' : '⚙️ Show Filters'}
               </button>
             </div>
 
             {showFilters && (
-              <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="border-t-2 border-[#AEC3B0] pt-4 mt-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#345635] mb-2">
                       Category/Skill
                     </label>
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71]"
                     >
                       {categories.map((cat) => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -222,13 +229,13 @@ const BrowseProviders = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#345635] mb-2">
                       City
                     </label>
                     <select
                       value={selectedCity}
                       onChange={(e) => setSelectedCity(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71]"
                     >
                       {cities.map((city) => (
                         <option key={city} value={city}>{city}</option>
@@ -237,13 +244,13 @@ const BrowseProviders = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-[#345635] mb-2">
                       Provider Type
                     </label>
                     <select
                       value={selectedProviderType}
                       onChange={(e) => setSelectedProviderType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71]"
                     >
                       <option value="All Types">All Types</option>
                       <option value="Technical">💻 Technical</option>
@@ -255,7 +262,7 @@ const BrowseProviders = () => {
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={clearFilters}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                    className="px-4 py-2 text-[#6B8F71] hover:text-[#0D2B1D] font-medium transition-colors"
                   >
                     Clear Filters
                   </button>
@@ -268,26 +275,26 @@ const BrowseProviders = () => {
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading providers...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
+                <p className="text-[#6B8F71] font-medium">Loading providers...</p>
               </div>
             </div>
           ) : providers.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 text-center">
+              <div className="w-24 h-24 bg-gradient-to-br from-[#E3EFD3] to-[#AEC3B0] rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-5xl">👥</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-[#0D2B1D] mb-2">
                 No Providers Found
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-[#6B8F71] mb-6">
                 Try adjusting your filters or search criteria
               </p>
             </div>
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-[#0D2B1D]">
                   {providers.length} Provider{providers.length !== 1 ? 's' : ''} Available
                 </h3>
               </div>
@@ -296,13 +303,29 @@ const BrowseProviders = () => {
                 {providers.map((provider) => (
                   <div 
                     key={provider._id} 
-                    className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden cursor-pointer"
-                    onClick={() => navigate(`/profile/${provider._id}`)}
+                    className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] hover:shadow-xl transition-all overflow-hidden relative hover:scale-105"
                   >
-                    <div className="p-6">
+                    {/* Action Buttons */}
+                    <div className="absolute top-4 right-4 z-10 flex gap-2">
+                      <FollowButton
+                        userId={provider._id}
+                        size="sm"
+                        showLabel={false}
+                      />
+                      <WishlistButton
+                        itemType="provider"
+                        itemId={provider._id}
+                        size="md"
+                      />
+                    </div>
+
+                    <div 
+                      className="p-6 cursor-pointer"
+                      onClick={() => navigate(`/profile/${provider._id}`)}
+                    >
                       {/* Profile Picture and Name */}
                       <div className="flex items-center mb-4">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
+                        <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
                           {provider.profilePicture ? (
                             <img 
                               src={provider.profilePicture} 
@@ -314,17 +337,17 @@ const BrowseProviders = () => {
                           )}
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                          <h3 className="text-lg font-bold text-[#0D2B1D] flex items-center gap-2">
                             {provider.fullName}
                             {provider.isVerified && (
-                              <span className="text-blue-500" title="Verified">✓</span>
+                              <span className="text-[#345635]" title="Verified">✓</span>
                             )}
                           </h3>
                           {provider.providerType && (
                             <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
                               provider.providerType === 'Technical' 
-                                ? 'bg-purple-100 text-purple-700' 
-                                : 'bg-orange-100 text-orange-700'
+                                ? 'bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] text-[#345635]' 
+                                : 'bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0] text-white'
                             }`}>
                               {provider.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
                             </span>
@@ -334,7 +357,7 @@ const BrowseProviders = () => {
 
                       {/* Bio */}
                       {provider.bio && (
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        <p className="text-sm text-[#6B8F71] mb-4 line-clamp-2">
                           {provider.bio}
                         </p>
                       )}
@@ -344,11 +367,11 @@ const BrowseProviders = () => {
                         {provider.rating !== undefined && (
                           <div className="flex items-center gap-1">
                             <span className="text-yellow-500">⭐</span>
-                            <span className="font-semibold">{provider.rating.toFixed(1)}</span>
+                            <span className="font-semibold text-[#0D2B1D]">{provider.rating.toFixed(1)}</span>
                           </div>
                         )}
                         {provider.completedJobs !== undefined && (
-                          <div className="text-gray-600">
+                          <div className="text-[#6B8F71]">
                             {provider.completedJobs} jobs completed
                           </div>
                         )}
@@ -361,13 +384,13 @@ const BrowseProviders = () => {
                             {provider.skills.slice(0, 3).map((skill, index) => (
                               <span 
                                 key={index}
-                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                                className="px-2 py-1 bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] text-[#345635] rounded-full text-xs font-medium"
                               >
                                 {skill}
                               </span>
                             ))}
                             {provider.skills.length > 3 && (
-                              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                              <span className="px-2 py-1 bg-[#E3EFD3] text-[#6B8F71] rounded-full text-xs font-medium">
                                 +{provider.skills.length - 3} more
                               </span>
                             )}
@@ -376,14 +399,14 @@ const BrowseProviders = () => {
                       )}
 
                       {/* Location and Rate */}
-                      <div className="flex items-center justify-between text-sm border-t border-gray-200 pt-4">
+                      <div className="flex items-center justify-between text-sm border-t-2 border-[#AEC3B0] pt-4">
                         {provider.city && (
-                          <span className="text-gray-600">
+                          <span className="text-[#6B8F71]">
                             📍 {provider.city}
                           </span>
                         )}
                         {provider.hourlyRate && (
-                          <span className="text-green-600 font-semibold">
+                          <span className="text-[#345635] font-semibold">
                             ₹{provider.hourlyRate}/hr
                           </span>
                         )}
@@ -391,8 +414,8 @@ const BrowseProviders = () => {
 
                       {/* Demo Score */}
                       {provider.demoVerification?.status === 'verified' && provider.demoVerification?.score && (
-                        <div className="mt-3 p-2 bg-green-50 rounded text-center">
-                          <span className="text-xs text-green-700 font-medium">
+                        <div className="mt-3 p-2 bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] rounded-xl text-center">
+                          <span className="text-xs text-[#345635] font-medium">
                             ✅ Demo Score: {provider.demoVerification.score}/10
                           </span>
                         </div>

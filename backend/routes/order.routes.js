@@ -8,7 +8,8 @@ import {
   cancelOrder,
   addMilestone,
   completeMilestone,
-  getOrderStats
+  getOrderStats,
+  getRehireInfo
 } from '../controllers/order.controller.js';
 
 const router = express.Router();
@@ -26,6 +27,7 @@ router.put('/:id/milestones/:milestoneId', authorize('provider'), completeMilest
 
 // Client routes
 router.put('/:id/accept-delivery', authorize('client'), acceptDelivery);
+router.get('/provider/:providerId/rehire-info', authorize('client'), getRehireInfo);
 
 // Both can cancel
 router.put('/:id/cancel', cancelOrder);

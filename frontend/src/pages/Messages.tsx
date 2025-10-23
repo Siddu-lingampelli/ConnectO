@@ -58,10 +58,15 @@ const Messages = () => {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to view messages.</p>
+          <div className="text-center p-8 bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3]">
+            <div className="w-20 h-20 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-2xl mx-auto mb-4 flex items-center justify-center">
+              <span className="text-4xl">🔒</span>
+            </div>
+            <p className="text-[#6B8F71] text-lg font-medium">Please login to view messages.</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -69,24 +74,36 @@ const Messages = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-6">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-4 transition-colors"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          ← Back to Dashboard
-        </button>
+        {/* Back Button & Header - Emerald Theme */}
+        <div className="mb-6 animate-fade-in-up">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-2 text-[#345635] hover:text-[#0D2B1D] mb-4 transition-all hover:scale-105 group font-medium"
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Back to Dashboard</span>
+          </button>
 
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden" style={{ height: 'calc(100vh - 220px)' }}>
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-3xl">💬</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-[#0D2B1D]">Messages</h1>
+              <p className="text-[#6B8F71] text-lg">Connect with clients and service providers</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-[#E3EFD3] animate-fade-in-up" style={{ height: 'calc(100vh - 280px)', animationDelay: '100ms' }}>
           <div className="flex h-full">
-            {/* Conversation List - Left Side */}
-            <div className="w-1/3 border-r border-gray-200">
+            {/* Conversation List - Left Side - Emerald Theme */}
+            <div className="w-1/3 border-r-2 border-[#E3EFD3] bg-gradient-to-b from-[#F8FBF9] to-white">
               <ConversationList
                 conversations={conversations}
                 selectedUserId={selectedUserId}
@@ -96,8 +113,8 @@ const Messages = () => {
               />
             </div>
 
-            {/* Chat Window - Right Side */}
-            <div className="flex-1">
+            {/* Chat Window - Right Side - Emerald Theme */}
+            <div className="flex-1 bg-white">
               {selectedUserId ? (
                 <ChatWindow
                   otherUserId={selectedUserId}
@@ -105,15 +122,15 @@ const Messages = () => {
                   onNewMessage={handleNewMessage}
                 />
               ) : (
-                <div className="h-full flex items-center justify-center bg-gray-50">
-                  <div className="text-center">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                      <span className="text-5xl">💬</span>
+                <div className="h-full flex items-center justify-center bg-gradient-to-br from-[#F8FBF9] to-white">
+                  <div className="text-center animate-fade-in-up">
+                    <div className="w-32 h-32 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-xl animate-pulse-soft">
+                      <span className="text-7xl">💬</span>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
                       Select a Conversation
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-[#6B8F71] text-lg">
                       Choose a conversation from the left to start messaging
                     </p>
                   </div>

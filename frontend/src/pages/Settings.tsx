@@ -11,8 +11,9 @@ import PrivacySettings from '../components/settings/PrivacySettings';
 import PaymentSettings from '../components/settings/PaymentSettings';
 import PortfolioSettings from '../components/settings/PortfolioSettings';
 import LocationSettings from '../components/LocationSettings';
+import WebsiteReviewForm from '../components/WebsiteReviewForm';
 
-type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment' | 'portfolio' | 'location';
+type SettingsTab = 'account' | 'security' | 'notifications' | 'privacy' | 'payment' | 'portfolio' | 'location' | 'review';
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -23,17 +24,22 @@ const Settings = () => {
 
   // Update active tab when URL parameter changes
   useEffect(() => {
-    if (tabParam && ['account', 'security', 'notifications', 'privacy', 'payment', 'portfolio', 'location'].includes(tabParam)) {
+    if (tabParam && ['account', 'security', 'notifications', 'privacy', 'payment', 'portfolio', 'location', 'review'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [tabParam]);
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to access settings.</p>
+          <div className="text-center p-8 bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3]">
+            <div className="w-20 h-20 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-2xl mx-auto mb-4 flex items-center justify-center">
+              <span className="text-4xl">🔒</span>
+            </div>
+            <p className="text-[#6B8F71] text-lg font-medium">Please login to access settings.</p>
+          </div>
         </main>
         <Footer />
       </div>
@@ -50,6 +56,8 @@ const Settings = () => {
     ...(user.role === 'provider' ? [{ id: 'portfolio' as SettingsTab, label: 'Portfolio', icon: '💼' }] : []),
     // Location settings for all users
     { id: 'location', label: 'Location', icon: '🗺️' },
+    // Review the website
+    { id: 'review', label: 'Review Site', icon: '⭐' },
   ];
 
   const renderTabContent = () => {
@@ -68,59 +76,74 @@ const Settings = () => {
         return user.role === 'provider' ? <PortfolioSettings user={user} /> : null;
       case 'location':
         return <LocationSettings />;
+      case 'review':
+        return <WebsiteReviewForm onSuccess={() => navigate('/dashboard')} />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          {/* Back Button */}
+          {/* Back Button - Emerald Theme */}
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            className="flex items-center gap-2 text-[#345635] hover:text-[#0D2B1D] mb-6 transition-all hover:scale-105 group font-medium"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            ← Back to Dashboard
+            <span>Back to Dashboard</span>
           </button>
 
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
-            <p className="text-gray-600">Manage your account settings and preferences</p>
+          {/* Header - Emerald Theme */}
+          <div className="mb-8 animate-fade-in-up">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-3xl">⚙️</span>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">Settings</h1>
+                <p className="text-[#6B8F71] text-lg">Manage your account settings and preferences</p>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Sidebar Navigation */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-4">
-                <nav className="space-y-1">
-                  {tabs.map((tab) => (
+            {/* Sidebar Navigation - Emerald Theme */}
+            <div className="lg:col-span-1 animate-fade-in-up">
+              <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-5 sticky top-24">
+                <nav className="space-y-2">
+                  {tabs.map((tab, index) => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-xl transition-all duration-300 ${
                         activeTab === tab.id
-                          ? 'bg-blue-50 text-blue-600 font-medium'
-                          : 'text-gray-700 hover:bg-gray-50'
+                          ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105 font-bold'
+                          : 'text-[#345635] hover:bg-[#E3EFD3] hover:scale-102 font-medium'
                       }`}
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <span className="text-xl">{tab.icon}</span>
+                      <span className="text-2xl">{tab.icon}</span>
                       <span>{tab.label}</span>
+                      {activeTab === tab.id && (
+                        <svg className="w-4 h-4 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
                     </button>
                   ))}
                 </nav>
               </div>
             </div>
 
-            {/* Content Area */}
-            <div className="lg:col-span-3">
-              <div className="bg-white rounded-lg shadow-md p-6">
+            {/* Content Area - Emerald Theme */}
+            <div className="lg:col-span-3 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-8 hover:shadow-2xl transition-shadow duration-300">
                 {renderTabContent()}
               </div>
             </div>

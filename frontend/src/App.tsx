@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './i18n/config'; // Initialize i18n
 
 // Components
 import Chatbot from './components/Chatbot';
@@ -30,6 +31,10 @@ import BrowseProviders from './pages/BrowseProviders';
 import Leaderboard from './pages/Leaderboard';
 import Referrals from './pages/Referrals';
 import FindNearbyProviders from './pages/FindNearbyProviders';
+import SubmitReview from './pages/SubmitReview';
+import UserReviews from './pages/UserReviews';
+import Wishlist from './pages/Wishlist';
+import FollowersFollowing from './pages/FollowersFollowing';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -146,6 +151,31 @@ function App() {
           element={
             <ProtectedRoute>
               <FindNearbyProviders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/submit-review"
+          element={
+            <ProtectedRoute>
+              <SubmitReview />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/reviews" element={<UserReviews />} />
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <Wishlist />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/followers-following/:userId?"
+          element={
+            <ProtectedRoute>
+              <FollowersFollowing />
             </ProtectedRoute>
           }
         />

@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { toast } from 'react-toastify';
 import locationService, { Provider } from '../services/locationService';
 import { FaStar, FaPhone, FaRoute, FaMapMarkerAlt } from 'react-icons/fa';
+import WishlistButton from './wishlist/WishlistButton';
 
 // Fix Leaflet default icon issue with Webpack/Vite
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -297,8 +298,17 @@ const NearbyProvidersMapOSM = ({ category, providerType, maxDistance = 10000 }: 
             {providers.map((provider) => (
               <div
                 key={provider._id}
-                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition cursor-pointer"
+                className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition cursor-pointer relative"
               >
+                {/* Wishlist Button */}
+                <div className="absolute top-2 right-2">
+                  <WishlistButton
+                    itemType="provider"
+                    itemId={provider._id}
+                    size="sm"
+                  />
+                </div>
+                
                 <div className="flex items-center gap-3">
                   {provider.profilePicture ? (
                     <img

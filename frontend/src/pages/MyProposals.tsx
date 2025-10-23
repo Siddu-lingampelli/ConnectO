@@ -43,15 +43,15 @@ const MyProposals = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">⏳ Pending</span>;
+        return <span className="px-3 py-1 bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] text-[#345635] rounded-full text-sm font-medium">⏳ Pending</span>;
       case 'accepted':
-        return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">✅ Accepted</span>;
+        return <span className="px-3 py-1 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-full text-sm font-medium">✅ Accepted</span>;
       case 'rejected':
         return <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">❌ Rejected</span>;
       case 'withdrawn':
-        return <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">↩️ Withdrawn</span>;
+        return <span className="px-3 py-1 bg-[#E3EFD3] text-[#6B8F71] rounded-full text-sm font-medium">↩️ Withdrawn</span>;
       default:
-        return <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">{status}</span>;
+        return <span className="px-3 py-1 bg-[#E3EFD3] text-[#6B8F71] rounded-full text-sm font-medium">{status}</span>;
     }
   };
 
@@ -66,10 +66,10 @@ const MyProposals = () => {
   // Only providers can access this page
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to view your proposals.</p>
+          <p className="text-[#6B8F71] font-medium">Please login to view your proposals.</p>
         </main>
         <Footer />
       </div>
@@ -78,15 +78,18 @@ const MyProposals = () => {
 
   if (currentUser.role !== 'provider') {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-            <p className="text-gray-600">Only service providers can view proposals.</p>
+          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">🚫</span>
+            </div>
+            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-4">Access Denied</h2>
+            <p className="text-[#6B8F71] mb-6">Only service providers can view proposals.</p>
             <button
               onClick={() => navigate('/jobs')}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
             >
               Browse Jobs
             </button>
@@ -102,7 +105,7 @@ const MyProposals = () => {
   const rejectedCount = proposals.filter(p => p.status === 'rejected').length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
@@ -110,86 +113,94 @@ const MyProposals = () => {
           <div className="mb-6">
             <button
               onClick={() => navigate(-1)}
-              className="text-gray-600 hover:text-gray-900 mb-4"
+              className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-4 transition-all duration-300 group"
             >
-              ← Back
+              <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="font-medium">Back</span>
             </button>
-            <h1 className="text-3xl font-bold text-gray-900">My Proposals</h1>
-            <p className="text-gray-600 mt-2">
-              View and manage all your job proposals
-            </p>
+            <div className="flex items-center mb-3">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                <span className="text-3xl">📋</span>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">My Proposals</h1>
+                <p className="text-[#6B8F71] mt-1">View and manage all your job proposals</p>
+              </div>
+            </div>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow-md p-4">
+            <div className="bg-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">{proposals.length}</div>
-                <div className="text-sm text-gray-600">Total Proposals</div>
+                <div className="text-3xl font-bold text-[#0D2B1D]">{proposals.length}</div>
+                <div className="text-sm text-[#6B8F71] font-medium">Total Proposals</div>
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
+            <div className="bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-center">
-                <div className="text-3xl font-bold text-yellow-600">{pendingCount}</div>
-                <div className="text-sm text-gray-600">Pending</div>
+                <div className="text-3xl font-bold text-[#345635]">{pendingCount}</div>
+                <div className="text-sm text-[#6B8F71] font-medium">⏳ Pending</div>
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
+            <div className="bg-gradient-to-br from-[#6B8F71]/10 to-white rounded-xl shadow-lg p-5 border-2 border-[#6B8F71] hover:border-[#345635] hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">{acceptedCount}</div>
-                <div className="text-sm text-gray-600">Accepted</div>
+                <div className="text-3xl font-bold text-[#345635]">{acceptedCount}</div>
+                <div className="text-sm text-[#6B8F71] font-medium">✅ Accepted</div>
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
+            <div className="bg-gradient-to-br from-red-50 to-white rounded-xl shadow-lg p-5 border-2 border-red-200 hover:border-red-300 hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="text-center">
                 <div className="text-3xl font-bold text-red-600">{rejectedCount}</div>
-                <div className="text-sm text-gray-600">Rejected</div>
+                <div className="text-sm text-red-500 font-medium">❌ Rejected</div>
               </div>
             </div>
           </div>
 
           {/* Filter Tabs */}
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+          <div className="bg-white rounded-xl shadow-lg p-3 mb-8 border-2 border-[#AEC3B0]">
             <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => { setFilterStatus('all'); setCurrentPage(1); }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
                   filterStatus === 'all'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105'
+                    : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
                 }`}
               >
                 All
               </button>
               <button
                 onClick={() => { setFilterStatus('pending'); setCurrentPage(1); }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
                   filterStatus === 'pending'
-                    ? 'bg-yellow-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105'
+                    : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
                 }`}
               >
-                Pending
+                ⏳ Pending
               </button>
               <button
                 onClick={() => { setFilterStatus('accepted'); setCurrentPage(1); }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
                   filterStatus === 'accepted'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105'
+                    : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
                 }`}
               >
-                Accepted
+                ✅ Accepted
               </button>
               <button
                 onClick={() => { setFilterStatus('rejected'); setCurrentPage(1); }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
                   filterStatus === 'rejected'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg scale-105'
+                    : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
                 }`}
               >
-                Rejected
+                ❌ Rejected
               </button>
             </div>
           </div>
@@ -197,26 +208,26 @@ const MyProposals = () => {
           {/* Loading State */}
           {loading && (
             <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading proposals...</p>
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
+              <p className="text-[#6B8F71] font-medium">Loading proposals...</p>
             </div>
           )}
 
           {/* Empty State */}
           {!loading && proposals.length === 0 && (
-            <div className="bg-white rounded-lg shadow-md p-12 text-center">
-              <div className="w-24 h-24 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-5xl">📋</span>
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 text-center">
+              <div className="w-28 h-28 bg-gradient-to-br from-[#E3EFD3] to-[#AEC3B0] rounded-full mx-auto mb-6 flex items-center justify-center">
+                <span className="text-6xl">📋</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Proposals Yet</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">No Proposals Yet</h3>
+              <p className="text-[#6B8F71] mb-8 text-lg">
                 {filterStatus === 'all' 
                   ? 'You haven\'t submitted any proposals yet. Browse jobs to get started!' 
                   : `No ${filterStatus} proposals found.`}
               </p>
               <button
                 onClick={() => navigate('/jobs')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-8 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
               >
                 Browse Jobs
               </button>
@@ -231,15 +242,15 @@ const MyProposals = () => {
                 const client = job && typeof job.client !== 'string' ? job.client : null;
                 
                 return (
-                  <div key={proposal._id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                  <div key={proposal._id} className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 hover:shadow-2xl hover:border-[#6B8F71] transition-all duration-300 hover:scale-[1.01]">
                     {/* Job Info Header */}
                     {job && (
-                      <div className="mb-4 pb-4 border-b border-gray-200">
+                      <div className="mb-4 pb-4 border-b-2 border-[#AEC3B0]">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">{job.title}</h3>
-                            <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
-                              <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-full">{job.category}</span>
+                            <h3 className="text-xl font-bold text-[#0D2B1D] mb-2">{job.title}</h3>
+                            <div className="flex items-center gap-3 text-sm text-[#6B8F71] mb-2">
+                              <span className="px-2 py-1 bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] text-[#345635] rounded-full font-medium">{job.category}</span>
                               {job.location && <span>📍 {job.location.city}</span>}
                               {client && <span>👤 {client.fullName}</span>}
                             </div>
@@ -254,49 +265,49 @@ const MyProposals = () => {
                     {/* Proposal Details */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <div className="text-sm text-gray-600">Your Budget</div>
-                        <div className="text-2xl font-bold text-green-600">
+                        <div className="text-sm text-[#6B8F71]">Your Budget</div>
+                        <div className="text-2xl font-bold text-[#345635]">
                           ₹{proposal.proposedBudget.toLocaleString()}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-gray-600">Duration</div>
-                        <div className="text-lg font-semibold text-gray-900">
+                        <div className="text-sm text-[#6B8F71]">Duration</div>
+                        <div className="text-lg font-semibold text-[#0D2B1D]">
                           {proposal.estimatedDuration}
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-gray-600">Submitted</div>
-                        <div className="text-lg font-semibold text-gray-900">
+                        <div className="text-sm text-[#6B8F71]">Submitted</div>
+                        <div className="text-lg font-semibold text-[#0D2B1D]">
                           {formatDate(proposal.createdAt)}
                         </div>
                       </div>
                     </div>
 
                     {/* Cover Letter Preview */}
-                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">Cover Letter:</h4>
-                      <p className="text-gray-700 line-clamp-3">{proposal.coverLetter}</p>
+                    <div className="bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl p-4 mb-4 border-l-4 border-[#345635]">
+                      <h4 className="font-semibold text-[#0D2B1D] mb-2">Cover Letter:</h4>
+                      <p className="text-[#345635] line-clamp-3">{proposal.coverLetter}</p>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between pt-4 border-t-2 border-[#AEC3B0]">
                       <div>
                         {proposal.status === 'accepted' && (
-                          <span className="text-sm text-green-600 font-medium">🎉 Congratulations! This proposal was accepted</span>
+                          <span className="text-sm text-[#345635] font-medium">🎉 Congratulations! This proposal was accepted</span>
                         )}
                         {proposal.status === 'rejected' && (
                           <span className="text-sm text-red-600">This proposal was rejected</span>
                         )}
                         {proposal.status === 'pending' && (
-                          <span className="text-sm text-yellow-600">Waiting for client response</span>
+                          <span className="text-sm text-[#6B8F71]">⏳ Waiting for client response</span>
                         )}
                       </div>
                       <div className="flex space-x-3">
                         {job && (
                           <button
                             onClick={() => navigate(`/jobs/${typeof proposal.job === 'string' ? proposal.job : proposal.job._id}`)}
-                            className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                            className="px-4 py-2 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium hover:scale-105"
                           >
                             View Job
                           </button>
@@ -304,9 +315,9 @@ const MyProposals = () => {
                         {proposal.status === 'pending' && (
                           <button
                             onClick={() => navigate(`/proposals/${proposal._id}/edit`)}
-                            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium"
+                            className="px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
                           >
-                            Edit Proposal
+                            ✏️ Edit Proposal
                           </button>
                         )}
                       </div>
@@ -319,21 +330,21 @@ const MyProposals = () => {
 
           {/* Pagination */}
           {!loading && totalPages > 1 && (
-            <div className="flex justify-center items-center space-x-4 mt-8">
+            <div className="flex justify-center items-center gap-3 mt-8">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold hover:scale-105"
               >
                 Previous
               </button>
-              <span className="text-gray-600">
+              <span className="px-5 py-2.5 text-[#0D2B1D] font-bold bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] rounded-xl">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold hover:scale-105"
               >
                 Next
               </button>

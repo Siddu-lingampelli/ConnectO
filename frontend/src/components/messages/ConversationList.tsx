@@ -72,8 +72,8 @@ const ConversationList = ({
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading conversations...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#345635] mx-auto mb-4"></div>
+          <p className="text-[#6B8F71] font-medium">Loading conversations...</p>
         </div>
       </div>
     );
@@ -81,21 +81,21 @@ const ConversationList = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200 bg-gray-50">
-        <h2 className="text-xl font-bold text-gray-900">Messages</h2>
-        <p className="text-sm text-gray-600">{conversations.length} conversation{conversations.length !== 1 ? 's' : ''}</p>
+      {/* Header - Emerald Theme */}
+      <div className="p-4 border-b-2 border-[#E3EFD3] bg-gradient-to-r from-[#F8FBF9] to-white">
+        <h2 className="text-xl font-bold text-[#0D2B1D]">Messages</h2>
+        <p className="text-sm text-[#6B8F71] font-medium">{conversations.length} conversation{conversations.length !== 1 ? 's' : ''}</p>
       </div>
 
-      {/* Conversation List */}
+      {/* Conversation List - Emerald Theme */}
       <div className="flex-1 overflow-y-auto">
         {conversations.length === 0 ? (
           <div className="p-8 text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <span className="text-3xl">📭</span>
+            <div className="w-20 h-20 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+              <span className="text-4xl">📭</span>
             </div>
-            <p className="text-gray-600">No conversations yet</p>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-[#345635] font-medium">No conversations yet</p>
+            <p className="text-sm text-[#6B8F71] mt-2">
               Start a conversation by clicking the message button on a user's profile
             </p>
           </div>
@@ -111,70 +111,70 @@ const ConversationList = ({
               <div
                 key={conversation.id || conversation._id}
                 onClick={() => onSelectConversation(otherUser.id || otherUser._id!)}
-                className={`p-4 border-b border-gray-100 cursor-pointer transition-colors ${
+                className={`p-4 border-b border-[#E3EFD3] cursor-pointer transition-all duration-200 ${
                   isSelected
-                    ? 'bg-blue-50 border-l-4 border-l-blue-600'
-                    : 'hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] border-l-4 border-l-[#345635] shadow-sm'
+                    : 'hover:bg-[#F8FBF9] hover:scale-102'
                 }`}
               >
                 <div className="flex items-start space-x-3">
-                  {/* Avatar with online indicator */}
+                  {/* Avatar with online indicator - Emerald Theme */}
                   <div className="flex-shrink-0 relative">
                     {otherUser.profilePicture ? (
                       <img
                         src={otherUser.profilePicture}
                         alt={otherUser.fullName}
-                        className="w-12 h-12 rounded-full object-cover"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-[#AEC3B0]"
                       />
                     ) : (
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
                         {otherUser.fullName.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    {/* Online status indicator */}
+                    {/* Online status indicator - Emerald */}
                     {userStatuses[otherUser.id || otherUser._id!]?.isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#6B8F71] border-2 border-white rounded-full animate-pulse-soft"></div>
                     )}
                   </div>
 
-                  {/* Content */}
+                  {/* Content - Emerald Theme */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-gray-900 truncate">
+                      <h3 className="font-bold text-[#0D2B1D] truncate">
                         {otherUser.fullName}
                       </h3>
                       {conversation.lastMessageAt && (
-                        <span className="text-xs text-gray-500 flex-shrink-0">
+                        <span className="text-xs text-[#6B8F71] flex-shrink-0 font-medium">
                           {formatTime(conversation.lastMessageAt)}
                         </span>
                       )}
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-gray-600 truncate">
+                      <p className="text-sm text-[#6B8F71] truncate">
                         {userStatuses[otherUser.id || otherUser._id!]?.isTyping ? (
-                          <span className="italic text-blue-600">typing...</span>
+                          <span className="italic text-[#345635] font-medium">typing...</span>
                         ) : (
                           conversation.lastMessage?.content || 'No messages yet'
                         )}
                       </p>
                       {unreadCount > 0 && (
-                        <span className="ml-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full flex-shrink-0">
+                        <span className="ml-2 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white text-xs font-bold px-2 py-1 rounded-full flex-shrink-0 shadow-md">
                           {unreadCount}
                         </span>
                       )}
                     </div>
 
                     <div className="flex items-center space-x-2 mt-1">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                         otherUser.role === 'provider'
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-green-100 text-green-700'
+                          ? 'bg-[#E3EFD3] text-[#345635]'
+                          : 'bg-[#AEC3B0] text-[#0D2B1D]'
                       }`}>
                         {otherUser.role === 'provider' ? '🔧 Provider' : '👤 Client'}
                       </span>
                       {otherUser.city && (
-                        <span className="text-xs text-gray-500">📍 {otherUser.city}</span>
+                        <span className="text-xs text-[#6B8F71]">📍 {otherUser.city}</span>
                       )}
                     </div>
                   </div>

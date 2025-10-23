@@ -111,10 +111,10 @@ const NotificationsPage = () => {
 
   const getPriorityBadge = (priority: Notification['priority']) => {
     const badges = {
-      low: <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">Low</span>,
-      normal: <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs font-medium">Normal</span>,
-      high: <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-medium">High</span>,
-      urgent: <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-medium">Urgent</span>,
+      low: <span className="px-2 py-1 bg-[#E3EFD3] text-[#6B8F71] rounded-full text-xs font-semibold">Low</span>,
+      normal: <span className="px-2 py-1 bg-gradient-to-r from-[#AEC3B0] to-[#E3EFD3] text-[#345635] rounded-full text-xs font-semibold">Normal</span>,
+      high: <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">High</span>,
+      urgent: <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Urgent</span>,
     };
     return badges[priority];
   };
@@ -133,30 +133,30 @@ const NotificationsPage = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 mb-6">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-[#345635] hover:text-[#0D2B1D] transition-colors group"
               title="Go back"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
+              <h1 className="text-3xl font-bold text-[#0D2B1D]">Notifications</h1>
               {unreadCount > 0 && (
-                <p className="text-sm text-gray-600 mt-1">{unreadCount} unread notifications</p>
+                <p className="text-sm text-[#6B8F71] mt-1 font-medium">{unreadCount} unread notifications</p>
               )}
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+                className="px-5 py-2.5 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all text-sm font-semibold hover:scale-105"
               >
                 Mark all read
               </button>
@@ -164,7 +164,7 @@ const NotificationsPage = () => {
             {notifications.some(n => n.read) && (
               <button
                 onClick={handleClearRead}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm font-medium"
+                className="px-5 py-2.5 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all text-sm font-semibold hover:scale-105"
               >
                 Clear read
               </button>
@@ -173,16 +173,16 @@ const NotificationsPage = () => {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-4 border-b border-gray-200">
+        <div className="flex gap-4 border-b-2 border-[#AEC3B0]">
           <button
             onClick={() => {
               setFilter('all');
               setCurrentPage(1);
             }}
-            className={`pb-3 px-1 font-medium text-sm transition ${
+            className={`pb-3 px-1 font-semibold text-sm transition ${
               filter === 'all'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'border-b-2 border-[#345635] text-[#345635]'
+                : 'text-[#6B8F71] hover:text-[#345635]'
             }`}
           >
             All Notifications
@@ -192,10 +192,10 @@ const NotificationsPage = () => {
               setFilter('unread');
               setCurrentPage(1);
             }}
-            className={`pb-3 px-1 font-medium text-sm transition ${
+            className={`pb-3 px-1 font-semibold text-sm transition ${
               filter === 'unread'
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'border-b-2 border-[#345635] text-[#345635]'
+                : 'text-[#6B8F71] hover:text-[#345635]'
             }`}
           >
             Unread ({unreadCount})
@@ -207,32 +207,34 @@ const NotificationsPage = () => {
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading notifications...</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
+            <p className="text-[#6B8F71] font-medium">Loading notifications...</p>
           </div>
         </div>
       ) : notifications.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-12 text-center">
-          <div className="text-6xl mb-4">🔔</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No notifications</h3>
-          <p className="text-gray-600">
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 text-center">
+          <div className="w-24 h-24 bg-gradient-to-br from-[#E3EFD3] to-[#AEC3B0] rounded-full mx-auto mb-6 flex items-center justify-center">
+            <span className="text-6xl">🔔</span>
+          </div>
+          <h3 className="text-2xl font-bold text-[#0D2B1D] mb-2">No notifications</h3>
+          <p className="text-[#6B8F71]">
             {filter === 'unread' ? "You're all caught up!" : 'No notifications yet'}
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {notifications.map((notification) => (
             <div
               key={notification._id}
               onClick={() => handleNotificationClick(notification)}
-              className={`bg-white rounded-lg shadow-md p-5 cursor-pointer transition hover:shadow-lg ${
-                !notification.read ? 'border-l-4 border-blue-600' : ''
+              className={`bg-white rounded-2xl shadow-lg p-5 cursor-pointer transition-all hover:shadow-2xl hover:scale-[1.02] ${
+                !notification.read ? 'border-l-4 border-[#345635]' : 'border-2 border-[#AEC3B0]'
               }`}
             >
               <div className="flex gap-4">
                 {/* Icon */}
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#345635] to-[#6B8F71] flex items-center justify-center text-2xl shadow-lg">
                     {getNotificationIcon(notification.type)}
                   </div>
                 </div>
@@ -242,17 +244,17 @@ const NotificationsPage = () => {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className={`text-lg font-semibold text-gray-900 ${
+                        <h3 className={`text-lg font-semibold text-[#0D2B1D] ${
                           !notification.read ? 'font-bold' : ''
                         }`}>
                           {notification.title}
                         </h3>
                         {!notification.read && (
-                          <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
+                          <span className="w-2.5 h-2.5 bg-[#345635] rounded-full animate-pulse"></span>
                         )}
                       </div>
-                      <p className="text-gray-700 mb-2">{notification.message}</p>
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <p className="text-[#345635] mb-2">{notification.message}</p>
+                      <div className="flex items-center gap-3 text-xs text-[#6B8F71] font-medium">
                         <span>{formatDate(notification.createdAt)}</span>
                         <span>•</span>
                         {getPriorityBadge(notification.priority)}
@@ -262,7 +264,7 @@ const NotificationsPage = () => {
                     {/* Delete Button */}
                     <button
                       onClick={(e) => handleDelete(notification._id, e)}
-                      className="text-gray-400 hover:text-red-600 transition ml-4"
+                      className="text-[#6B8F71] hover:text-red-600 transition-all ml-4 hover:scale-110"
                       aria-label="Delete notification"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -278,9 +280,9 @@ const NotificationsPage = () => {
 
                   {/* Action Button */}
                   {notification.actionUrl && (
-                    <button className="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
+                    <button className="mt-2 text-sm text-[#345635] hover:text-[#0D2B1D] font-semibold flex items-center gap-1 group">
                       View Details
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
@@ -294,21 +296,21 @@ const NotificationsPage = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-3 mt-8">
           <button
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="px-5 py-2.5 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold hover:scale-105"
           >
             Previous
           </button>
-          <span className="px-4 py-2 text-gray-700 font-medium">
+          <span className="px-5 py-2.5 text-[#0D2B1D] font-bold bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] rounded-xl">
             Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="px-5 py-2.5 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold hover:scale-105"
           >
             Next
           </button>

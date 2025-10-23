@@ -101,9 +101,9 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+        <div className="text-center animate-fade-in-up">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#E3EFD3] border-t-[#345635] mx-auto mb-4"></div>
+          <p className="text-[#345635] font-medium">Loading profile...</p>
         </div>
       </div>
     );
@@ -123,17 +123,22 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
   // Show completed profile view (like Upwork/Freelancer)
   return (
     <div className="max-w-5xl mx-auto">
-      {/* Profile Header Card */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+      {/* Profile Header Card - Emerald Theme */}
+      <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] overflow-hidden mb-6 hover:shadow-2xl transition-all duration-300 animate-fade-in-up">
         <div className="relative">
-          {/* Cover Image */}
-          <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700"></div>
+          {/* Cover Image - Emerald Gradient */}
+          <div className="h-32 bg-gradient-to-r from-[#0D2B1D] via-[#345635] to-[#6B8F71] relative overflow-hidden">
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-blob animation-delay-2000"></div>
+            </div>
+          </div>
           
           {/* Profile Picture & Basic Info */}
           <div className="px-8 pb-6">
             <div className="flex items-end -mt-16 mb-4">
-              <div className="relative">
-                <div className="w-32 h-32 bg-white rounded-full border-4 border-white shadow-lg flex items-center justify-center text-5xl font-bold text-blue-600">
+              <div className="relative group">
+                <div className="w-32 h-32 bg-white rounded-full border-4 border-white shadow-2xl flex items-center justify-center text-5xl font-bold bg-gradient-to-br from-[#345635] to-[#6B8F71] text-white group-hover:scale-105 transition-transform duration-300">
                   {user.profilePicture ? (
                     <img src={user.profilePicture} alt={user.fullName} className="w-full h-full rounded-full object-cover" />
                   ) : (
@@ -141,8 +146,8 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
                   )}
                 </div>
                 {user.profileCompleted && (
-                  <div className="absolute bottom-2 right-2 bg-green-500 rounded-full p-1 border-2 border-white">
-                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="absolute bottom-2 right-2 bg-gradient-to-r from-[#6B8F71] to-[#345635] rounded-full p-1.5 border-2 border-white shadow-lg animate-pulse-soft">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                     </svg>
                   </div>
@@ -152,16 +157,16 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
               <div className="ml-6 flex-1 mb-2">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h1 className="text-3xl font-bold text-gray-900">{user.fullName}</h1>
+                    <h1 className="text-3xl font-bold text-[#0D2B1D]">{user.fullName}</h1>
                     <div className="flex items-center gap-3 mt-1">
-                      <p className="text-gray-600 capitalize">{user.role}</p>
+                      <p className="text-[#6B8F71] capitalize font-medium">{user.role}</p>
                       {user.role === 'provider' && user.providerType && (
                         <>
-                          <span className="text-gray-400">•</span>
+                          <span className="text-[#AEC3B0]">•</span>
                           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             user.providerType === 'Technical' 
-                              ? 'bg-blue-100 text-blue-700' 
-                              : 'bg-green-100 text-green-700'
+                              ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white' 
+                              : 'bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0] text-white'
                           }`}>
                             {user.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
                           </span>
@@ -171,7 +176,7 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
                   </div>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                    className="px-5 py-2.5 bg-gradient-to-r from-[#345635] to-[#0D2B1D] text-white rounded-xl hover:from-[#0D2B1D] hover:to-[#345635] transition-all hover:scale-105 hover:shadow-lg flex items-center gap-2 font-medium"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -185,44 +190,50 @@ const ProfileView = ({ user: initialUser }: ProfileViewProps) => {
             {/* Bio */}
             {user.bio && (
               <div className="mt-4">
-                <p className="text-gray-700 text-lg">{user.bio}</p>
+                <p className="text-[#345635] text-lg leading-relaxed">{user.bio}</p>
               </div>
             )}
 
-            {/* Stats Row */}
-            <div className="flex gap-6 mt-6 pt-6 border-t border-gray-200">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900">{user.rating?.toFixed(1) || '0.0'}</p>
-                <p className="text-sm text-gray-600">Rating</p>
+            {/* Stats Row - Emerald Theme */}
+            <div className="flex gap-6 mt-6 pt-6 border-t-2 border-[#E3EFD3]">
+              <div className="text-center group cursor-pointer">
+                <div className="w-16 h-16 mx-auto mb-2 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <p className="text-2xl font-bold text-white">{user.rating?.toFixed(1) || '0.0'}</p>
+                </div>
+                <p className="text-sm text-[#6B8F71] font-medium">Rating</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900">{user.completedJobs || 0}</p>
-                <p className="text-sm text-gray-600">Jobs Completed</p>
+              <div className="text-center group cursor-pointer">
+                <div className="w-16 h-16 mx-auto mb-2 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <p className="text-2xl font-bold text-white">{user.completedJobs || 0}</p>
+                </div>
+                <p className="text-sm text-[#6B8F71] font-medium">Jobs Completed</p>
               </div>
               {user.role === 'provider' && user.demoVerification && (
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className={`text-2xl font-bold ${
-                      user.demoVerification.status === 'verified' ? 'text-green-600' :
-                      user.demoVerification.status === 'under_review' ? 'text-yellow-600' :
-                      user.demoVerification.status === 'rejected' ? 'text-red-600' :
-                      'text-gray-600'
-                    }`}>
-                      {user.demoVerification.score || '--'}
-                    </span>
-                    <span className="text-xl">
-                      {user.demoVerification.status === 'verified' ? '✅' :
-                       user.demoVerification.status === 'under_review' ? '⏳' :
-                       user.demoVerification.status === 'rejected' ? '❌' : '📋'}
-                    </span>
+                <div className="text-center group cursor-pointer">
+                  <div className={`w-16 h-16 mx-auto mb-2 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                    user.demoVerification.status === 'verified' ? 'bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0]' :
+                    user.demoVerification.status === 'under_review' ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
+                    user.demoVerification.status === 'rejected' ? 'bg-gradient-to-br from-red-400 to-red-600' :
+                    'bg-gradient-to-br from-gray-400 to-gray-600'
+                  }`}>
+                    <div className="flex items-center gap-1">
+                      <span className="text-2xl font-bold text-white">{user.demoVerification.score || '--'}</span>
+                      <span className="text-xl">
+                        {user.demoVerification.status === 'verified' ? '✅' :
+                         user.demoVerification.status === 'under_review' ? '⏳' :
+                         user.demoVerification.status === 'rejected' ? '❌' : '📋'}
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">Demo Score</p>
+                  <p className="text-sm text-[#6B8F71] font-medium">Demo Score</p>
                 </div>
               )}
               {user.hourlyRate && (
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-green-600">₹{user.hourlyRate}/hr</p>
-                  <p className="text-sm text-gray-600">Hourly Rate</p>
+                <div className="text-center group cursor-pointer">
+                  <div className="w-16 h-16 mx-auto mb-2 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <p className="text-xl font-bold text-[#0D2B1D]">₹{user.hourlyRate}</p>
+                  </div>
+                  <p className="text-sm text-[#6B8F71] font-medium">Hourly Rate</p>
                 </div>
               )}
             </div>

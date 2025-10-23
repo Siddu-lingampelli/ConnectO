@@ -75,61 +75,69 @@ const Leaderboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9] py-8">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Back Button */}
+        {/* Back Button - Emerald Theme */}
         <button
           onClick={() => navigate('/dashboard')}
-          className="mb-6 flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="mb-6 flex items-center gap-2 text-[#345635] hover:text-[#0D2B1D] transition-all hover:scale-105 group font-medium"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span className="font-medium">Back to Dashboard</span>
+          <span>Back to Dashboard</span>
         </button>
 
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            🏆 Leaderboard
+        {/* Header - Emerald Theme */}
+        <div className="text-center mb-8 animate-fade-in-up">
+          <div className="inline-block mb-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center shadow-xl animate-pulse-soft">
+              <span className="text-5xl">🏆</span>
+            </div>
+          </div>
+          <h1 className="text-4xl font-bold text-[#0D2B1D] mb-2">
+            Leaderboard
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[#6B8F71] text-lg">
             See how you rank among the top service providers
           </p>
         </div>
 
-        {/* My Rank Card (Only for Providers) */}
+        {/* My Rank Card (Only for Providers) - Emerald Theme */}
         {user?.role === 'provider' && myRank && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border-2 border-blue-500">
+          <div className="bg-white rounded-2xl shadow-xl border-2 border-[#6B8F71] p-6 mb-6 animate-fade-in-up hover:shadow-2xl transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">Your Rank</h3>
+                <h3 className="text-lg font-semibold text-[#345635] mb-3 flex items-center gap-2">
+                  <span className="w-1 h-6 bg-gradient-to-b from-[#345635] to-[#6B8F71] rounded-full"></span>
+                  Your Rank
+                </h3>
                 <div className="flex items-center gap-4">
                   <div className="text-center">
-                    <p className="text-4xl font-bold text-blue-600">#{myRank.rank}</p>
-                    <p className="text-xs text-gray-500">out of {myRank.totalProviders}</p>
+                    <p className="text-5xl font-bold bg-gradient-to-r from-[#0D2B1D] to-[#345635] bg-clip-text text-transparent">#{myRank.rank}</p>
+                    <p className="text-xs text-[#6B8F71] mt-1">out of {myRank.totalProviders}</p>
                   </div>
-                  <div className="text-center px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg">
-                    <p className="text-sm text-gray-600">Top</p>
-                    <p className="text-xl font-bold text-green-600">{myRank.percentile}%</p>
+                  <div className="text-center px-6 py-3 bg-gradient-to-r from-[#AEC3B0] to-[#E3EFD3] rounded-xl shadow-md">
+                    <p className="text-sm text-[#345635] font-medium">Top</p>
+                    <p className="text-2xl font-bold text-[#0D2B1D]">{myRank.percentile}%</p>
                   </div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="mb-2">
-                  <span className="text-sm text-gray-600">Level </span>
-                  <span className={`text-2xl font-bold bg-gradient-to-r ${getLevelColor(myRank.user.level)} bg-clip-text text-transparent`}>
+                <div className="mb-3">
+                  <span className="text-sm text-[#6B8F71]">Level </span>
+                  <span className={`text-3xl font-bold bg-gradient-to-r ${getLevelColor(myRank.user.level)} bg-clip-text text-transparent`}>
                     {myRank.user.level}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500">XP</p>
-                    <p className="text-lg font-bold text-blue-600">{myRank.user.xp}</p>
+                <div className="flex items-center gap-4">
+                  <div className="text-center px-4 py-2 bg-[#E3EFD3]/50 rounded-lg">
+                    <p className="text-xs text-[#6B8F71] mb-1">XP</p>
+                    <p className="text-xl font-bold text-[#345635]">{myRank.user.xp}</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500">Badges</p>
-                    <p className="text-lg font-bold text-yellow-600">{myRank.user.badges}</p>
+                  <div className="text-center px-4 py-2 bg-[#E3EFD3]/50 rounded-lg">
+                    <p className="text-xs text-[#6B8F71] mb-1">Badges</p>
+                    <p className="text-xl font-bold text-[#345635]">{myRank.user.badges}</p>
                   </div>
                 </div>
               </div>
@@ -137,121 +145,137 @@ const Leaderboard: React.FC = () => {
           </div>
         )}
 
-        {/* Stats Cards */}
+        {/* Stats Cards - Emerald Theme */}
         {stats && (
           <div className="grid md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-xl shadow-md p-4 text-center">
-              <p className="text-sm text-gray-600 mb-1">Total Providers</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.totalProviders}</p>
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#E3EFD3] p-5 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 animate-fade-in-up group">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-xl mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="text-2xl">👥</span>
+              </div>
+              <p className="text-sm text-[#6B8F71] mb-1 font-medium">Total Providers</p>
+              <p className="text-2xl font-bold text-[#0D2B1D]">{stats.totalProviders}</p>
             </div>
             {stats.highestLevel && (
-              <div className="bg-white rounded-xl shadow-md p-4 text-center">
-                <p className="text-sm text-gray-600 mb-1">Highest Level</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.highestLevel.level}</p>
-                <p className="text-xs text-gray-500">{stats.highestLevel.name}</p>
+              <div className="bg-white rounded-2xl shadow-lg border-2 border-[#E3EFD3] p-5 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 animate-fade-in-up group" style={{ animationDelay: '100ms' }}>
+                <div className="w-12 h-12 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-xl mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <span className="text-2xl">⭐</span>
+                </div>
+                <p className="text-sm text-[#6B8F71] mb-1 font-medium">Highest Level</p>
+                <p className="text-2xl font-bold text-[#0D2B1D]">{stats.highestLevel.level}</p>
+                <p className="text-xs text-[#6B8F71]">{stats.highestLevel.name}</p>
               </div>
             )}
-            <div className="bg-white rounded-xl shadow-md p-4 text-center">
-              <p className="text-sm text-gray-600 mb-1">Avg Level</p>
-              <p className="text-2xl font-bold text-green-600">{stats.averages.avgLevel.toFixed(1)}</p>
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#E3EFD3] p-5 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 animate-fade-in-up group" style={{ animationDelay: '200ms' }}>
+              <div className="w-12 h-12 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-xl mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="text-2xl">📊</span>
+              </div>
+              <p className="text-sm text-[#6B8F71] mb-1 font-medium">Avg Level</p>
+              <p className="text-2xl font-bold text-[#0D2B1D]">{stats.averages.avgLevel.toFixed(1)}</p>
             </div>
-            <div className="bg-white rounded-xl shadow-md p-4 text-center">
-              <p className="text-sm text-gray-600 mb-1">Avg Rating</p>
-              <p className="text-2xl font-bold text-yellow-600">{stats.averages.avgRating.toFixed(1)} ⭐</p>
+            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#E3EFD3] p-5 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 animate-fade-in-up group" style={{ animationDelay: '300ms' }}>
+              <div className="w-12 h-12 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-xl mx-auto mb-3 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="text-2xl">⭐</span>
+              </div>
+              <p className="text-sm text-[#6B8F71] mb-1 font-medium">Avg Rating</p>
+              <p className="text-2xl font-bold text-[#0D2B1D]">{stats.averages.avgRating.toFixed(1)}</p>
             </div>
           </div>
         )}
 
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-6">
+        {/* Filters - Emerald Theme */}
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-[#E3EFD3] p-5 mb-6 animate-fade-in-up hover:shadow-xl transition-all duration-300">
           <div className="flex flex-wrap gap-4 items-center">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mr-2">Provider Type:</label>
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-semibold text-[#345635]">Provider Type:</label>
               <select
                 value={providerType}
                 onChange={(e) => setProviderType(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:ring-2 focus:ring-[#6B8F71] focus:border-[#345635] transition-all bg-white text-[#345635] font-medium hover:border-[#6B8F71]"
               >
                 <option value="all">All Types</option>
                 <option value="Technical">💻 Technical</option>
                 <option value="Non-Technical">🔧 Non-Technical</option>
               </select>
             </div>
-            <div className="text-sm text-gray-500 ml-auto">
-              📊 Showing all-time rankings
+            <div className="text-sm text-[#6B8F71] ml-auto flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-[#345635] rounded-full animate-pulse-soft"></span>
+              Showing all-time rankings
             </div>
           </div>
         </div>
 
-        {/* Leaderboard Table */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        {/* Leaderboard Table - Emerald Theme */}
+        <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] overflow-hidden animate-fade-in-up">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#345635]"></div>
             </div>
           ) : leaderboard.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No providers found for the selected filters</p>
+              <div className="w-20 h-20 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                <span className="text-4xl">🔍</span>
+              </div>
+              <p className="text-[#6B8F71] font-medium">No providers found for the selected filters</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                <thead className="bg-gradient-to-r from-[#0D2B1D] via-[#345635] to-[#6B8F71] text-white">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Rank</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold">Provider</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Level</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">XP</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Badges</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Jobs</th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold">Rating</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold">Rank</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold">Provider</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold">Level</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold">XP</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold">Badges</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold">Jobs</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold">Rating</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-[#E3EFD3]">
                   {leaderboard.map((entry) => (
                     <tr
                       key={entry.user._id}
-                      className={`hover:bg-blue-50 transition-colors ${
-                        entry.user._id === user?._id ? 'bg-blue-100' : ''
+                      className={`hover:bg-[#F8FBF9] transition-all duration-200 ${
+                        entry.user._id === user?._id ? 'bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] border-l-4 border-[#345635]' : ''
                       }`}
                     >
-                      {/* Rank */}
+                      {/* Rank - Emerald Theme */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           {getRankBadge(entry.rank)}
                         </div>
                       </td>
                       
-                      {/* Provider */}
+                      {/* Provider - Emerald Theme */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {entry.user.profilePicture ? (
                             <img
                               src={entry.user.profilePicture}
                               alt={entry.user.fullName}
-                              className="w-10 h-10 rounded-full object-cover"
+                              className="w-12 h-12 rounded-full object-cover border-2 border-[#AEC3B0] shadow-md"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#345635] to-[#6B8F71] flex items-center justify-center text-white font-bold shadow-md">
                               {entry.user.fullName.charAt(0)}
                             </div>
                           )}
                           <div>
-                            <p className="font-semibold text-gray-900">
+                            <p className="font-bold text-[#0D2B1D]">
                               {entry.user.fullName}
                               {entry.user._id === user?._id && (
-                                <span className="ml-2 text-xs bg-blue-500 text-white px-2 py-0.5 rounded-full">
+                                <span className="ml-2 text-xs bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white px-2 py-1 rounded-full font-semibold shadow-sm">
                                   You
                                 </span>
                               )}
                             </p>
-                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <div className="flex items-center gap-2 text-xs text-[#6B8F71] mt-1">
                               {entry.user.city && <span>📍 {entry.user.city}</span>}
                               {entry.user.providerType && (
-                                <span className={`px-2 py-0.5 rounded-full ${
+                                <span className={`px-2 py-0.5 rounded-full font-medium ${
                                   entry.user.providerType === 'Technical'
-                                    ? 'bg-blue-100 text-blue-700'
-                                    : 'bg-green-100 text-green-700'
+                                    ? 'bg-[#E3EFD3] text-[#345635]'
+                                    : 'bg-[#AEC3B0] text-[#0D2B1D]'
                                 }`}>
                                   {entry.user.providerType === 'Technical' ? '💻' : '🔧'}
                                 </span>
@@ -261,36 +285,39 @@ const Leaderboard: React.FC = () => {
                         </div>
                       </td>
                       
-                      {/* Level */}
+                      {/* Level - Emerald Theme */}
                       <td className="px-6 py-4 text-center">
-                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${getLevelColor(entry.level)} text-white font-bold shadow-lg`}>
+                        <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br ${getLevelColor(entry.level)} text-white font-bold shadow-lg hover:scale-110 transition-transform`}>
                           {entry.level}
                         </div>
                       </td>
                       
-                      {/* XP */}
+                      {/* XP - Emerald Theme */}
                       <td className="px-6 py-4 text-center">
-                        <p className="text-lg font-bold text-blue-600">{entry.xp.toLocaleString()}</p>
+                        <p className="text-lg font-bold text-[#345635]">{entry.xp.toLocaleString()}</p>
+                        <p className="text-xs text-[#6B8F71]">XP</p>
                       </td>
                       
-                      {/* Badges */}
+                      {/* Badges - Emerald Theme */}
                       <td className="px-6 py-4 text-center">
-                        <p className="text-lg font-bold text-yellow-600">{entry.badges} 🏆</p>
+                        <p className="text-lg font-bold text-[#0D2B1D]">{entry.badges} 🏆</p>
+                        <p className="text-xs text-[#6B8F71]">badges</p>
                       </td>
                       
-                      {/* Jobs */}
+                      {/* Jobs - Emerald Theme */}
                       <td className="px-6 py-4 text-center">
-                        <p className="text-lg font-semibold text-gray-700">{entry.completedJobs}</p>
+                        <p className="text-lg font-bold text-[#345635]">{entry.completedJobs}</p>
+                        <p className="text-xs text-[#6B8F71]">jobs</p>
                       </td>
                       
-                      {/* Rating */}
+                      {/* Rating - Emerald Theme */}
                       <td className="px-6 py-4 text-center">
                         <div>
-                          <p className="text-lg font-bold text-yellow-600">
-                            {entry.rating > 0 ? entry.rating.toFixed(1) : '—'}
+                          <p className="text-lg font-bold text-[#0D2B1D]">
+                            {entry.rating > 0 ? `${entry.rating.toFixed(1)} ⭐` : '—'}
                           </p>
                           {entry.totalReviews > 0 && (
-                            <p className="text-xs text-gray-500">({entry.totalReviews} reviews)</p>
+                            <p className="text-xs text-[#6B8F71]">({entry.totalReviews} reviews)</p>
                           )}
                         </div>
                       </td>
@@ -302,56 +329,78 @@ const Leaderboard: React.FC = () => {
           )}
         </div>
 
-        {/* How XP Works */}
-        <div className="mt-8 bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">🎮 How XP Works</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-              <span className="text-3xl">🎯</span>
-              <div>
-                <p className="font-semibold text-gray-900">Complete Demo Project</p>
-                <p className="text-sm text-gray-600">+50 XP</p>
+        {/* How XP Works - Emerald Theme */}
+        <div className="mt-8 bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-8 animate-fade-in-up hover:shadow-2xl transition-all duration-300">
+          <div className="text-center mb-6">
+            <div className="inline-block mb-3">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-3xl">🎮</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-              <span className="text-3xl">✅</span>
+            <h2 className="text-3xl font-bold text-[#0D2B1D]">How XP Works</h2>
+            <p className="text-[#6B8F71] mt-2">Earn experience points to level up and climb the leaderboard</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl border-2 border-[#AEC3B0] hover:scale-105 transition-all duration-300 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <span className="text-3xl">🎯</span>
+              </div>
               <div>
-                <p className="font-semibold text-gray-900">Complete Job</p>
-                <p className="text-sm text-gray-600">+40 XP</p>
+                <p className="font-bold text-[#0D2B1D]">Complete Demo Project</p>
+                <p className="text-sm text-[#6B8F71] font-semibold">+50 XP</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
-              <span className="text-3xl">⭐</span>
+            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl border-2 border-[#AEC3B0] hover:scale-105 transition-all duration-300 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <span className="text-3xl">✅</span>
+              </div>
               <div>
-                <p className="font-semibold text-gray-900">Excellent Review (5 stars)</p>
-                <p className="text-sm text-gray-600">+50 XP</p>
+                <p className="font-bold text-[#0D2B1D]">Complete Job</p>
+                <p className="text-sm text-[#6B8F71] font-semibold">+40 XP</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-              <span className="text-3xl">📅</span>
+            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl border-2 border-[#AEC3B0] hover:scale-105 transition-all duration-300 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <span className="text-3xl">⭐</span>
+              </div>
               <div>
-                <p className="font-semibold text-gray-900">Daily Login</p>
-                <p className="text-sm text-gray-600">+10 XP</p>
+                <p className="font-bold text-[#0D2B1D]">Excellent Review (5 stars)</p>
+                <p className="text-sm text-[#6B8F71] font-semibold">+50 XP</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-pink-50 rounded-lg">
-              <span className="text-3xl">✔️</span>
+            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl border-2 border-[#AEC3B0] hover:scale-105 transition-all duration-300 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <span className="text-3xl">📅</span>
+              </div>
               <div>
-                <p className="font-semibold text-gray-900">Verification Complete</p>
-                <p className="text-sm text-gray-600">+75 XP</p>
+                <p className="font-bold text-[#0D2B1D]">Daily Login</p>
+                <p className="text-sm text-[#6B8F71] font-semibold">+10 XP</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg">
-              <span className="text-3xl">👤</span>
+            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl border-2 border-[#AEC3B0] hover:scale-105 transition-all duration-300 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <span className="text-3xl">✔️</span>
+              </div>
               <div>
-                <p className="font-semibold text-gray-900">Complete Profile</p>
-                <p className="text-sm text-gray-600">+20 XP</p>
+                <p className="font-bold text-[#0D2B1D]">Verification Complete</p>
+                <p className="text-sm text-[#6B8F71] font-semibold">+75 XP</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl border-2 border-[#AEC3B0] hover:scale-105 transition-all duration-300 group">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <span className="text-3xl">👤</span>
+              </div>
+              <div>
+                <p className="font-bold text-[#0D2B1D]">Complete Profile</p>
+                <p className="text-sm text-[#6B8F71] font-semibold">+20 XP</p>
               </div>
             </div>
           </div>
-          <p className="mt-4 text-sm text-gray-600 text-center">
-            💡 <strong>Level Up:</strong> You need 100 XP to advance to the next level!
-          </p>
+          <div className="mt-6 p-4 bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0] rounded-xl shadow-md">
+            <p className="text-sm text-white text-center font-semibold">
+              💡 <strong>Level Up:</strong> You need 100 XP to advance to the next level!
+            </p>
+          </div>
         </div>
       </div>
     </div>

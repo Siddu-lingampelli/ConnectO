@@ -17,6 +17,22 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Category is required'],
     enum: [
+      // Technical Categories
+      'Web Development',
+      'Mobile App Development',
+      'Software Development',
+      'UI/UX Design',
+      'Graphic Design',
+      'Digital Marketing',
+      'Content Writing',
+      'Video Editing',
+      'Data Entry',
+      'Virtual Assistant',
+      'SEO Services',
+      'Social Media Management',
+      'IT Support',
+      'Other Technical Services',
+      // Non-Technical Categories
       'Plumbing',
       'Electrical',
       'Carpentry',
@@ -30,8 +46,10 @@ const jobSchema = new mongoose.Schema({
       'Home Renovation',
       'Interior Design',
       'Beauty & Wellness',
-      'IT & Tech Support',
-      'Other Services'
+      'Catering',
+      'Photography',
+      'Event Planning',
+      'Other Non-Technical Services'
     ]
   },
   providerType: {

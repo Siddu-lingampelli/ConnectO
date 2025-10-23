@@ -478,3 +478,63 @@ export const getOrderStats = async (req, res) => {
     });
   }
 };
+
+// @desc    Get rehire info for a provider
+// @route   GET /api/orders/provider/:providerId/rehire-info
+// @access  Private (Client only)
+export const getRehireInfo = async (req, res) => {
+  try {
+    const { providerId } = req.params;
+
+    // Get past completed orders with this provider
+    const completedOrders = await Order.find({
+      client: req.user._id,
+      provider: providerId,
+      status: 'completed'
+    })
+      .populate({
+        path: 'job',
+        select: 'title category budget'
+      })
+      .populate({
+        path: 'provider',
+        select: 'fullName email phone profilePicture skills rating completedJobs hourlyRate'
+      })
+      .sort({ completedAt: -1 })
+      .limit(5);
+
+    if (completedOrders.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No completed orders found with this provider'
+      });
+    }
+
+    // Calculate statistics
+    const totalSpent = completedOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
+    const avgRating = completedOrders.reduce((sum, order) => sum + (order.rating || 0), 0) / completedOrders.length;
+    const lastJob = completedOrders[0];
+
+    res.status(200).json({
+      success: true,
+      data: {
+        provider: completedOrders[0].provider,
+        pastOrders: completedOrders,
+        stats: {
+          totalOrders: completedOrders.length,
+          totalSpent: totalSpent,
+          averageRating: avgRating || 0,
+          lastCompletedDate: lastJob.completedAt,
+          lastJobTitle: lastJob.job?.title
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Get rehire info error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch rehire information',
+      error: error.message
+    });
+  }
+};

@@ -124,123 +124,134 @@ const Referrals = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading referral data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#345635] mx-auto"></div>
+          <p className="mt-4 text-[#6B8F71] font-medium">Loading referral data...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9] py-8">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
+        {/* Header - Emerald Theme */}
+        <div className="mb-8 animate-fade-in-up">
           <div className="flex items-center gap-4 mb-4">
             <button
               onClick={() => navigate(-1)}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-[#345635] hover:text-[#0D2B1D] transition-all hover:scale-105 group"
               title="Go back"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-7 h-7 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </button>
-            <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-2">
-              <FiGift className="text-blue-600" />
-              Referral Program
-            </h1>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center shadow-xl">
+                <FiGift className="text-4xl text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">
+                  Referral Program
+                </h1>
+                <p className="mt-1 text-[#6B8F71] text-lg">
+                  Invite friends and earn rewards! Get ₹50 credits + 100 XP for each successful referral.
+                </p>
+              </div>
+            </div>
           </div>
-          <p className="mt-2 text-gray-600">
-            Invite friends and earn rewards! Get ₹50 credits + 100 XP for each successful referral.
-          </p>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - Emerald Theme */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+          <div className="bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-2xl shadow-xl p-6 text-white hover:scale-105 transition-all duration-300 animate-fade-in-up">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm font-medium">Total Referrals</p>
-                <p className="text-3xl font-bold mt-1">{stats?.referralCount || 0}</p>
+                <p className="text-[#E3EFD3] text-sm font-medium">Total Referrals</p>
+                <p className="text-4xl font-bold mt-1">{stats?.referralCount || 0}</p>
               </div>
-              <FiUsers className="text-4xl text-blue-200" />
+              <FiUsers className="text-5xl text-[#AEC3B0]" />
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+          <div className="bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-2xl shadow-xl p-6 text-white hover:scale-105 transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-100 text-sm font-medium">Available Credits</p>
-                <p className="text-3xl font-bold mt-1">₹{stats?.referralCredits || 0}</p>
+                <p className="text-white text-sm font-medium">Available Credits</p>
+                <p className="text-4xl font-bold mt-1">₹{stats?.referralCredits || 0}</p>
               </div>
-              <FiDollarSign className="text-4xl text-green-200" />
+              <FiDollarSign className="text-5xl text-[#E3EFD3]" />
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+          <div className="bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-2xl shadow-xl p-6 text-[#0D2B1D] hover:scale-105 transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-100 text-sm font-medium">Total Earnings</p>
-                <p className="text-3xl font-bold mt-1">₹{stats?.referralEarnings || 0}</p>
+                <p className="text-[#345635] text-sm font-medium">Total Earnings</p>
+                <p className="text-4xl font-bold mt-1">₹{stats?.referralEarnings || 0}</p>
               </div>
-              <FiAward className="text-4xl text-purple-200" />
+              <FiAward className="text-5xl text-[#6B8F71]" />
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg p-6 text-white">
+          <div className="bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl shadow-xl p-6 text-white hover:scale-105 transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-orange-100 text-sm font-medium">Reward Per Referral</p>
+                <p className="text-[#AEC3B0] text-sm font-medium">Reward Per Referral</p>
                 <p className="text-2xl font-bold mt-1">₹50 + 100 XP</p>
               </div>
-              <FiGift className="text-4xl text-orange-200" />
+              <FiGift className="text-5xl text-[#6B8F71]" />
             </div>
           </div>
         </div>
 
-        {/* Referral Code Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Your Referral Code</h2>
+        {/* Referral Code Section - Emerald Theme */}
+        <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-8 mb-8 animate-fade-in-up hover:shadow-2xl transition-all duration-300">
+          <h2 className="text-2xl font-bold text-[#0D2B1D] mb-6 flex items-center gap-2">
+            <span className="w-1.5 h-8 bg-gradient-to-b from-[#345635] to-[#6B8F71] rounded-full"></span>
+            Your Referral Code
+          </h2>
           
           {stats?.referralCode ? (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="flex-1 bg-gray-100 rounded-lg p-4 font-mono text-2xl font-bold text-center text-blue-600 border-2 border-blue-200">
+                <div className="flex-1 bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-2xl p-6 font-mono text-3xl font-bold text-center text-[#0D2B1D] border-4 border-[#6B8F71] shadow-lg">
                   {stats.referralCode}
                 </div>
                 <button
                   onClick={copyReferralCode}
-                  className="px-6 py-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  className="px-8 py-4 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-lg flex items-center gap-2"
                 >
-                  <FiCopy /> Copy
+                  <FiCopy className="text-xl" /> Copy
                 </button>
                 <button
                   onClick={shareReferral}
-                  className="px-6 py-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
+                  className="px-8 py-4 bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0] text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-lg flex items-center gap-2"
                 >
-                  <FiShare2 /> Share
+                  <FiShare2 className="text-xl" /> Share
                 </button>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-blue-800">
+              <div className="bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] border-2 border-[#AEC3B0] rounded-2xl p-4">
+                <p className="text-sm text-[#345635] font-medium">
                   <strong>Share this link:</strong>{' '}
-                  <code className="bg-white px-2 py-1 rounded text-blue-600">
+                  <code className="bg-white px-3 py-1.5 rounded-lg text-[#0D2B1D] font-mono text-xs border border-[#AEC3B0]">
                     {window.location.origin}/register?ref={stats.referralCode}
                   </code>
                 </p>
               </div>
             </div>
           ) : (
-            <div className="text-center py-8">
-              <FiGift className="text-6xl text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">You don't have a referral code yet</p>
+            <div className="text-center py-12">
+              <div className="w-24 h-24 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <FiGift className="text-6xl text-[#345635]" />
+              </div>
+              <p className="text-[#6B8F71] mb-6 text-lg font-medium">You don't have a referral code yet</p>
               <button
                 onClick={generateReferralCode}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="px-8 py-4 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-2xl font-bold hover:scale-105 transition-all shadow-lg"
               >
                 Generate Referral Code
               </button>
@@ -248,36 +259,36 @@ const Referrals = () => {
           )}
         </div>
 
-        {/* Tabs */}
-        <div className="mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
+        {/* Tabs - Emerald Theme */}
+        <div className="mb-6 animate-fade-in-up">
+          <div className="border-b-2 border-[#E3EFD3]">
+            <nav className="-mb-0.5 flex space-x-8">
               <button
                 onClick={() => setActiveTab('overview')}
-                className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`pb-4 px-1 border-b-4 font-bold text-sm transition-all ${
                   activeTab === 'overview'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-[#345635] text-[#0D2B1D] scale-105'
+                    : 'border-transparent text-[#6B8F71] hover:text-[#345635] hover:border-[#AEC3B0]'
                 }`}
               >
                 Overview
               </button>
               <button
                 onClick={() => setActiveTab('referred')}
-                className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`pb-4 px-1 border-b-4 font-bold text-sm transition-all ${
                   activeTab === 'referred'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-[#345635] text-[#0D2B1D] scale-105'
+                    : 'border-transparent text-[#6B8F71] hover:text-[#345635] hover:border-[#AEC3B0]'
                 }`}
               >
                 People You Invited ({stats?.referredUsers.length || 0})
               </button>
               <button
                 onClick={() => setActiveTab('leaderboard')}
-                className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`pb-4 px-1 border-b-4 font-bold text-sm transition-all ${
                   activeTab === 'leaderboard'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-[#345635] text-[#0D2B1D] scale-105'
+                    : 'border-transparent text-[#6B8F71] hover:text-[#345635] hover:border-[#AEC3B0]'
                 }`}
               >
                 Leaderboard
@@ -289,88 +300,91 @@ const Referrals = () => {
         {/* Tab Content */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* How It Works */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">How It Works</h2>
+            {/* How It Works - Emerald Theme */}
+            <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-8 animate-fade-in-up hover:shadow-2xl transition-all">
+              <h2 className="text-2xl font-bold text-[#0D2B1D] mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-8 bg-gradient-to-b from-[#345635] to-[#6B8F71] rounded-full"></span>
+                How It Works
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-6 bg-blue-50 rounded-lg">
-                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                <div className="text-center p-6 bg-gradient-to-br from-[#E3EFD3] to-[#F8FBF9] rounded-2xl border-2 border-[#AEC3B0] hover:scale-105 transition-all">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 shadow-lg">
                     1
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Share Your Code</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-bold text-[#0D2B1D] mb-2">Share Your Code</h3>
+                  <p className="text-sm text-[#6B8F71]">
                     Share your unique referral code with friends and family
                   </p>
                 </div>
 
-                <div className="text-center p-6 bg-green-50 rounded-lg">
-                  <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                <div className="text-center p-6 bg-gradient-to-br from-[#E3EFD3] to-[#F8FBF9] rounded-2xl border-2 border-[#AEC3B0] hover:scale-105 transition-all">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 shadow-lg">
                     2
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">They Sign Up</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-bold text-[#0D2B1D] mb-2">They Sign Up</h3>
+                  <p className="text-sm text-[#6B8F71]">
                     When they register using your code, you get rewards
                   </p>
                 </div>
 
-                <div className="text-center p-6 bg-purple-50 rounded-lg">
-                  <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+                <div className="text-center p-6 bg-gradient-to-br from-[#E3EFD3] to-[#F8FBF9] rounded-2xl border-2 border-[#AEC3B0] hover:scale-105 transition-all">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#AEC3B0] to-[#E3EFD3] rounded-full flex items-center justify-center text-[#0D2B1D] text-2xl font-bold mx-auto mb-4 shadow-lg">
                     3
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Earn Rewards</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-bold text-[#0D2B1D] mb-2">Earn Rewards</h3>
+                  <p className="text-sm text-[#6B8F71]">
                     Get credits + XP based on who you refer
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Role-Specific Benefits */}
+            {/* Role-Specific Benefits - Emerald Theme */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Provider Benefits */}
-              <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl shadow-md p-6 border border-blue-100">
-                <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-blue-900">
+              <div className="bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-2xl shadow-xl p-6 border-2 border-[#0D2B1D] text-white hover:scale-102 transition-all animate-fade-in-up">
+                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                   <span className="text-2xl">💼</span>
                   For Service Providers
                 </h2>
                 <div className="space-y-3">
-                  <div className="flex items-start gap-2 bg-white/60 rounded-lg p-3">
+                  <div className="flex items-start gap-2 bg-white/20 backdrop-blur-sm rounded-xl p-3 hover:bg-white/30 transition-all">
                     <span className="text-lg">🎯</span>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900 text-sm">Dynamic Rewards</h3>
-                      <p className="text-xs text-blue-700 mt-1">
+                      <h3 className="font-semibold text-sm">Dynamic Rewards</h3>
+                      <p className="text-xs text-[#E3EFD3] mt-1">
                         Provider: <span className="font-bold">₹75 + 150 XP</span><br/>
                         Client: <span className="font-bold">₹60 + 110 XP</span>
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 bg-white/60 rounded-lg p-3">
+                  <div className="flex items-start gap-2 bg-white/20 backdrop-blur-sm rounded-xl p-3 hover:bg-white/30 transition-all">
                     <span className="text-lg">🤝</span>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900 text-sm">Build Your Team</h3>
-                      <p className="text-xs text-blue-700 mt-1">5 providers = "Team Builder" badge</p>
+                      <h3 className="font-semibold text-sm">Build Your Team</h3>
+                      <p className="text-xs text-[#E3EFD3] mt-1">5 providers = "Team Builder" badge</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 bg-white/60 rounded-lg p-3">
+                  <div className="flex items-start gap-2 bg-white/20 backdrop-blur-sm rounded-xl p-3 hover:bg-white/30 transition-all">
                     <span className="text-lg">✅</span>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900 text-sm">Priority Verification</h3>
-                      <p className="text-xs text-blue-700 mt-1">10+ referrals unlock faster approval</p>
+                      <h3 className="font-semibold text-sm">Priority Verification</h3>
+                      <p className="text-xs text-[#E3EFD3] mt-1">10+ referrals unlock faster approval</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 bg-white/60 rounded-lg p-3">
+                  <div className="flex items-start gap-2 bg-white/20 backdrop-blur-sm rounded-xl p-3 hover:bg-white/30 transition-all">
                     <span className="text-lg">🏗️</span>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-blue-900 text-sm">Network Architect</h3>
-                      <p className="text-xs text-blue-700 mt-1">10+ providers = Exclusive badge</p>
+                      <h3 className="font-semibold text-sm">Network Architect</h3>
+                      <p className="text-xs text-[#E3EFD3] mt-1">10+ providers = Exclusive badge</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Client Benefits */}
-              <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-xl shadow-md p-6 border border-green-100">
-                <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-green-900">
+              <div className="bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-2xl shadow-xl p-6 border-2 border-[#345635] text-white hover:scale-102 transition-all animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                   <span className="text-2xl">🏢</span>
                   For Clients
                 </h2>

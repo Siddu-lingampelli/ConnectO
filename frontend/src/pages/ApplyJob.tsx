@@ -105,10 +105,10 @@ const ApplyJob = () => {
   // Only providers can access this page
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Please login to apply for jobs.</p>
+          <p className="text-[#6B8F71] font-medium">Please login to apply for jobs.</p>
         </main>
         <Footer />
       </div>
@@ -117,16 +117,18 @@ const ApplyJob = () => {
 
   if (currentUser.role !== 'provider') {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">🚫</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
-            <p className="text-gray-600 mb-6">Only service providers can apply for jobs.</p>
+          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
+            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">🚫</span>
+            </div>
+            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-3">Access Denied</h2>
+            <p className="text-[#6B8F71] mb-6">Only service providers can apply for jobs.</p>
             <button
               onClick={() => navigate('/jobs')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
             >
               Browse Jobs
             </button>
@@ -141,13 +143,15 @@ const ApplyJob = () => {
   const demoStatus = currentUser.demoVerification?.status;
   if (demoStatus !== 'verified') {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="max-w-2xl bg-white rounded-lg shadow-md p-8 text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Demo Project Verification Required</h2>
-            <p className="text-gray-700 mb-6">
+          <div className="max-w-2xl bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-8 text-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">⚠️</span>
+            </div>
+            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-4">Demo Project Verification Required</h2>
+            <p className="text-[#345635] mb-6">
               {demoStatus === 'not_assigned' || !demoStatus
                 ? 'You need to complete a demo project before applying for jobs. Please wait for admin to assign you a demo task.'
                 : demoStatus === 'pending'
@@ -168,13 +172,13 @@ const ApplyJob = () => {
             <div className="flex gap-4 justify-center">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
               >
                 Go to Dashboard
               </button>
               <button
                 onClick={() => navigate('/jobs')}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="px-6 py-3 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium hover:scale-105"
               >
                 Browse Jobs
               </button>
@@ -188,12 +192,12 @@ const ApplyJob = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading job details...</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
+            <p className="text-[#6B8F71] font-medium">Loading job details...</p>
           </div>
         </main>
         <Footer />
@@ -203,10 +207,10 @@ const ApplyJob = () => {
 
   if (!job) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
         <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-gray-600">Job not found.</p>
+          <p className="text-[#6B8F71] font-medium">Job not found.</p>
         </main>
         <Footer />
       </div>
@@ -219,7 +223,7 @@ const ApplyJob = () => {
   const providerTypeMismatch = currentUser?.providerType !== job.providerType;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -227,12 +231,22 @@ const ApplyJob = () => {
           <div className="mb-6">
             <button
               onClick={() => navigate('/jobs')}
-              className="text-gray-600 hover:text-gray-900 mb-4 flex items-center"
+              className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-4 transition-all duration-300 group"
             >
-              ← Back to Jobs
+              <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="font-medium">Back to Jobs</span>
             </button>
-            <h1 className="text-3xl font-bold text-gray-900">Apply for Job</h1>
-            <p className="text-gray-600 mt-2">Submit your proposal to the client</p>
+            <div className="flex items-center mb-3">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                <span className="text-3xl">📝</span>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-[#0D2B1D]">Apply for Job</h1>
+                <p className="text-[#6B8F71] mt-1">Submit your proposal to the client</p>
+              </div>
+            </div>
           </div>
 
           {/* Provider Type Mismatch Warning */}
@@ -262,45 +276,45 @@ const ApplyJob = () => {
           )}
 
           {/* Job Details Card */}
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 mb-6 hover:shadow-2xl hover:border-[#6B8F71] transition-all duration-300">
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{job.title}</h2>
-                <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
+                <h2 className="text-2xl font-bold text-[#0D2B1D] mb-2">{job.title}</h2>
+                <div className="flex flex-wrap items-center gap-3 text-sm text-[#6B8F71]">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white font-medium">
                     {job.category}
                   </span>
                   <span>📍 {job.location.city}, {job.location.area}</span>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-green-600">
+                <div className="text-3xl font-bold text-[#345635]">
                   ₹{job.budget.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-[#6B8F71]">
                   {job.budgetType === 'hourly' ? 'Per Hour' : 'Fixed Price'}
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-4">
-              <h3 className="font-semibold text-gray-900 mb-2">Job Description:</h3>
-              <p className="text-gray-700 mb-4">{job.description}</p>
+            <div className="border-t-2 border-[#AEC3B0] pt-4">
+              <h3 className="font-semibold text-[#0D2B1D] mb-2">Job Description:</h3>
+              <p className="text-[#345635] mb-4">{job.description}</p>
 
               {client && (
-                <div className="bg-gray-50 rounded-lg p-4 mt-4">
+                <div className="bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl p-4 mt-4 border-l-4 border-[#345635]">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-gray-900">About the Client:</h4>
+                    <h4 className="font-semibold text-[#0D2B1D]">About the Client:</h4>
                     <button
                       type="button"
                       onClick={() => navigate(`/profile/${client.id || client._id}`)}
-                      className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm"
+                      className="px-4 py-2 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium text-sm hover:scale-105"
                     >
                       👤 View Full Profile
                     </button>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
                       {client.profilePicture ? (
                         <img 
                           src={client.profilePicture} 
@@ -312,8 +326,8 @@ const ApplyJob = () => {
                       )}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{client.fullName}</p>
-                      <div className="flex items-center text-sm text-gray-600">
+                      <p className="font-semibold text-[#0D2B1D]">{client.fullName}</p>
+                      <div className="flex items-center text-sm text-[#6B8F71]">
                         {client.city && <span>📍 {client.city}</span>}
                         {client.rating && (
                           <span className="ml-3">⭐ {client.rating.toFixed(1)}</span>
@@ -327,13 +341,13 @@ const ApplyJob = () => {
           </div>
 
           {/* Proposal Form */}
-          <div className={`bg-white rounded-lg shadow-md p-6 ${providerTypeMismatch ? 'opacity-50 pointer-events-none' : ''}`}>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Your Proposal</h2>
+          <div className={`bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 ${providerTypeMismatch ? 'opacity-50 pointer-events-none' : ''}`}>
+            <h2 className="text-xl font-bold text-[#0D2B1D] mb-4">Your Proposal</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Cover Letter */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#345635] mb-2">
                   Cover Letter *
                 </label>
                 <textarea
@@ -341,18 +355,18 @@ const ApplyJob = () => {
                   onChange={(e) => setCoverLetter(e.target.value)}
                   placeholder="Explain why you're the best fit for this job. Minimum 50 characters."
                   rows={8}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
                   required
                   disabled={providerTypeMismatch}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[#6B8F71] mt-1">
                   {coverLetter.length}/50 characters minimum
                 </p>
               </div>
 
               {/* Proposed Budget */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#345635] mb-2">
                   Proposed Budget (₹) *
                 </label>
                 <input
@@ -363,17 +377,17 @@ const ApplyJob = () => {
                   placeholder="Enter your proposed budget"
                   min="0"
                   step="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
                   required
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[#6B8F71] mt-1">
                   Client's budget: ₹{job.budget.toLocaleString()} ({job.budgetType})
                 </p>
               </div>
 
               {/* Estimated Duration */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#345635] mb-2">
                   Estimated Duration *
                 </label>
                 <input
@@ -381,19 +395,19 @@ const ApplyJob = () => {
                   value={estimatedDuration}
                   onChange={(e) => setEstimatedDuration(e.target.value)}
                   placeholder="e.g., 2-3 days, 1 week, 2 weeks"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
                   required
                   disabled={providerTypeMismatch}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[#6B8F71] mt-1">
                   How long will it take to complete this job?
                 </p>
               </div>
 
               {/* Info Box */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-900 mb-2">💡 Tips for a Great Proposal:</h4>
-                <ul className="list-disc list-inside text-blue-800 text-sm space-y-1">
+              <div className="bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] border-2 border-[#AEC3B0] rounded-xl p-4">
+                <h4 className="font-semibold text-[#0D2B1D] mb-2">💡 Tips for a Great Proposal:</h4>
+                <ul className="list-disc list-inside text-[#345635] text-sm space-y-1">
                   <li>Personalize your cover letter for this specific job</li>
                   <li>Highlight relevant experience and skills</li>
                   <li>Be realistic with your budget and timeline</li>
@@ -406,18 +420,18 @@ const ApplyJob = () => {
                 <button
                   type="submit"
                   disabled={submitting || providerTypeMismatch}
-                  className={`flex-1 px-6 py-3 rounded-lg transition-colors font-medium ${
+                  className={`flex-1 px-6 py-3 rounded-xl transition-all font-medium ${
                     providerTypeMismatch 
                       ? 'bg-gray-400 cursor-not-allowed text-white' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400'
+                      : 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white hover:shadow-xl disabled:bg-gray-400 hover:scale-105'
                   }`}
                 >
-                  {submitting ? 'Submitting...' : providerTypeMismatch ? 'Cannot Apply' : 'Submit Proposal'}
+                  {submitting ? 'Submitting...' : providerTypeMismatch ? 'Cannot Apply' : '✨ Submit Proposal'}
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate('/jobs')}
-                  className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="px-6 py-3 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium hover:scale-105"
                 >
                   Cancel
                 </button>
