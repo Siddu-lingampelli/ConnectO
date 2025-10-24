@@ -21,7 +21,7 @@ const defaultCenter = {
 };
 
 const NearbyProvidersMap = ({ category, providerType, maxDistance = 10000 }: NearbyProvidersMapProps) => {
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [, setMap] = useState<google.maps.Map | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);

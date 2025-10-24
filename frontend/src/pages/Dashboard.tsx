@@ -9,6 +9,7 @@ import SearchProviders from '../components/search/SearchProviders';
 import SearchClients from '../components/search/SearchClients';
 import DemoStatusCard from '../components/demo/DemoStatusCard';
 import RecommendationsCard from '../components/recommendations/RecommendationsCard';
+import CollaborationInvitations from '../components/collaboration/CollaborationInvitations';
 
 const Dashboard = () => {
   const user = useSelector(selectCurrentUser);
@@ -198,6 +199,13 @@ const Dashboard = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Collaboration Invitations for Providers */}
+          {user.role === 'provider' && (
+            <div className={`mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '150ms' }}>
+              <CollaborationInvitations />
             </div>
           )}
 

@@ -6,6 +6,7 @@ import { selectCurrentUser } from '../store/authSlice';
 import { jobService } from '../services/jobService';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
+import CollaboratorList from '../components/collaboration/CollaboratorList';
 import type { Job } from '../types';
 
 const JobDetails = () => {
@@ -316,6 +317,16 @@ const JobDetails = () => {
                 </button>
               </div>
             </div>
+          )}
+
+          {/* Team Collaboration - Only visible to service providers */}
+          {assignedProvider && assignedProvider._id && (
+            <CollaboratorList
+              jobId={job._id}
+              budget={job.budget}
+              assignedProviderId={assignedProvider._id}
+              status={job.status}
+            />
           )}
 
           {/* Metadata */}

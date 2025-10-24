@@ -114,6 +114,63 @@ const jobSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  // Peer-to-Peer Collaboration Feature
+  collaborators: [{
+    providerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    role: {
+      type: String,
+      trim: true,
+      default: 'Collaborator'
+    },
+    sharePercent: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100
+    },
+    status: {
+      type: String,
+      enum: ['invited', 'accepted', 'declined'],
+      default: 'invited'
+    },
+    invitedAt: {
+      type: Date,
+      default: Date.now
+    },
+    respondedAt: {
+      type: Date
+    }
+  }],
+  // Payment Splits for Collaborators
+  paymentSplits: [{
+    providerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    sharePercent: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 100
+    },
+    amount: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    isPaid: {
+      type: Boolean,
+      default: false
+    },
+    paidAt: {
+      type: Date
+    }
+  }],
   attachments: [{
     type: String
   }],

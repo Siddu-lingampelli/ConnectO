@@ -28,6 +28,7 @@ import locationRoutes from './routes/location.routes.js';
 import websiteReviewRoutes from './routes/websiteReview.routes.js';
 import wishlistRoutes from './routes/wishlist.js';
 import followRoutes from './routes/follow.routes.js';
+import collaborationRoutes from './routes/collaboration.routes.js';
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -92,6 +93,7 @@ app.use('/api/location', locationRoutes);
 app.use('/api/website-reviews', websiteReviewRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/follow', followRoutes);
+app.use('/api/collaboration', collaborationRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

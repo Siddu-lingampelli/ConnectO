@@ -4,7 +4,7 @@ This document explains the admin panel access feature added to the ConnectO plat
 
 ## Overview
 
-An admin panel button has been added to the homepage that provides quick access to the admin dashboard. This button is **only visible to users with admin role**.
+An admin panel button has been added to the homepage that provides quick access to the admin dashboard. This btton is **only visible to users with admin role**.
 
 ## Features Implemented
 

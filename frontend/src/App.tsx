@@ -35,6 +35,7 @@ import SubmitReview from './pages/SubmitReview';
 import UserReviews from './pages/UserReviews';
 import Wishlist from './pages/Wishlist';
 import FollowersFollowing from './pages/FollowersFollowing';
+import Collaboration from './pages/Collaboration';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -176,6 +177,14 @@ function App() {
           element={
             <ProtectedRoute>
               <FollowersFollowing />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/collaboration"
+          element={
+            <ProtectedRoute>
+              <Collaboration />
             </ProtectedRoute>
           }
         />

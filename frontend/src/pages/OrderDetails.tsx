@@ -11,6 +11,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ReviewModal from '../components/ReviewModal';
 import OrderLocationMap from '../components/OrderLocationMap';
+import CollaboratorList from '../components/collaboration/CollaboratorList';
 
 const OrderDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -365,6 +366,16 @@ const OrderDetails = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* Team Collaboration - Only visible to service providers */}
+          {isProvider && order.job && provider && (
+            <CollaboratorList
+              jobId={typeof order.job === 'string' ? order.job : order.job._id}
+              budget={order.amount}
+              assignedProviderId={provider._id || ''}
+              status={order.status}
+            />
           )}
 
           {/* Location Map - Show both client and provider locations */}

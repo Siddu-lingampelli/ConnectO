@@ -258,6 +258,16 @@ const Header = () => {
                 <span>🏆</span>
                 {t('nav.leaderboard')}
               </Link>
+
+              {user.role === 'provider' && (
+                <Link 
+                  to="/collaboration" 
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-[#0D2B1D] hover:bg-white rounded-lg transition-all font-medium whitespace-nowrap"
+                >
+                  <span>👥</span>
+                  Collaboration
+                </Link>
+              )}
             </nav>
           </div>
         </div>
