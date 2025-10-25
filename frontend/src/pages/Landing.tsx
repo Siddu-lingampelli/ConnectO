@@ -473,6 +473,180 @@ const Landing = () => {
         </section>
       )}
 
+      {/* Quick Links Section */}
+      <section className="py-16 bg-white border-t-2 border-[#AEC3B0]">
+        <div className="container mx-auto px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#0D2B1D] mb-4">
+                Explore ConnectO
+              </h2>
+              <p className="text-lg text-[#345635]">
+                Learn more about our platform and how we can help you
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* About Us Card */}
+              <div
+                onClick={() => navigate('/about')}
+                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                    ℹ️
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
+                      About Us
+                    </h3>
+                    <p className="text-sm text-[#345635]">
+                      Learn about our mission, vision, and what makes ConnectO unique
+                    </p>
+                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
+                      <span>Learn More</span>
+                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* How It Works Card */}
+              <div
+                onClick={() => navigate('/how-it-works')}
+                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                    🔄
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
+                      How It Works
+                    </h3>
+                    <p className="text-sm text-[#345635]">
+                      Step-by-step guide for clients and service providers
+                    </p>
+                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
+                      <span>See Guide</span>
+                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Card */}
+              <div
+                onClick={() => navigate('/contact')}
+                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                    📧
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
+                      Contact Us
+                    </h3>
+                    <p className="text-sm text-[#345635]">
+                      Get in touch with our support team for help
+                    </p>
+                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
+                      <span>Contact Now</span>
+                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Privacy Policy Card */}
+              <div
+                onClick={() => navigate('/privacy-policy')}
+                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#0D2B1D] to-[#6B8F71] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                    🔒
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
+                      Privacy Policy
+                    </h3>
+                    <p className="text-sm text-[#345635]">
+                      Learn how we protect and handle your personal data
+                    </p>
+                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
+                      <span>Read Policy</span>
+                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Terms of Service Card */}
+              <div
+                onClick={() => navigate('/terms-of-service')}
+                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#AEC3B0] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                    📋
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
+                      Terms of Service
+                    </h3>
+                    <p className="text-sm text-[#345635]">
+                      Review our platform terms and user agreements
+                    </p>
+                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
+                      <span>View Terms</span>
+                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Community Card */}
+              <div
+                onClick={() => navigate('/community')}
+                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#6B8F71] to-[#0D2B1D] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
+                    💬
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
+                      Community
+                    </h3>
+                    <p className="text-sm text-[#345635]">
+                      Join discussions, share tips, and connect with others
+                    </p>
+                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
+                      <span>Join Now</span>
+                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

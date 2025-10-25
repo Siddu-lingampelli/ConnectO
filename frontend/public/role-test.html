@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Switch Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .container {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        button {
+            background: #3B82F6;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #2563EB;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            min-height: 100px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Role Switch API Tester</h1>
+        <p>Use this page to test the role switching functionality manually.</p>
+        
+        <div>
+            <h3>Step 1: Get Your Current Role Status</h3>
+            <button onclick="getRoleStatus()">Check Role Status</button>
+        </div>
+
+        <div>
+            <h3>Step 2: Enable Provider Role</h3>
+            <button onclick="enableProvider('Technical')">Enable Provider (Technical)</button>
+            <button onclick="enableProvider('Non-Technical')">Enable Provider (Non-Technical)</button>
+        </div>
+
+        <div>
+            <h3>Step 3: Switch Roles</h3>
+            <button onclick="switchRole('provider')">Switch to Provider</button>
+            <button onclick="switchRole('client')">Switch to Client</button>
+        </div>
+
+        <div class="result" id="result">
+            Results will appear here...
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token'); // Get token from localStorage
+
+        function showResult(message, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<pre class="${isError ? 'error' : 'success'}">${message}</pre>`;
+        }
+
+        async function getRoleStatus() {
+            try {
+                const response = await fetch(`${API_URL}/role/status`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                showResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                showResult('Error: ' + error.message, true);
+            }
+        }
+
+        async function enableProvider(providerType) {
+            try {
+                const response = await fetch(`${API_URL}/role/enable`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        role: 'provider',
+                        providerType: providerType
+                    })
+                });
+                
+                const data = await response.json();
+                showResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                showResult('Error: ' + error.message, true);
+            }
+        }
+
+        async function switchRole(targetRole) {
+            try {
+                const response = await fetch(`${API_URL}/role/switch`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        targetRole: targetRole
+                    })
+                });
+                
+                const data = await response.json();
+                showResult(JSON.stringify(data, null, 2));
+            } catch (error) {
+                showResult('Error: ' + error.message, true);
+            }
+        }
+
+        // Check if token exists on load
+        if (!token) {
+            showResult('Warning: No authentication token found in localStorage. Please login first!', true);
+        } else {
+            showResult('Token found! You can now test the API endpoints.');
+        }
+    </script>
+</body>
+</html>

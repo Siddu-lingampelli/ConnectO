@@ -14,6 +14,14 @@ const ApplyJob = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   
+  // Get active role for dual role system
+  const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
+  
+  // Check verification and demo status
+  const isVerified = currentUser?.verification?.status === 'verified';
+  const demoStatus = currentUser?.demoVerification?.status;
+  const isDemoVerified = demoStatus === 'verified';
+  
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -21,6 +29,27 @@ const ApplyJob = () => {
   const [coverLetter, setCoverLetter] = useState('');
   const [proposedBudget, setProposedBudget] = useState('');
   const [estimatedDuration, setEstimatedDuration] = useState('');
+
+  // Check if user is in provider mode
+  useEffect(() => {
+    if (activeRole !== 'provider') {
+      toast.error('Only providers can apply to jobs. Switch to provider mode first.');
+      navigate('/jobs');
+      return;
+    }
+    
+    if (!isVerified) {
+      toast.error('Please complete verification before applying to jobs.');
+      navigate('/verification');
+      return;
+    }
+    
+    if (!isDemoVerified) {
+      toast.error('Please complete and pass the demo project before applying to jobs.');
+      navigate('/demo-project');
+      return;
+    }
+  }, [activeRole, isVerified, isDemoVerified, navigate]);
 
   useEffect(() => {
     loadJob();
@@ -140,7 +169,6 @@ const ApplyJob = () => {
   }
 
   // Check if provider's demo project is verified
-  const demoStatus = currentUser.demoVerification?.status;
   if (demoStatus !== 'verified') {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
@@ -284,7 +312,9 @@ const ApplyJob = () => {
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white font-medium">
                     {job.category}
                   </span>
-                  <span>📍 {job.location.city}, {job.location.area}</span>
+                  {job.location?.city && (
+                    <span>📍 {job.location.city}{job.location.area && `, ${job.location.area}`}</span>
+                  )}
                 </div>
               </div>
               <div className="text-right">

@@ -200,7 +200,9 @@ const JobProposals = () => {
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white font-medium">
                     {job.category}
                   </span>
-                  <span>📍 {job.location.city}, {job.location.area}</span>
+                  {job.location?.city && (
+                    <span>📍 {job.location.city}{job.location.area && `, ${job.location.area}`}</span>
+                  )}
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0] text-white font-medium">
                     {job.status}
                   </span>

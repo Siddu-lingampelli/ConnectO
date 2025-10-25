@@ -18,6 +18,7 @@ interface WishlistItem {
 const Wishlist = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
+  const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'provider' | 'client' | 'job'>('all');
@@ -98,7 +99,7 @@ const Wishlist = () => {
             <div>
               <h1 className="text-4xl font-bold text-[#0D2B1D]">My Wishlist</h1>
               <p className="text-[#6B8F71] mt-1">
-                {currentUser.role === 'client' 
+                {activeRole === 'client' 
                   ? 'Save your favorite service providers for quick access'
                   : 'Save potential clients and interesting jobs'
                 }
@@ -119,7 +120,7 @@ const Wishlist = () => {
               All ({counts.provider + counts.client + counts.job})
             </button>
             
-            {currentUser.role === 'client' && (
+            {activeRole === 'client' && (
               <button
                 onClick={() => setActiveTab('provider')}
                 className={`px-6 py-3 rounded-xl font-medium transition-all ${
@@ -132,7 +133,7 @@ const Wishlist = () => {
               </button>
             )}
 
-            {currentUser.role === 'provider' && (
+            {activeRole === 'provider' && (
               <>
                 <button
                   onClick={() => setActiveTab('client')}
@@ -175,13 +176,13 @@ const Wishlist = () => {
                 No Items in Wishlist
               </h3>
               <p className="text-[#6B8F71] mb-6">
-                Start adding your favorite {currentUser.role === 'client' ? 'providers' : 'clients and jobs'} to your wishlist!
+                Start adding your favorite {activeRole === 'client' ? 'providers' : 'clients and jobs'} to your wishlist!
               </p>
               <button
-                onClick={() => navigate(currentUser.role === 'client' ? '/browse-providers' : '/jobs')}
+                onClick={() => navigate(activeRole === 'client' ? '/browse-providers' : '/jobs')}
                 className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
               >
-                {currentUser.role === 'client' ? 'Browse Providers' : 'Browse Jobs'}
+                {activeRole === 'client' ? 'Browse Providers' : 'Browse Jobs'}
               </button>
             </div>
           ) : (

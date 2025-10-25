@@ -33,7 +33,8 @@ api.interceptors.response.use(
     // Check if it's a network error (no response from server)
     if (!error.response) {
       console.error('Network Error:', error.message);
-      toast.error('Cannot connect to server. Please check if backend is running.');
+      // Don't show toast for network errors - let components handle it
+      // toast.error('Cannot connect to server. Please check if backend is running.');
       return Promise.reject(error);
     }
 
@@ -47,15 +48,16 @@ api.interceptors.response.use(
       window.location.href = '/';
       toast.error('Session expired. Please login again.');
     } else if (error.response?.status === 403) {
-      toast.error('You do not have permission to perform this action.');
+      // Don't auto-show toast for forbidden - let components handle
+      console.error('403 Forbidden:', message);
     } else if (error.response?.status === 404) {
-      toast.error('Resource not found.');
+      // Don't auto-show toast for 404 - let components handle
+      console.error('404 Not Found:', message);
     } else if (error.response?.status === 500) {
       console.error('Server Error:', error.response.data);
-      toast.error('Server error. Please try again later.');
-    } else {
-      toast.error(message);
+      // Don't auto-show toast for server errors - let components handle
     }
+    // Don't show generic error toasts - let components handle specific errors
     
     return Promise.reject(error);
   }

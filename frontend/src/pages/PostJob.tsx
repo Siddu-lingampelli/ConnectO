@@ -48,9 +48,21 @@ const nonTechnicalCategories = [
 const PostJob = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
+  
+  // Get active role for dual role system
+  const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
+  
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+
+  // Check if user is in client mode
+  useEffect(() => {
+    if (activeRole !== 'client') {
+      toast.error('Only clients can post jobs. Switch to client mode first.');
+      navigate('/dashboard');
+    }
+  }, [activeRole, navigate]);
 
   const [formData, setFormData] = useState({
     title: '',

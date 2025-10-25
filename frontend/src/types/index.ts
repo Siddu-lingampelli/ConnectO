@@ -21,6 +21,14 @@ export interface User {
   isVerified?: boolean;
   isActive?: boolean;
   
+  // Dual Role System
+  enabledRoles?: ('client' | 'provider')[];
+  activeRole?: 'client' | 'provider' | 'admin';
+  roleHistory?: Array<{
+    role: string;
+    enabledAt: string;
+  }>;
+  
   // Location fields (for map-based search)
   location?: {
     type: string;

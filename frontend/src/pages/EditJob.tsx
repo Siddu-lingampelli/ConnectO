@@ -78,8 +78,8 @@ const EditJob = () => {
         description: job.description,
         category: job.category,
         budget: job.budget.toString(),
-        city: job.location.city,
-        area: job.location.area
+        city: job.location?.city || '',
+        area: job.location?.area || ''
       });
     } catch (error: any) {
       console.error('Error loading job:', error);

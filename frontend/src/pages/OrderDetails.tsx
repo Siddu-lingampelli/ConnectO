@@ -189,7 +189,8 @@ const OrderDetails = () => {
   const client = typeof order.client !== 'string' ? order.client : null;
   const provider = typeof order.provider !== 'string' ? order.provider : null;
   
-  const isProvider = currentUser.role === 'provider';
+  const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
+  const isProvider = activeRole === 'provider';
   const otherPerson = isProvider ? client : provider;
 
   return (
@@ -247,10 +248,12 @@ const OrderDetails = () => {
                   <p className="text-gray-600">{job.description}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-1">📍 Location:</h4>
-                    <p className="text-gray-600">{job.location.city}, {job.location.area}</p>
-                  </div>
+                  {job.location?.city && (
+                    <div>
+                      <h4 className="font-semibold text-gray-700 mb-1">📍 Location:</h4>
+                      <p className="text-gray-600">{job.location.city}{job.location.area && `, ${job.location.area}`}</p>
+                    </div>
+                  )}
                   <div>
                     <h4 className="font-semibold text-gray-700 mb-1">💰 Budget Type:</h4>
                     <p className="text-gray-600 capitalize">{job.budgetType}</p>
@@ -385,7 +388,7 @@ const OrderDetails = () => {
               <OrderLocationMap
                 client={client}
                 provider={provider}
-                currentUserRole={currentUser.role as 'client' | 'provider'}
+                currentUserRole={activeRole as 'client' | 'provider'}
               />
             </div>
           )}

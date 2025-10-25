@@ -6,6 +6,7 @@ import { selectCurrentUser, selectIsAuthenticated, logout } from '../../store/au
 import NotificationBell from '../notifications/NotificationBell';
 import MessageIcon from '../messages/MessageIcon';
 import LanguageSwitcher from '../language/LanguageSwitcher';
+import RoleToggle from '../role/RoleToggle';
 
 const Header = () => {
   const user = useSelector(selectCurrentUser);
@@ -70,6 +71,9 @@ const Header = () => {
 
               {/* Right Actions */}
               <div className="flex items-center gap-2">
+                {/* Role Toggle - Only show for non-admin users */}
+                {user.role !== 'admin' && <RoleToggle />}
+                
                 {/* Message Icon */}
                 <MessageIcon />
                 
@@ -257,6 +261,14 @@ const Header = () => {
               >
                 <span>🏆</span>
                 {t('nav.leaderboard')}
+              </Link>
+
+              <Link 
+                to="/community" 
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-[#0D2B1D] hover:bg-white rounded-lg transition-all font-medium whitespace-nowrap"
+              >
+                <span>💬</span>
+                Community
               </Link>
 
               {user.role === 'provider' && (

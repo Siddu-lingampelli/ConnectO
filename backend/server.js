@@ -29,6 +29,9 @@ import websiteReviewRoutes from './routes/websiteReview.routes.js';
 import wishlistRoutes from './routes/wishlist.js';
 import followRoutes from './routes/follow.routes.js';
 import collaborationRoutes from './routes/collaboration.routes.js';
+import roleSwitchRoutes from './routes/roleSwitch.routes.js';
+import communityRoutes from './routes/community.routes.js';
+import contactRoutes from './routes/contact.routes.js';
 
 // ES Module fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -94,6 +97,9 @@ app.use('/api/website-reviews', websiteReviewRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/follow', followRoutes);
 app.use('/api/collaboration', collaborationRoutes);
+app.use('/api/role', roleSwitchRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {

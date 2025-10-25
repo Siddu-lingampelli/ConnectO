@@ -4,7 +4,8 @@ import Footer from '../components/layout/Footer';
 import NearbyProvidersMapOSM from '../components/NearbyProvidersMapOSM';
 import { FaMapMarkedAlt, FaSlidersH } from 'react-icons/fa';
 
-const categories = [
+// Non-Technical Service Categories
+const nonTechnicalCategories = [
   '',
   'Plumbing',
   'Electrical',
@@ -19,15 +20,45 @@ const categories = [
   'Home Renovation',
   'Interior Design',
   'Beauty & Wellness',
-  'IT & Tech Support',
+  'Cooking & Catering',
+  'Tutoring & Education',
   'Other Services'
+];
+
+// Technical Service Categories
+const technicalCategories = [
+  '',
+  'Web Development',
+  'Mobile App Development',
+  'UI/UX Design',
+  'Graphic Design',
+  'Software Development',
+  'Database Management',
+  'DevOps & Cloud',
+  'Cybersecurity',
+  'Data Science & AI',
+  'Quality Assurance',
+  'Technical Writing',
+  'IT Consulting',
+  'Network Administration',
+  'System Architecture',
+  'Other Technical Services'
 ];
 
 const FindNearbyProviders = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedProviderType, setSelectedProviderType] = useState<'Technical' | 'Non-Technical' | undefined>('Non-Technical');
+  const [selectedProviderType, setSelectedProviderType] = useState<'Technical' | 'Non-Technical'>('Non-Technical');
   const [maxDistance, setMaxDistance] = useState(10000); // 10km in meters
   const [showFilters, setShowFilters] = useState(true);
+
+  // Get categories based on provider type
+  const categories = selectedProviderType === 'Technical' ? technicalCategories : nonTechnicalCategories;
+
+  // Reset category when provider type changes
+  const handleProviderTypeChange = (type: 'Technical' | 'Non-Technical') => {
+    setSelectedProviderType(type);
+    setSelectedCategory(''); // Reset category when switching provider type
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
@@ -45,20 +76,23 @@ const FindNearbyProviders = () => {
                 Find Nearby Service Providers
               </h1>
               <p className="text-[#6B8F71] mt-1">
-                Discover skilled non-technical professionals near your location
+                Discover skilled {selectedProviderType === 'Technical' ? 'technical' : 'non-technical'} professionals near your location
               </p>
             </div>
           </div>
           
-          {/* Non-Technical Service Banner */}
+          {/* Service Banner */}
           <div className="bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-2xl p-4 shadow-lg border-2 border-[#AEC3B0]">
             <div className="flex items-start gap-3">
               <div className="text-2xl">🗺️</div>
               <div>
-                <h3 className="font-bold text-lg">Location-Based Search for Non-Technical Services</h3>
+                <h3 className="font-bold text-lg">
+                  Location-Based Search for {selectedProviderType} Services
+                </h3>
                 <p className="text-[#E3EFD3] mt-1">
-                  Perfect for local services like plumbing, repairs, cleaning, cooking, gardening, and more. 
-                  Find trusted professionals in your neighborhood!
+                  {selectedProviderType === 'Technical' 
+                    ? 'Find expert developers, designers, and IT professionals for your technical projects.'
+                    : 'Perfect for local services like plumbing, repairs, cleaning, cooking, gardening, and more. Find trusted professionals in your neighborhood!'}
                 </p>
               </div>
             </div>
@@ -77,21 +111,21 @@ const FindNearbyProviders = () => {
 
           {showFilters && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Provider Type Filter - Locked to Non-Technical */}
+              {/* Provider Type Filter */}
               <div>
                 <label className="block text-sm font-semibold text-[#345635] mb-2">
                   Provider Type
                 </label>
                 <select
-                  value={selectedProviderType || 'Non-Technical'}
-                  onChange={(e) => setSelectedProviderType(e.target.value as any)}
-                  className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] bg-[#E3EFD3]"
-                  disabled
+                  value={selectedProviderType}
+                  onChange={(e) => handleProviderTypeChange(e.target.value as 'Technical' | 'Non-Technical')}
+                  className="w-full px-4 py-2 border-2 border-[#AEC3B0] rounded-xl focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
                 >
                   <option value="Non-Technical">Non-Technical Only</option>
+                  <option value="Technical">Technical Only</option>
                 </select>
                 <p className="text-xs text-[#6B8F71] mt-1">
-                  ℹ️ Map search is available only for non-technical services
+                  ℹ️ Map search is available for both service types
                 </p>
               </div>
 

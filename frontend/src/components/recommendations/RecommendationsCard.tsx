@@ -11,7 +11,7 @@ interface Job {
   category: string;
   budget: number;
   budgetType: string;
-  location: {
+  location?: {
     city: string;
     area: string;
   };
@@ -50,6 +50,7 @@ interface Provider {
 const RecommendationsCard = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
+  const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
   const [recommendations, setRecommendations] = useState<(Job | Provider)[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -102,33 +103,33 @@ const RecommendationsCard = () => {
 
   if (recommendations.length === 0) {
     // Check if profile is incomplete (for providers, check skills)
-    const isProfileIncomplete = currentUser.role === 'provider' 
+    const isProfileIncomplete = activeRole === 'provider' 
       ? !currentUser.profileCompleted || !currentUser.skills || currentUser.skills.length === 0
       : false;
 
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">
-          {currentUser.role === 'provider' ? '🎯 Recommended Jobs for You' : '🎯 Recommended Providers'}
+          {activeRole === 'provider' ? '🎯 Recommended Jobs for You' : '🎯 Recommended Providers'}
         </h3>
         <div className="text-center py-8">
           <span className="text-4xl mb-3 block">{isProfileIncomplete ? '💡' : '📋'}</span>
           <p className="text-gray-600 mb-4">
-            {currentUser.role === 'provider' 
+            {activeRole === 'provider' 
               ? (isProfileIncomplete 
                   ? 'Complete your profile with skills to get job recommendations'
                   : 'No job recommendations available at the moment')
               : 'Post a job to get provider recommendations'}
           </p>
-          {(isProfileIncomplete || currentUser.role === 'client') && (
+          {(isProfileIncomplete || activeRole === 'client') && (
             <button
-              onClick={() => navigate(currentUser.role === 'provider' ? '/settings' : '/post-job')}
+              onClick={() => navigate(activeRole === 'provider' ? '/settings' : '/post-job')}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              {currentUser.role === 'provider' ? 'Complete Profile' : 'Post a Job'}
+              {activeRole === 'provider' ? 'Complete Profile' : 'Post a Job'}
             </button>
           )}
-          {!isProfileIncomplete && currentUser.role === 'provider' && (
+          {!isProfileIncomplete && activeRole === 'provider' && (
             <button
               onClick={() => navigate('/jobs')}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -146,10 +147,10 @@ const RecommendationsCard = () => {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
           <span>🎯</span>
-          {currentUser.role === 'provider' ? 'Recommended Jobs for You' : 'Recommended Providers'}
+          {activeRole === 'provider' ? 'Recommended Jobs for You' : 'Recommended Providers'}
         </h3>
         <button
-          onClick={() => navigate(currentUser.role === 'provider' ? '/jobs' : '/browse-providers')}
+          onClick={() => navigate(activeRole === 'provider' ? '/jobs' : '/browse-providers')}
           className="text-blue-600 hover:text-blue-700 font-medium text-sm"
         >
           View All →
@@ -157,7 +158,7 @@ const RecommendationsCard = () => {
       </div>
 
       <div className="space-y-3">
-        {currentUser.role === 'provider' ? (
+        {activeRole === 'provider' ? (
           // Render Job Recommendations for Providers
           recommendations.slice(0, 5).map((item) => {
             const job = item as Job;
@@ -189,7 +190,9 @@ const RecommendationsCard = () => {
                     {job.category}
                   </span>
                   <span>💰 ₹{job.budget}</span>
-                  <span>📍 {job.location.city}</span>
+                  {job.location?.city && (
+                    <span>📍 {job.location.city}</span>
+                  )}
                   {job.client?.rating && (
                     <span>⭐ {job.client.rating.toFixed(1)}</span>
                   )}
@@ -273,7 +276,7 @@ const RecommendationsCard = () => {
 
       {recommendations.length > 5 && (
         <button
-          onClick={() => navigate(currentUser.role === 'provider' ? '/jobs' : '/browse-providers')}
+          onClick={() => navigate(activeRole === 'provider' ? '/jobs' : '/browse-providers')}
           className="w-full mt-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-medium"
         >
           View All {recommendations.length} Recommendations →

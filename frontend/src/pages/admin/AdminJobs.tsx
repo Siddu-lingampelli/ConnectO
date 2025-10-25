@@ -214,9 +214,11 @@ const AdminJobs = () => {
                         <span className="flex items-center gap-1">
                           <span className="font-semibold">Budget:</span> ₹{job.budget.toLocaleString()}
                         </span>
-                        <span className="flex items-center gap-1">
-                          <span className="font-semibold">Location:</span> {job.location.city}, {job.location.area}
-                        </span>
+                        {job.location?.city && (
+                          <span className="flex items-center gap-1">
+                            <span className="font-semibold">Location:</span> {job.location.city}{job.location.area && `, ${job.location.area}`}
+                          </span>
+                        )}
                         {client && (
                           <span className="flex items-center gap-1">
                             <span className="font-semibold">Client:</span> {client.fullName}

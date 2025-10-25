@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { selectCurrentUser, updateUser } from '../store/authSlice';
 import { authService } from '../services/authService';
 import Header from '../components/layout/Header';
@@ -17,6 +18,9 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
 
+  // Get the active role - use activeRole if available, fallback to role
+  const activeRole = user?.activeRole || user?.role || 'client';
+
   // Animate on mount
   useEffect(() => {
     setIsVisible(true);
@@ -28,8 +32,17 @@ const Dashboard = () => {
       try {
         const freshUserData = await authService.getMe();
         dispatch(updateUser(freshUserData));
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error refreshing user data:', error);
+        // Only show error if it's not just the backend being unavailable
+        if (error.response) {
+          // Backend responded with an error
+          if (error.response.status !== 401) {
+            // Don't show error for authentication issues, just let it redirect
+            toast.error('Failed to refresh user data. Please refresh the page.');
+          }
+        }
+        // Silently fail for network errors (backend not running)
       }
     };
 
@@ -77,7 +90,7 @@ const Dashboard = () => {
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 shadow-lg">
                     <span className="text-4xl">
-                      {user.role === 'provider' ? '💼' : '🎯'}
+                      {activeRole === 'provider' ? '💼' : '🎯'}
                     </span>
                   </div>
                   <div>
@@ -86,7 +99,7 @@ const Dashboard = () => {
                       <span className="animate-bounce inline-block"></span>
                     </h1>
                     <p className="text-[#E3EFD3] text-lg">
-                      {user.role === 'provider'
+                      {activeRole === 'provider'
                         ? 'Ready to find your next opportunity?'
                         : 'Find the perfect service provider for your needs'}
                     </p>
@@ -97,7 +110,7 @@ const Dashboard = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                   <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                     <div className="text-[#E3EFD3] text-sm mb-1">
-                      {user.role === 'provider' ? 'Completed' : 'Posted'}
+                      {activeRole === 'provider' ? 'Completed' : 'Posted'}
                     </div>
                     <div className="text-white text-2xl font-bold">{user.completedJobs || 0}</div>
                   </div>
@@ -168,7 +181,7 @@ const Dashboard = () => {
                       ? '❌Verification Rejected'
                       : ' Account Not Verified'}
                   </h3>
-                  <p className={`mb-4 ${
+                  <p className={`text-sm mb-4 ${
                     verificationStatus === 'pending'
                       ? 'text-yellow-800'
                       : verificationStatus === 'rejected'
@@ -179,7 +192,7 @@ const Dashboard = () => {
                       ? 'Your verification documents are under review. This usually takes 24-48 hours.'
                       : verificationStatus === 'rejected'
                       ? 'Your verification was rejected. Please submit valid documents again.'
-                      : `Get verified to ${user.role === 'client' ? 'post jobs and hire providers' : 'accept job offers and work with clients'}. Submit your PAN card and Aadhar card.`}
+                      : `Get verified to ${activeRole === 'client' ? 'post jobs and hire providers' : 'accept job offers and work with clients'}. Submit your PAN card and Aadhar card.`}
                   </p>
                   <button
                     onClick={() => navigate('/verification')}
@@ -203,7 +216,7 @@ const Dashboard = () => {
           )}
 
           {/* Collaboration Invitations for Providers */}
-          {user.role === 'provider' && (
+          {activeRole === 'provider' && (
             <div className={`mb-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '150ms' }}>
               <CollaborationInvitations />
             </div>
@@ -211,7 +224,7 @@ const Dashboard = () => {
 
           {/* Search Section with Animation */}
           <div className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '200ms' }}>
-            {user.role === 'provider' ? (
+            {activeRole === 'provider' ? (
               <SearchClients />
             ) : (
               <SearchProviders />
@@ -219,7 +232,7 @@ const Dashboard = () => {
           </div>
 
           {/* Demo Project Status for Providers */}
-          {user.role === 'provider' && (
+          {activeRole === 'provider' && (
             <div className={`mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ transitionDelay: '300ms' }}>
               <DemoStatusCard />
             </div>
@@ -298,7 +311,7 @@ const Dashboard = () => {
                   <p className="text-[#6B8F71] group-hover:text-[#E3EFD3] text-sm transition-colors">Monitor platform jobs</p>
                 </button>
               </>
-            ) : user.role === 'provider' ? (
+            ) : activeRole === 'provider' ? (
               <>
                 <button
                   onClick={() => navigate('/jobs')}
@@ -547,15 +560,15 @@ const Dashboard = () => {
               </div>
               <p className="text-[#345635] font-semibold text-lg mb-2">No recent activity</p>
               <p className="text-[#6B8F71] mt-2">
-                {user.role === 'provider'
+                {activeRole === 'provider'
                   ? 'Start browsing available jobs to get started'
                   : 'Post a job to find the perfect service provider'}
               </p>
               <button
-                onClick={() => navigate(user.role === 'provider' ? '/jobs' : '/post-job')}
+                onClick={() => navigate(activeRole === 'provider' ? '/jobs' : '/post-job')}
                 className="mt-6 px-6 py-3 bg-gradient-to-r from-[#345635] to-[#0D2B1D] text-white rounded-xl font-semibold hover:from-[#0D2B1D] hover:to-[#345635] transition-all hover:scale-105 hover:shadow-lg"
               >
-                {user.role === 'provider' ? 'Browse Jobs →' : 'Post a Job →'}
+                {activeRole === 'provider' ? 'Browse Jobs →' : 'Post a Job →'}
               </button>
             </div>
           </div>

@@ -36,6 +36,12 @@ import UserReviews from './pages/UserReviews';
 import Wishlist from './pages/Wishlist';
 import FollowersFollowing from './pages/FollowersFollowing';
 import Collaboration from './pages/Collaboration';
+import Community from './pages/Community';
+import AboutUs from './pages/AboutUs';
+import HowItWorks from './pages/HowItWorks';
+import Contact from './pages/Contact';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -152,6 +158,14 @@ function App() {
           element={
             <ProtectedRoute>
               <FindNearbyProviders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community"
+          element={
+            <ProtectedRoute>
+              <Community />
             </ProtectedRoute>
           }
         />
@@ -318,6 +332,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Public Information Pages */}
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
 
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/404" replace />} />

@@ -46,6 +46,15 @@ const cities = [
 const Jobs = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
+  
+  // Get active role for dual role system
+  const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
+  
+  // Check verification and demo status for providers
+  const isVerified = currentUser?.verification?.status === 'verified';
+  const demoStatus = currentUser?.demoVerification?.status;
+  const isDemoVerified = demoStatus === 'verified';
+  
   const [jobs, setJobs] = useState<Job[]>([]);
   const [recommendedJobs, setRecommendedJobs] = useState<Job[]>([]);
   const [nearbyJobs, setNearbyJobs] = useState<Job[]>([]);
@@ -68,7 +77,7 @@ const Jobs = () => {
 
   useEffect(() => {
     loadJobs();
-    if (currentUser?.role === 'provider') {
+    if (activeRole === 'provider') {
       loadRecommendedJobs();
       // Don't auto-request location on page load
       // User must click "Enable Location" button
@@ -77,7 +86,7 @@ const Jobs = () => {
 
   useEffect(() => {
     // Load nearby jobs when location changes
-    if (userLocation && currentUser?.role === 'provider') {
+    if (userLocation && activeRole === 'provider') {
       loadNearbyJobs();
     }
   }, [userLocation, searchRadius]);
@@ -299,20 +308,20 @@ const Jobs = () => {
             <div>
               <div className="flex items-center gap-4 mb-2">
                 <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-3xl">{currentUser.role === 'client' ? '📋' : '🔍'}</span>
+                  <span className="text-3xl">{activeRole === 'client' ? '📋' : '🔍'}</span>
                 </div>
                 <h1 className="text-4xl font-bold text-[#0D2B1D]">
-                  {currentUser.role === 'client' ? 'My Jobs' : 'Browse Jobs'}
+                  {activeRole === 'client' ? 'My Jobs' : 'Browse Jobs'}
                 </h1>
               </div>
               <p className="text-[#6B8F71] mt-2 text-lg ml-16">
-                {currentUser.role === 'client' 
+                {activeRole === 'client' 
                   ? 'Manage your posted jobs and track progress'
                   : 'Find jobs that match your skills and expertise'}
               </p>
             </div>
             
-            {currentUser.role === 'client' && (
+            {activeRole === 'client' && (
               <button
                 onClick={() => navigate('/post-job')}
                 className="px-8 py-4 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-2xl hover:scale-105 transition-all font-bold shadow-xl flex items-center gap-2"
@@ -323,7 +332,7 @@ const Jobs = () => {
           </div>
 
           {/* Search and Filters - Emerald Theme */}
-          {currentUser.role === 'provider' && (
+          {activeRole === 'provider' && (
             <div className="bg-white rounded-2xl shadow-xl border-2 border-[#E3EFD3] p-6 mb-6 animate-fade-in-up hover:shadow-2xl transition-all">
               {/* Voice Search */}
               <div className="mb-4 relative">
@@ -466,7 +475,7 @@ const Jobs = () => {
           )}
 
           {/* Near Me Jobs Section - GPS-based - Only for Providers */}
-          {currentUser.role === 'provider' && (
+          {activeRole === 'provider' && (
             <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-lg shadow-md p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -619,9 +628,11 @@ const Jobs = () => {
                               <div className="text-lg font-bold text-green-600">
                                 {formatBudget(job.budget)}
                               </div>
-                              <span className="text-xs text-gray-500">
-                                📍 {job.location.city}
-                              </span>
+                              {job.location?.city && (
+                                <span className="text-xs text-gray-500">
+                                  📍 {job.location.city}
+                                </span>
+                              )}
                             </div>
                           </div>
                         );
@@ -634,7 +645,7 @@ const Jobs = () => {
           )}
 
           {/* Recommended Jobs Section - Only for Providers */}
-          {currentUser.role === 'provider' && recommendedJobs.length > 0 && showRecommended && (
+          {activeRole === 'provider' && recommendedJobs.length > 0 && showRecommended && (
             <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg shadow-md p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -693,9 +704,11 @@ const Jobs = () => {
                           <div className="text-lg font-bold text-green-600">
                             {formatBudget(job.budget)}
                           </div>
-                          <span className="text-xs text-gray-500">
-                            📍 {job.location.city}
-                          </span>
+                          {job.location?.city && (
+                            <span className="text-xs text-gray-500">
+                              📍 {job.location.city}
+                            </span>
+                          )}
                         </div>
                       </div>
                     );
@@ -727,14 +740,14 @@ const Jobs = () => {
                 <span className="text-5xl">📋</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {currentUser.role === 'client' ? 'No Jobs Posted Yet' : 'No Jobs Found'}
+                {activeRole === 'client' ? 'No Jobs Posted Yet' : 'No Jobs Found'}
               </h3>
               <p className="text-gray-600 mb-6">
-                {currentUser.role === 'client' 
+                {activeRole === 'client' 
                   ? 'Start by posting your first job to find service providers'
                   : 'Try adjusting your filters or check back later for new opportunities'}
               </p>
-              {currentUser.role === 'client' && (
+              {activeRole === 'client' && (
                 <button
                   onClick={() => navigate('/post-job')}
                   className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
@@ -763,7 +776,7 @@ const Jobs = () => {
                       className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden relative"
                     >
                       {/* Wishlist Button - Only for Providers */}
-                      {currentUser.role === 'provider' && (
+                      {activeRole === 'provider' && (
                         <div className="absolute top-4 right-4 z-10">
                           <WishlistButton
                             itemType="job"
@@ -793,9 +806,11 @@ const Jobs = () => {
                                   {job.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
                                 </span>
                               )}
-                              <span className="inline-flex items-center">
-                                📍 {job.location.city}, {job.location.area}
-                              </span>
+                              {job.location?.city && (
+                                <span className="inline-flex items-center">
+                                  📍 {job.location.city}{job.location.area && `, ${job.location.area}`}
+                                </span>
+                              )}
                               <span className="inline-flex items-center">
                                 📅 Posted {formatDate(job.createdAt)}
                               </span>
@@ -835,15 +850,39 @@ const Jobs = () => {
                             >
                               View Details
                             </button>
-                            {currentUser.role === 'provider' && (
-                              <button
-                                onClick={() => navigate(`/jobs/${job._id}/apply`)}
-                                className="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-                              >
-                                Apply Now
-                              </button>
+                            {activeRole === 'provider' && (
+                              <>
+                                {!isVerified ? (
+                                  <button
+                                    onClick={() => {
+                                      toast.warning('Please complete verification first!');
+                                      navigate('/verification');
+                                    }}
+                                    className="px-6 py-2 border-2 border-yellow-500 text-yellow-700 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors font-medium"
+                                  >
+                                    🔒 Verify to Apply
+                                  </button>
+                                ) : !isDemoVerified ? (
+                                  <button
+                                    onClick={() => {
+                                      toast.warning('Please complete demo project first!');
+                                      navigate('/demo-project');
+                                    }}
+                                    className="px-6 py-2 border-2 border-orange-500 text-orange-700 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors font-medium"
+                                  >
+                                    🎯 Complete Demo
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => navigate(`/jobs/${job._id}/apply`)}
+                                    className="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                                  >
+                                    Apply Now
+                                  </button>
+                                )}
+                              </>
                             )}
-                            {currentUser.role === 'client' && (typeof job.client === 'object' ? job.client._id === currentUser._id : job.client === currentUser._id) && (
+                            {activeRole === 'client' && (typeof job.client === 'object' ? job.client._id === currentUser._id : job.client === currentUser._id) && (
                               <button
                                 onClick={() => navigate(`/jobs/${job._id}/edit`)}
                                 className="px-6 py-2 border border-orange-600 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors font-medium"
@@ -851,7 +890,7 @@ const Jobs = () => {
                                 Edit Job
                               </button>
                             )}
-                            {currentUser.role === 'client' && proposalsCount > 0 && (
+                            {activeRole === 'client' && proposalsCount > 0 && (
                               <button
                                 onClick={() => navigate(`/jobs/${job._id}/proposals`)}
                                 className="px-6 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors font-medium"
@@ -863,7 +902,7 @@ const Jobs = () => {
                         </div>
 
                         {/* Client Info */}
-                        {client && currentUser.role === 'provider' && (
+                        {client && activeRole === 'provider' && (
                           <div className="mt-4 pt-4 border-t border-gray-200">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-3">

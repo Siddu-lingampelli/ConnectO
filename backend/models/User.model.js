@@ -31,6 +31,33 @@ const userSchema = new mongoose.Schema({
     default: 'client'
   },
   
+  // Dual Role System - NEW
+  // Tracks which roles the user has enabled
+  enabledRoles: [{
+    type: String,
+    enum: ['client', 'provider'],
+    default: ['client'] // Everyone starts as a client
+  }],
+  
+  // Current active role (can switch between enabled roles)
+  activeRole: {
+    type: String,
+    enum: ['client', 'provider', 'admin'],
+    default: 'client'
+  },
+  
+  // Track when roles were enabled
+  roleHistory: [{
+    role: {
+      type: String,
+      enum: ['client', 'provider']
+    },
+    enabledAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  
   // Provider Type (for service providers)
   providerType: {
     type: String,

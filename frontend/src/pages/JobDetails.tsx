@@ -149,7 +149,7 @@ const JobDetails = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    {job.location.city}, {job.location.area}
+                    {job.location?.city ? `${job.location.city}${job.location.area ? `, ${job.location.area}` : ''}` : 'Location not specified'}
                   </span>
                   <span className="flex items-center gap-2">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -223,23 +223,28 @@ const JobDetails = () => {
           </div>
 
           {/* Location Details */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Location Details</h2>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="font-semibold text-gray-700 min-w-[100px]">City:</span>
-                <span className="text-gray-600">{job.location.city}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="font-semibold text-gray-700 min-w-[100px]">Area:</span>
-                <span className="text-gray-600">{job.location.area}</span>
-              </div>
-              {job.location.address && (
-                <div className="flex items-start gap-3">
-                  <span className="font-semibold text-gray-700 min-w-[100px]">Address:</span>
-                  <span className="text-gray-600">{job.location.address}</span>
-                </div>
-              )}
+          {job.location && (
+            <div className="bg-white rounded-lg shadow-md p-8 mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Location Details</h2>
+              <div className="space-y-3">
+                {job.location.city && (
+                  <div className="flex items-start gap-3">
+                    <span className="font-semibold text-gray-700 min-w-[100px]">City:</span>
+                    <span className="text-gray-600">{job.location.city}</span>
+                  </div>
+                )}
+                {job.location.area && (
+                  <div className="flex items-start gap-3">
+                    <span className="font-semibold text-gray-700 min-w-[100px]">Area:</span>
+                    <span className="text-gray-600">{job.location.area}</span>
+                  </div>
+                )}
+                {job.location.address && (
+                  <div className="flex items-start gap-3">
+                    <span className="font-semibold text-gray-700 min-w-[100px]">Address:</span>
+                    <span className="text-gray-600">{job.location.address}</span>
+                  </div>
+                )}
               {job.location.latitude && job.location.longitude && (
                 <div className="mt-4 p-4 bg-green-50 rounded-lg">
                   <div className="flex items-center gap-2 text-green-700">
@@ -253,8 +258,9 @@ const JobDetails = () => {
                   </p>
                 </div>
               )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Client Information */}
           {client && (
