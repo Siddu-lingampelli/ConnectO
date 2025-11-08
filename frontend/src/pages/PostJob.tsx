@@ -241,14 +241,25 @@ const PostJob = () => {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-full mx-auto mb-4 flex items-center justify-center">
-              <span className="text-4xl">🔒</span>
+        <main className="flex-1 w-full">
+          <div className="max-w-7xl mx-auto px-6 py-24 flex items-center justify-center">
+            <div className="text-center bg-white rounded-2xl shadow-soft border border-border p-12 max-w-md">
+              <div className="w-20 h-20 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-10 h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-neutral-900 mb-3">Login Required</h2>
+              <p className="text-neutral-600 mb-6">Please login to post a job and connect with service providers.</p>
+              <button
+                onClick={() => navigate('/login')}
+                className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all font-medium shadow-soft"
+              >
+                Go to Login
+              </button>
             </div>
-            <p className="text-[#345635] font-semibold text-lg">Please login to post a job.</p>
           </div>
         </main>
         <Footer />
@@ -258,21 +269,25 @@ const PostJob = () => {
 
   if (currentUser.role !== 'client') {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
-              <span className="text-5xl">🚫</span>
+        <main className="flex-1 w-full">
+          <div className="max-w-7xl mx-auto px-6 py-24 flex items-center justify-center">
+            <div className="text-center bg-white rounded-2xl shadow-soft border border-border p-12 max-w-md">
+              <div className="w-24 h-24 bg-red-50 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-neutral-900 mb-3">Access Denied</h2>
+              <p className="text-neutral-600 mb-6">Only clients can post jobs. Switch to client mode or browse available jobs instead.</p>
+              <button
+                onClick={() => navigate('/jobs')}
+                className="px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all font-medium shadow-soft"
+              >
+                Browse Jobs Instead
+              </button>
             </div>
-            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-3">Access Denied</h2>
-            <p className="text-[#6B8F71] mb-6">Only clients can post jobs.</p>
-            <button
-              onClick={() => navigate('/jobs')}
-              className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-semibold hover:scale-105"
-            >
-              Browse Jobs Instead
-            </button>
           </div>
         </main>
         <Footer />
@@ -282,12 +297,14 @@ const PostJob = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
-            <p className="text-[#6B8F71] font-medium">Verifying account...</p>
+        <main className="flex-1 w-full">
+          <div className="max-w-7xl mx-auto px-6 py-24 flex items-center justify-center">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-border border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-neutral-600 font-medium">Verifying account...</p>
+            </div>
           </div>
         </main>
         <Footer />
@@ -296,28 +313,31 @@ const PostJob = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full">
+        <div className="max-w-7xl mx-auto px-6 py-24">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
-          <div className="mb-6">
+          <div className="mb-8">
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-4 transition-all duration-300 group"
+              className="flex items-center text-neutral-600 hover:text-primary transition-all duration-200 mb-6 group"
             >
               <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               <span className="font-medium">Back</span>
             </button>
-            <div className="flex items-center mb-3">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                <span className="text-3xl">📝</span>
+            <div className="flex items-start gap-4 mb-4">
+              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-soft flex-shrink-0">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-[#0D2B1D]">Post a New Job</h1>
-                <p className="text-[#6B8F71] mt-1">
+                <h1 className="text-4xl font-bold text-neutral-900 tracking-tight mb-2">Post a New Job</h1>
+                <p className="text-neutral-600 text-lg">
                   Describe your job requirements and connect with verified service providers
                 </p>
               </div>
@@ -326,28 +346,33 @@ const PostJob = () => {
 
           {/* Verified Badge */}
           {isVerified && (
-            <div className="bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0]/30 border-2 border-[#6B8F71] rounded-xl p-5 mb-6 shadow-lg">
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-md">
-                  <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <div className="bg-surface border border-border rounded-xl p-6 mb-8 shadow-soft">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-soft flex-shrink-0">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-[#0D2B1D] font-bold text-lg">Verified Client ✓</h3>
-                  <p className="text-[#345635] text-sm">Your account is verified. You can post jobs.</p>
+                  <h3 className="text-neutral-900 font-semibold text-lg flex items-center gap-2">
+                    Verified Client
+                    <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </h3>
+                  <p className="text-neutral-600 text-sm mt-1">Your account is verified. You can post jobs and hire providers.</p>
                 </div>
               </div>
             </div>
           )}
 
           {/* Form */}
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white rounded-2xl shadow-soft border border-border p-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
               {/* Job Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Job Title *
+                <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                  Job Title <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -355,47 +380,61 @@ const PostJob = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="e.g., Need experienced plumber for bathroom renovation"
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   required
                   minLength={10}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-neutral-500 mt-2">
                   {formData.title.length}/10 characters minimum
                 </p>
               </div>
 
               {/* Provider Type - Now First */}
               <div>
-                <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                  Service Provider Type *
+                <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                  Service Provider Type <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="providerType"
                   value={formData.providerType}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] bg-white"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white transition-all"
                   required
                 >
                   <option value="">Select provider type</option>
-                  <option value="Technical">💻 Technical (Online/Remote Work)</option>
-                  <option value="Non-Technical">🔧 Non-Technical (Field/On-site Work)</option>
+                  <option value="Technical">
+                    <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Technical (Online/Remote Work)
+                  </option>
+                  <option value="Non-Technical">
+                    <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Non-Technical (Field/On-site Work)
+                  </option>
                 </select>
-                <p className="text-xs text-[#6B8F71] mt-1">
-                  Technical: Software, IT, Design, etc. | Non-Technical: Plumbing, Electrical, Carpentry, etc.
+                <p className="text-xs text-neutral-500 mt-2 flex items-start gap-2">
+                  <svg className="w-4 h-4 text-neutral-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <span>Technical: Software, IT, Design, etc. | Non-Technical: Plumbing, Electrical, Carpentry, etc.</span>
                 </p>
               </div>
 
               {/* Category - Shows after Provider Type is selected */}
               {formData.providerType && (
-                <div className="animate-fade-in-up">
-                  <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                    Category *
+                <div className="animate-fade-in">
+                  <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                    Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-[#6B8F71] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#345635] focus:border-[#345635] bg-white shadow-sm"
+                    className="w-full px-4 py-3 border border-primary rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white transition-all shadow-soft"
                     required
                   >
                     <option value="">Select a category</option>
@@ -403,18 +442,21 @@ const PostJob = () => {
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
-                  <p className="text-xs text-[#345635] mt-1 font-medium">
+                  <p className="text-xs text-primary mt-2 font-medium flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
                     {formData.providerType === 'Technical' 
-                      ? '💻 Select from technical service categories'
-                      : '🔧 Select from non-technical service categories'}
+                      ? 'Select from technical service categories'
+                      : 'Select from non-technical service categories'}
                   </p>
                 </div>
               )}
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                  Job Description *
+                <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                  Job Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   name="description"
@@ -422,67 +464,83 @@ const PostJob = () => {
                   onChange={handleChange}
                   rows={6}
                   placeholder="Describe the job in detail. What needs to be done? Any specific requirements or expectations?"
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] resize-none"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all"
                   required
                   minLength={50}
                 />
-                <p className="text-xs text-[#6B8F71] mt-1">
+                <p className="text-xs text-neutral-500 mt-2">
                   {formData.description.length}/50 characters minimum
                 </p>
               </div>
 
-              {/* Budget */}
-              <div>
-                <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                  Budget (₹) *
-                </label>
-                <input
-                  type="number"
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleChange}
-                  placeholder="5000"
-                  min="0"
-                  step="100"
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
-                  required
-                />
-                <p className="text-xs text-[#6B8F71] mt-1">
-                  Enter your budget for this job
-                </p>
-              </div>
+              {/* Budget and Deadline Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Budget */}
+                <div>
+                  <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                    Budget (₹) <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 font-medium">₹</span>
+                    <input
+                      type="number"
+                      name="budget"
+                      value={formData.budget}
+                      onChange={handleChange}
+                      placeholder="5000"
+                      min="0"
+                      step="100"
+                      className="w-full pl-8 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      required
+                    />
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-2">
+                    Enter your budget for this job
+                  </p>
+                </div>
 
-              {/* Deadline */}
-              <div>
-                <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                  Deadline *
-                </label>
-                <input
-                  type="date"
-                  name="deadline"
-                  value={formData.deadline}
-                  onChange={handleChange}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
-                  required
-                />
-                <p className="text-xs text-[#6B8F71] mt-1">
-                  When do you need this job completed?
-                </p>
+                {/* Deadline */}
+                <div>
+                  <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                    Deadline <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="date"
+                      name="deadline"
+                      value={formData.deadline}
+                      onChange={handleChange}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                      required
+                    />
+                    <svg className="w-5 h-5 text-neutral-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-2">
+                    When do you need this completed?
+                  </p>
+                </div>
               </div>
 
               {/* Location Section */}
-              <div className="border-t-2 border-[#AEC3B0] pt-6">
-                <h3 className="text-lg font-bold text-[#0D2B1D] mb-4 flex items-center">
-                  <span className="text-2xl mr-2">📍</span>
+              <div className="border-t border-border pt-8">
+                <h3 className="text-lg font-bold text-neutral-900 mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
                   Job Location
                 </h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* City */}
                   <div>
-                    <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                      City *
+                    <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                      City <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -490,15 +548,15 @@ const PostJob = () => {
                       value={formData.city}
                       onChange={handleChange}
                       placeholder="Mumbai"
-                      className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       required
                     />
                   </div>
 
                   {/* Area */}
                   <div>
-                    <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                      Area *
+                    <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                      Area <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -506,16 +564,16 @@ const PostJob = () => {
                       value={formData.area}
                       onChange={handleChange}
                       placeholder="Andheri West"
-                      className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       required
                     />
                   </div>
                 </div>
 
                 {/* Address (Optional) */}
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-[#0D2B1D] mb-2">
-                    Complete Address (Optional)
+                <div className="mt-6">
+                  <label className="block text-sm font-semibold text-neutral-900 mb-2">
+                    Complete Address <span className="text-neutral-400 font-normal">(Optional)</span>
                   </label>
                   <input
                     type="text"
@@ -523,20 +581,23 @@ const PostJob = () => {
                     value={formData.address}
                     onChange={handleChange}
                     placeholder="Building name, street, landmark..."
-                    className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                   />
                 </div>
 
                 {/* GPS Location (Optional) */}
-                <div className="mt-4 p-5 bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0]/30 rounded-xl border-2 border-[#6B8F71]">
-                  <div className="flex items-center justify-between mb-2 flex-wrap gap-3">
+                <div className="mt-6 p-6 bg-surface rounded-xl border border-border">
+                  <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-lg flex items-center justify-center">
-                        <span className="text-xl">📍</span>
+                      <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-soft">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-[#0D2B1D]">Enable GPS Location (Optional)</h4>
-                        <p className="text-xs text-[#6B8F71]">
+                        <h4 className="font-semibold text-neutral-900">Enable GPS Location</h4>
+                        <p className="text-xs text-neutral-500 mt-0.5">
                           Help nearby providers find your job faster
                         </p>
                       </div>
@@ -545,41 +606,80 @@ const PostJob = () => {
                       type="button"
                       onClick={detectLocation}
                       disabled={gettingLocation}
-                      className="px-5 py-2.5 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-lg hover:shadow-lg transition-all text-sm font-semibold disabled:opacity-50 hover:scale-105"
+                      className="px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all text-sm font-medium disabled:opacity-50 shadow-soft flex items-center gap-2"
                     >
-                      {gettingLocation ? '⏳ Detecting...' : formData.latitude ? '✓ Located' : '📡 Detect'}
+                      {gettingLocation ? (
+                        <>
+                          <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          Detecting...
+                        </>
+                      ) : formData.latitude ? (
+                        <>
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          Located
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Detect Now
+                        </>
+                      )}
                     </button>
                   </div>
                   {formData.latitude && formData.longitude && (
-                    <div className="mt-3 text-xs text-[#345635] bg-white px-4 py-2.5 rounded-lg font-medium border-2 border-[#6B8F71]">
-                      ✓ Location detected: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
+                    <div className="mt-3 text-xs text-neutral-600 bg-white px-4 py-3 rounded-xl font-medium border border-primary/20 flex items-center gap-2">
+                      <svg className="w-4 h-4 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Location detected: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="border-t-2 border-[#AEC3B0] pt-6">
+              <div className="border-t border-border pt-8">
                 <div className="flex gap-4">
                   <button
                     type="button"
                     onClick={() => navigate(-1)}
-                    className="flex-1 px-6 py-3 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-semibold hover:scale-105"
+                    className="flex-1 px-6 py-3.5 border-2 border-border text-neutral-700 rounded-xl hover:bg-surface transition-all font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting || !isVerified}
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all disabled:opacity-50 font-semibold hover:scale-105"
+                    className="flex-1 px-6 py-3.5 bg-primary text-white rounded-xl hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-soft flex items-center justify-center gap-2"
                   >
-                    {submitting ? '⏳ Posting Job...' : '📝 Post Job'}
+                    {submitting ? (
+                      <>
+                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Posting Job...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Post Job
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
             </form>
           </div>
         </div>
+      </div>
       </main>
       <Footer />
     </div>

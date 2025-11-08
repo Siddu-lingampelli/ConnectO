@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { adminService, type AnalyticsData } from '../../services/adminService';
+import analyticsService, { type RevenueReportsData } from '../../services/analyticsService';
+import RealTimeStatsWidget from '../../components/analytics/RealTimeStatsWidget';
 
 const AdminAnalytics = () => {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [revenueData, setRevenueData] = useState<RevenueReportsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'revenue' | 'realtime'>('overview');
 
   useEffect(() => {
     loadAnalytics();
@@ -27,14 +31,27 @@ const AdminAnalytics = () => {
   const loadAnalytics = async () => {
     try {
       setLoading(true);
-      const data = await adminService.getAnalytics(period);
-      setAnalytics(data);
+      const periodDays = period === '7d' ? '7' : period === '30d' ? '30' : period === '90d' ? '90' : 'all';
+      const [analyticsData, revenue] = await Promise.all([
+        adminService.getAnalytics(period),
+        analyticsService.getRevenueReports(periodDays)
+      ]);
+      setAnalytics(analyticsData);
+      setRevenueData(revenue);
     } catch (error: any) {
       console.error('Error loading analytics:', error);
       toast.error('Failed to load analytics');
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(amount);
   };
 
   const periodLabels = {
@@ -108,7 +125,44 @@ const AdminAnalytics = () => {
           </div>
         </div>
 
-        {analytics && (
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-lg shadow-md p-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
+                activeTab === 'overview'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              📊 Overview
+            </button>
+            <button
+              onClick={() => setActiveTab('revenue')}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
+                activeTab === 'revenue'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              💰 Revenue Reports
+            </button>
+            <button
+              onClick={() => setActiveTab('realtime')}
+              className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
+                activeTab === 'realtime'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              🔴 Real-Time Stats
+            </button>
+          </div>
+        </div>
+
+        {/* Overview Tab */}
+        {activeTab === 'overview' && analytics && (
           <>
             {/* User Registrations */}
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -265,6 +319,174 @@ const AdminAnalytics = () => {
               )}
             </div>
           </>
+        )}
+
+        {/* Revenue Reports Tab */}
+        {activeTab === 'revenue' && revenueData && (
+          <>
+            {/* Revenue Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-lg p-6 text-white">
+                <div className="text-sm opacity-90 mb-2">Total Revenue</div>
+                <div className="text-3xl font-bold">{formatCurrency(revenueData.summary.totalRevenue)}</div>
+                <div className="text-sm opacity-80 mt-1">
+                  {revenueData.summary.revenueGrowth >= 0 ? '↑' : '↓'} {Math.abs(revenueData.summary.revenueGrowth)}% growth
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-lg p-6 text-white">
+                <div className="text-sm opacity-90 mb-2">Platform Commission</div>
+                <div className="text-3xl font-bold">{formatCurrency(revenueData.summary.platformCommission)}</div>
+                <div className="text-sm opacity-80 mt-1">10% of revenue</div>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg shadow-lg p-6 text-white">
+                <div className="text-sm opacity-90 mb-2">Net Revenue</div>
+                <div className="text-3xl font-bold">{formatCurrency(revenueData.summary.netRevenue)}</div>
+                <div className="text-sm opacity-80 mt-1">After refunds</div>
+              </div>
+
+              <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-lg shadow-lg p-6 text-white">
+                <div className="text-sm opacity-90 mb-2">Avg Transaction</div>
+                <div className="text-3xl font-bold">{formatCurrency(revenueData.summary.averageTransactionValue)}</div>
+                <div className="text-sm opacity-80 mt-1">Per order</div>
+              </div>
+            </div>
+
+            {/* Daily Revenue Chart */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">💰 Daily Revenue</h3>
+              {revenueData.dailyRevenue.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">No revenue data for this period</p>
+              ) : (
+                <div className="space-y-3">
+                  {revenueData.dailyRevenue.map((day, index) => {
+                    const maxRevenue = Math.max(...revenueData.dailyRevenue.map(d => d.revenue));
+                    const percentage = (day.revenue / maxRevenue) * 100;
+                    return (
+                      <div key={index} className="flex items-center gap-4">
+                        <div className="text-sm text-gray-600 w-24">{day._id}</div>
+                        <div className="flex-1">
+                          <div className="bg-gray-200 rounded-full h-10 overflow-hidden">
+                            <div
+                              className="bg-gradient-to-r from-emerald-500 to-teal-500 h-10 flex items-center justify-between px-3 text-white text-sm font-semibold"
+                              style={{ width: `${percentage}%` }}
+                            >
+                              <span>{formatCurrency(day.revenue)}</span>
+                              <span className="text-xs opacity-90">{day.transactions} orders</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Revenue by Payment Method */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">💳 Revenue by Payment Method</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {revenueData.revenueByMethod.map((method, index) => {
+                  const colors = [
+                    'from-blue-500 to-indigo-500',
+                    'from-green-500 to-emerald-500',
+                    'from-purple-500 to-pink-500'
+                  ];
+                  const colorClass = colors[index % colors.length];
+                  
+                  return (
+                    <div key={index} className={`bg-gradient-to-br ${colorClass} rounded-lg p-6 text-white`}>
+                      <div className="text-lg font-semibold mb-2 capitalize">{method._id}</div>
+                      <div className="text-3xl font-bold mb-1">{formatCurrency(method.total)}</div>
+                      <div className="text-sm opacity-90">{method.count} transactions</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Top Earning Categories */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">🏆 Top Revenue Categories</h3>
+              <div className="space-y-3">
+                {revenueData.revenueByCategory.slice(0, 5).map((category, index) => {
+                  const maxRevenue = Math.max(...revenueData.revenueByCategory.map(c => c.revenue));
+                  const percentage = (category.revenue / maxRevenue) * 100;
+                  return (
+                    <div key={index} className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900">{category._id}</div>
+                        <div className="bg-gray-200 rounded-full h-6 mt-1">
+                          <div
+                            className="bg-gradient-to-r from-emerald-500 to-teal-500 h-6 rounded-full flex items-center justify-end pr-2 text-white text-xs font-semibold"
+                            style={{ width: `${percentage}%` }}
+                          >
+                            {formatCurrency(category.revenue)}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-600">{category.orders} orders</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Top Providers & Clients */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Top Providers */}
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">🌟 Top Earning Providers</h3>
+                <div className="space-y-3">
+                  {revenueData.topProviders.slice(0, 5).map((provider, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-gray-900 truncate">{provider.name}</div>
+                        <div className="text-sm text-gray-600">{provider.ordersCompleted} orders</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-emerald-600">{formatCurrency(provider.totalEarned)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top Clients */}
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">💎 Top Spending Clients</h3>
+                <div className="space-y-3">
+                  {revenueData.topClients.slice(0, 5).map((client, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-gray-900 truncate">{client.name}</div>
+                        <div className="text-sm text-gray-600">{client.jobsCompleted} orders</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-blue-600">{formatCurrency(client.totalSpent || 0)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Real-Time Stats Tab */}
+        {activeTab === 'realtime' && (
+          <RealTimeStatsWidget />
         )}
       </div>
     </AdminLayout>

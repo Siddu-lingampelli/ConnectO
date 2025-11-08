@@ -1,13 +1,21 @@
 import express from 'express';
 import { authenticate } from '../middleware/auth.middleware.js';
+import walletController from '../controllers/wallet.controller.js';
 
 const router = express.Router();
 router.use(authenticate);
 
-// Placeholder routes
-router.get('/', (req, res) => res.json({ message: 'Get wallet' }));
-router.get('/transactions', (req, res) => res.json({ message: 'Get transactions' }));
-router.post('/add-money', (req, res) => res.json({ message: 'Add money' }));
-router.post('/withdraw', (req, res) => res.json({ message: 'Withdraw money' }));
+// Wallet routes
+router.get('/', walletController.getWallet);
+router.get('/stats', walletController.getWalletStats);
+router.get('/transactions', walletController.getTransactions);
+router.get('/transactions/:id', walletController.getTransactionById);
+
+// Add money to wallet
+router.post('/add-money/create', walletController.createAddMoneyOrder);
+router.post('/add-money/verify', walletController.verifyAddMoney);
+
+// Withdraw from wallet
+router.post('/withdraw', walletController.requestWithdrawal);
 
 export default router;

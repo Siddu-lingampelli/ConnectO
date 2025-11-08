@@ -5,6 +5,7 @@ import { demoService, type DemoProject, type DemoStats } from '../../services/de
 
 const AdminDemos = () => {
   const [demos, setDemos] = useState<DemoProject[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [stats, setStats] = useState<DemoStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,6 +30,7 @@ const AdminDemos = () => {
   useEffect(() => {
     loadDemos();
     loadStats();
+    loadPendingRequests();
   }, [currentPage, statusFilter, typeFilter, refreshKey]);
 
   const loadDemos = async () => {
@@ -59,7 +61,15 @@ const AdminDemos = () => {
     }
   };
 
-  const handleAssignDemo = async (e: React.FormEvent) => {
+  const loadPendingRequests = async () => {
+    try {
+      const requests = await demoService.getPendingDemoRequests();
+      setPendingRequests(requests || []);
+    } catch (error: any) {
+      console.error('Error loading pending requests:', error);
+      toast.error('Failed to load pending demo requests');
+    }
+  };  const handleAssignDemo = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!assignFormData.freelancerId && !assignFormData.freelancerEmail) {
@@ -193,6 +203,71 @@ const AdminDemos = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="text-sm text-gray-600 mb-1">Avg Score</div>
               <div className="text-3xl font-bold text-purple-600">{stats.averageScore}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Pending Demo Requests */}
+        {pendingRequests.length > 0 && (
+          <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg shadow-lg p-6 border-2 border-orange-200">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">🎯</span>
+                <h3 className="text-xl font-bold text-gray-900">Pending Demo Requests</h3>
+                <span className="px-3 py-1 bg-orange-600 text-white text-sm font-bold rounded-full animate-pulse">
+                  {pendingRequests.length}
+                </span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {pendingRequests.map((user) => (
+                <div
+                  key={user._id}
+                  className="bg-white rounded-lg p-4 border border-orange-200 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      {user.profilePicture ? (
+                        <img
+                          src={user.profilePicture}
+                          alt={user.fullName}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                          {user.fullName?.charAt(0) || user.email?.charAt(0) || '?'}
+                        </div>
+                      )}
+                      <div>
+                        <h4 className="font-semibold text-gray-900">{user.fullName || user.email}</h4>
+                        <div className="flex items-center gap-3 text-sm text-gray-600">
+                          <span className="font-medium text-blue-600">{user.providerType}</span>
+                          {user.city && <span>📍 {user.city}</span>}
+                          {user.email && <span>✉️ {user.email}</span>}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Requested: {new Date(user.demoVerification?.requestedAt).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setAssignFormData({
+                          ...assignFormData,
+                          freelancerId: user._id,
+                          freelancerEmail: user.email,
+                          freelancerType: user.providerType
+                        });
+                        setShowAssignModal(true);
+                      }}
+                      className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium flex items-center gap-2"
+                    >
+                      <span>✅</span>
+                      Assign Demo
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

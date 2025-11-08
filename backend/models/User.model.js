@@ -173,6 +173,20 @@ const userSchema = new mongoose.Schema({
     communicationPreference: {
       type: String,
       trim: true
+    },
+    // GDPR Consent preferences
+    marketingEmails: {
+      type: Boolean,
+      default: false
+    },
+    dataSharing: {
+      type: Boolean,
+      default: false
+    },
+    profileVisibility: {
+      type: String,
+      enum: ['public', 'private', 'connections'],
+      default: 'public'
     }
   },
   
@@ -234,14 +248,155 @@ const userSchema = new mongoose.Schema({
   demoVerification: {
     status: {
       type: String,
-      enum: ['not_assigned', 'pending', 'under_review', 'verified', 'rejected'],
+      enum: ['not_assigned', 'pending_request', 'pending', 'under_review', 'verified', 'rejected'],
       default: 'not_assigned'
     },
     score: { type: Number, min: 0, max: 100 },
     demoProject: { type: mongoose.Schema.Types.ObjectId, ref: 'DemoProject' },
+    requestedAt: { type: Date },
     lastUpdated: { type: Date },
     adminComments: { type: String, trim: true }
   },
+
+  // Advanced Verification (Enhanced Provider Verification)
+  idVerification: {
+    status: {
+      type: String,
+      enum: ['not_submitted', 'pending', 'verified', 'rejected'],
+      default: 'not_submitted'
+    },
+    idType: {
+      type: String,
+      enum: ['aadhaar', 'pan', 'passport', 'driving_license', 'voter_id'],
+    },
+    idNumber: {
+      type: String,
+      trim: true
+    },
+    idDocumentUrl: {
+      type: String,
+      trim: true
+    },
+    selfieUrl: {
+      type: String,
+      trim: true
+    },
+    submittedAt: {
+      type: Date
+    },
+    verifiedAt: {
+      type: Date
+    },
+    rejectionReason: {
+      type: String,
+      trim: true
+    },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  },
+
+  backgroundCheck: {
+    status: {
+      type: String,
+      enum: ['not_initiated', 'in_progress', 'cleared', 'failed'],
+      default: 'not_initiated'
+    },
+    requestedAt: {
+      type: Date
+    },
+    completedAt: {
+      type: Date
+    },
+    provider: {
+      type: String,
+      trim: true // e.g., "Manual Review", "Third-party Service"
+    },
+    reportUrl: {
+      type: String,
+      trim: true
+    },
+    notes: {
+      type: String,
+      trim: true
+    },
+    checks: {
+      criminalRecord: {
+        type: String,
+        enum: ['pending', 'clear', 'flagged', 'not_checked'],
+        default: 'not_checked'
+      },
+      employmentHistory: {
+        type: String,
+        enum: ['pending', 'verified', 'discrepancy', 'not_checked'],
+        default: 'not_checked'
+      },
+      educationVerification: {
+        type: String,
+        enum: ['pending', 'verified', 'discrepancy', 'not_checked'],
+        default: 'not_checked'
+      },
+      referenceCheck: {
+        type: String,
+        enum: ['pending', 'positive', 'negative', 'not_checked'],
+        default: 'not_checked'
+      }
+    }
+  },
+
+  skillCertifications: [{
+    skill: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    certificationName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    issuingOrganization: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    issueDate: {
+      type: Date,
+      required: true
+    },
+    expiryDate: {
+      type: Date
+    },
+    credentialId: {
+      type: String,
+      trim: true
+    },
+    credentialUrl: {
+      type: String,
+      trim: true
+    },
+    certificateUrl: {
+      type: String,
+      trim: true
+    },
+    verificationStatus: {
+      type: String,
+      enum: ['pending', 'verified', 'expired', 'invalid'],
+      default: 'pending'
+    },
+    verifiedAt: {
+      type: Date
+    },
+    verifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    addedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   
   // Additional location fields
   address: {
@@ -412,6 +567,21 @@ const userSchema = new mongoose.Schema({
   // Last login
   lastLogin: {
     type: Date
+  },
+  
+  // GDPR & Account Status
+  accountStatus: {
+    type: String,
+    enum: ['active', 'pending_deletion', 'deleted', 'suspended'],
+    default: 'active'
+  },
+  deletionScheduledDate: {
+    type: Date,
+    default: null
+  },
+  deletedAt: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true,

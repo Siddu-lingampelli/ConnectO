@@ -76,12 +76,12 @@ const JobDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading job details...</p>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -91,7 +91,7 @@ const JobDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <div className="text-center">
             <div className="text-6xl mb-4">❌</div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Job Not Found</h2>
@@ -102,7 +102,7 @@ const JobDetails = () => {
               Browse All Jobs
             </button>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -116,7 +116,7 @@ const JobDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-5xl mx-auto">
           {/* Back Button */}
           <button
@@ -165,7 +165,7 @@ const JobDetails = () => {
                 {isOwner && job.status === 'open' && (
                   <button
                     onClick={() => navigate(`/jobs/${job._id}/edit`)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                   >
                     Edit Job
                   </button>
@@ -173,7 +173,7 @@ const JobDetails = () => {
                 {isOwner && (
                   <button
                     onClick={() => navigate(`/jobs/${job._id}/proposals`)}
-                    className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium"
+                    className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors text-sm font-medium"
                   >
                     View Proposals ({job.proposalsCount || 0})
                   </button>
@@ -181,79 +181,101 @@ const JobDetails = () => {
                 {isProvider && job.status === 'open' && (
                   <button
                     onClick={() => navigate(`/jobs/${job._id}/apply${rehireProviderId ? `?rehire=${rehireProviderId}` : ''}`)}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-2"
                   >
-                    {rehireProviderId ? '🔄 Submit Rehire Proposal' : 'Apply Now'}
+                    {rehireProviderId && (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    )}
+                    {rehireProviderId ? 'Submit Rehire Proposal' : 'Apply Now'}
                   </button>
                 )}
                 {rehireProviderId && !isProvider && (
-                  <div className="px-4 py-2 bg-purple-100 border border-purple-300 text-purple-700 rounded-lg text-sm font-medium">
-                    💼 Rehire request for this provider
+                  <div className="px-4 py-2 bg-purple-50 border border-purple-200 text-purple-700 rounded-lg text-sm font-medium flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Rehire request for this provider
                   </div>
                 )}
               </div>
             </div>
 
             {/* Budget and Deadline */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-200">
-              <div className="bg-green-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Budget</div>
-                <div className="text-2xl font-bold text-green-600">₹{job.budget.toLocaleString()}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-border">
+              <div className="bg-surface rounded-lg p-4 border border-border">
+                <div className="text-sm text-text-secondary mb-1">Budget</div>
+                <div className="text-2xl font-bold text-primary">₹{job.budget.toLocaleString()}</div>
                 {job.budgetType && (
-                  <div className="text-xs text-gray-500 mt-1 capitalize">{job.budgetType}</div>
+                  <div className="text-xs text-text-secondary mt-1 capitalize">{job.budgetType}</div>
                 )}
               </div>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Deadline</div>
-                <div className="text-2xl font-bold text-blue-600">{formatDate(job.deadline)}</div>
+              <div className="bg-surface rounded-lg p-4 border border-border">
+                <div className="text-sm text-text-secondary mb-1">Deadline</div>
+                <div className="text-2xl font-bold text-primary">{formatDate(job.deadline)}</div>
               </div>
-              <div className="bg-purple-50 rounded-lg p-4">
-                <div className="text-sm text-gray-600 mb-1">Provider Type</div>
-                <div className="text-lg font-bold text-purple-600">
-                  {job.providerType === 'Technical' ? '💻 Technical' : '🔧 Non-Technical'}
+              <div className="bg-surface rounded-lg p-4 border border-border">
+                <div className="text-sm text-text-secondary mb-1">Provider Type</div>
+                <div className="text-lg font-bold text-primary flex items-center gap-2">
+                  {job.providerType === 'Technical' ? (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                      Technical
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                      </svg>
+                      Non-Technical
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Job Description */}
-          <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Job Description</h2>
-            <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{job.description}</p>
+          <div className="bg-surface rounded-lg shadow-soft p-8 mb-6 border border-border">
+            <h2 className="text-xl font-bold text-text-primary mb-4">Job Description</h2>
+            <p className="text-text-primary whitespace-pre-wrap leading-relaxed">{job.description}</p>
           </div>
 
           {/* Location Details */}
           {job.location && (
-            <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Location Details</h2>
+            <div className="bg-surface rounded-lg shadow-soft p-8 mb-6 border border-border">
+              <h2 className="text-xl font-bold text-text-primary mb-4">Location Details</h2>
               <div className="space-y-3">
                 {job.location.city && (
                   <div className="flex items-start gap-3">
-                    <span className="font-semibold text-gray-700 min-w-[100px]">City:</span>
-                    <span className="text-gray-600">{job.location.city}</span>
+                    <span className="font-semibold text-text-primary min-w-[100px]">City:</span>
+                    <span className="text-text-secondary">{job.location.city}</span>
                   </div>
                 )}
                 {job.location.area && (
                   <div className="flex items-start gap-3">
-                    <span className="font-semibold text-gray-700 min-w-[100px]">Area:</span>
-                    <span className="text-gray-600">{job.location.area}</span>
+                    <span className="font-semibold text-text-primary min-w-[100px]">Area:</span>
+                    <span className="text-text-secondary">{job.location.area}</span>
                   </div>
                 )}
                 {job.location.address && (
                   <div className="flex items-start gap-3">
-                    <span className="font-semibold text-gray-700 min-w-[100px]">Address:</span>
-                    <span className="text-gray-600">{job.location.address}</span>
+                    <span className="font-semibold text-text-primary min-w-[100px]">Address:</span>
+                    <span className="text-text-secondary">{job.location.address}</span>
                   </div>
                 )}
               {job.location.latitude && job.location.longitude && (
-                <div className="mt-4 p-4 bg-green-50 rounded-lg">
-                  <div className="flex items-center gap-2 text-green-700">
+                <div className="mt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                  <div className="flex items-center gap-2 text-primary">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
                     <span className="font-semibold">GPS Location Available</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-text-secondary mt-2">
                     Coordinates: {job.location.latitude.toFixed(6)}, {job.location.longitude.toFixed(6)}
                   </p>
                 </div>
@@ -264,30 +286,37 @@ const JobDetails = () => {
 
           {/* Client Information */}
           {client && (
-            <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Client Information</h2>
+            <div className="bg-surface rounded-lg shadow-soft p-8 mb-6 border border-border">
+              <h2 className="text-xl font-bold text-text-primary mb-4">Client Information</h2>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                   {client.fullName.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900">{client.fullName}</h3>
-                  {client.email && <p className="text-gray-600">{client.email}</p>}
-                  {client.phone && <p className="text-gray-600">{client.phone}</p>}
+                  <h3 className="text-lg font-bold text-text-primary">{client.fullName}</h3>
+                  {client.email && <p className="text-text-secondary">{client.email}</p>}
+                  {client.phone && <p className="text-text-secondary">{client.phone}</p>}
                   {client.city && (
-                    <p className="text-sm text-gray-500 mt-1">📍 {client.city}, {client.area || ''}</p>
+                    <p className="text-sm text-text-secondary mt-1 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                      {client.city}, {client.area || ''}
+                    </p>
                   )}
                   {client.rating && (
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="text-yellow-500">⭐</span>
-                      <span className="font-semibold text-gray-900">{client.rating.toFixed(1)}</span>
+                      <svg className="w-5 h-5 text-yellow-500 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="font-semibold text-text-primary">{client.rating.toFixed(1)}</span>
                     </div>
                   )}
                 </div>
                 {!isOwner && (
                   <button
                     onClick={() => navigate(`/profile/${client._id}`)}
-                    className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                    className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors"
                   >
                     View Profile
                   </button>
@@ -298,26 +327,28 @@ const JobDetails = () => {
 
           {/* Assigned Provider (if any) */}
           {assignedProvider && (
-            <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Assigned Service Provider</h2>
+            <div className="bg-surface rounded-lg shadow-soft p-8 mb-6 border border-border">
+              <h2 className="text-xl font-bold text-text-primary mb-4">Assigned Service Provider</h2>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary/70 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                   {assignedProvider.fullName.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900">{assignedProvider.fullName}</h3>
-                  {assignedProvider.email && <p className="text-gray-600">{assignedProvider.email}</p>}
-                  {assignedProvider.phone && <p className="text-gray-600">{assignedProvider.phone}</p>}
+                  <h3 className="text-lg font-bold text-text-primary">{assignedProvider.fullName}</h3>
+                  {assignedProvider.email && <p className="text-text-secondary">{assignedProvider.email}</p>}
+                  {assignedProvider.phone && <p className="text-text-secondary">{assignedProvider.phone}</p>}
                   {assignedProvider.rating && (
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="text-yellow-500">⭐</span>
-                      <span className="font-semibold text-gray-900">{assignedProvider.rating.toFixed(1)}</span>
+                      <svg className="w-5 h-5 text-yellow-500 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="font-semibold text-text-primary">{assignedProvider.rating.toFixed(1)}</span>
                     </div>
                   )}
                 </div>
                 <button
                   onClick={() => navigate(`/profile/${assignedProvider._id}`)}
-                  className="px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition-colors"
+                  className="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors"
                 >
                   View Profile
                 </button>
@@ -336,29 +367,29 @@ const JobDetails = () => {
           )}
 
           {/* Metadata */}
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Additional Information</h2>
+          <div className="bg-surface rounded-lg shadow-soft p-8 border border-border">
+            <h2 className="text-xl font-bold text-text-primary mb-4">Additional Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-semibold text-gray-700">Job ID:</span>
-                <span className="text-gray-600 ml-2">{job._id}</span>
+                <span className="font-semibold text-text-primary">Job ID:</span>
+                <span className="text-text-secondary ml-2">{job._id}</span>
               </div>
               <div>
-                <span className="font-semibold text-gray-700">Posted On:</span>
-                <span className="text-gray-600 ml-2">{formatDateTime(job.createdAt)}</span>
+                <span className="font-semibold text-text-primary">Posted On:</span>
+                <span className="text-text-secondary ml-2">{formatDateTime(job.createdAt)}</span>
               </div>
               <div>
-                <span className="font-semibold text-gray-700">Last Updated:</span>
-                <span className="text-gray-600 ml-2">{formatDateTime(job.updatedAt)}</span>
+                <span className="font-semibold text-text-primary">Last Updated:</span>
+                <span className="text-text-secondary ml-2">{formatDateTime(job.updatedAt)}</span>
               </div>
               <div>
-                <span className="font-semibold text-gray-700">Proposals Count:</span>
-                <span className="text-gray-600 ml-2">{job.proposalsCount || 0}</span>
+                <span className="font-semibold text-text-primary">Proposals Count:</span>
+                <span className="text-text-secondary ml-2">{job.proposalsCount || 0}</span>
               </div>
             </div>
           </div>
         </div>
-      </main>
+      </div></main>
       <Footer />
     </div>
   );

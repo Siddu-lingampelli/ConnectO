@@ -8,9 +8,9 @@ import ErrorBoundary from './components/ErrorBoundary';
 import './styles/globals.css';
 import 'leaflet/dist/leaflet.css';
 
-console.log('🚀 VSConnectO Frontend Starting...');
-console.log('📍 Environment:', import.meta.env.MODE);
-console.log('🔗 API URL:', import.meta.env.VITE_API_URL);
+console.log('ConnectO Frontend Starting...');
+console.log('Environment:', import.meta.env.MODE);
+console.log('API URL:', import.meta.env.VITE_API_URL);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -24,4 +24,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   </React.StrictMode>
 );
 
-console.log('✅ VSConnectO Frontend Mounted');
+console.log('ConnectO Frontend Mounted');

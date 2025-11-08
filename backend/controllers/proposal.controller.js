@@ -3,6 +3,7 @@ import Job from '../models/Job.model.js';
 import Order from '../models/Order.model.js';
 import User from '../models/User.model.js';
 import notificationHelper from '../utils/notificationHelper.js';
+import { sendProposalNotification } from '../services/email.service.js';
 
 // @desc    Create new proposal (Provider only)
 // @route   POST /api/proposals
@@ -24,6 +25,20 @@ export const createProposal = async (req, res) => {
     if (provider && provider.role === 'provider') {
       const demoStatus = provider.demoVerification?.status;
       if (demoStatus !== 'verified') {
+        // Send notification to request demo if not already requested
+        if (demoStatus === 'not_assigned' || !demoStatus) {
+          try {
+            await notificationHelper.systemNotification(
+              req.user._id,
+              '🎯 Demo Project Required',
+              'You need to complete a demo project before applying for jobs. Click here to request a demo assignment.',
+              '/dashboard'
+            );
+          } catch (notifError) {
+            console.error('Error sending demo notification:', notifError);
+          }
+        }
+        
         return res.status(403).json({
           success: false,
           message: 'You must complete and pass the demo project verification before applying for jobs',
@@ -110,6 +125,20 @@ export const createProposal = async (req, res) => {
     } catch (notifError) {
       console.error('Error sending notification:', notifError);
     }
+
+    // Send email notification to client (non-blocking)
+    User.findById(job.client).then(client => {
+      if (client) {
+        sendProposalNotification(
+          client.email,
+          client.fullName,
+          req.user.fullName,
+          job.title,
+          proposedBudget,
+          jobId
+        ).catch(err => console.error('Failed to send proposal email:', err));
+      }
+    }).catch(err => console.error('Failed to fetch client:', err));
 
     res.status(201).json({
       success: true,

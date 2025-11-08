@@ -43,16 +43,16 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-[#0D2B1D] mb-4">
+          <h1 className="text-5xl font-bold text-text-primary mb-4">
             Contact Us
           </h1>
-          <p className="text-xl text-[#6B8F71] max-w-2xl mx-auto">
+          <p className="text-xl text-text-secondary max-w-2xl mx-auto">
             Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
         </div>
@@ -61,46 +61,46 @@ const Contact = () => {
           {/* Contact Information */}
           <div className="lg:col-span-1 space-y-6">
             {/* Email */}
-            <div className="bg-white rounded-xl shadow-lg border-2 border-[#AEC3B0] p-6">
+            <div className="bg-white rounded-xl shadow-soft border border-border p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white text-xl flex-shrink-0">
                   📧
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#0D2B1D] mb-2">Email Us</h3>
-                  <a href="mailto:admin@vsconnecto.com" className="text-[#6B8F71] hover:text-[#345635] transition-colors">
+                  <h3 className="text-lg font-bold text-text-primary mb-2">Email Us</h3>
+                  <a href="mailto:admin@vsconnecto.com" className="text-text-secondary hover:text-text-primary transition-colors">
                     admin@vsconnecto.com
                   </a>
-                  <p className="text-sm text-gray-600 mt-1">We'll respond within 24 hours</p>
+                  <p className="text-sm text-text-secondary mt-1">We'll respond within 24 hours</p>
                 </div>
               </div>
             </div>
 
             {/* Phone */}
-            <div className="bg-white rounded-xl shadow-lg border-2 border-[#AEC3B0] p-6">
+            <div className="bg-white rounded-xl shadow-soft border border-border p-6">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white text-xl flex-shrink-0">
                   📞
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#0D2B1D] mb-2">Call Us</h3>
-                  <a href="tel:+911234567890" className="text-[#6B8F71] hover:text-[#345635] transition-colors">
+                  <h3 className="text-lg font-bold text-text-primary mb-2">Call Us</h3>
+                  <a href="tel:+911234567890" className="text-text-secondary hover:text-text-primary transition-colors">
                     +91 123 456 7890
                   </a>
-                  <p className="text-sm text-gray-600 mt-1">Mon-Fri 9am to 6pm IST</p>
+                  <p className="text-sm text-text-secondary mt-1">Mon-Fri 9am to 6pm IST</p>
                 </div>
               </div>
             </div>
 
             {/* Location */}
-                        <div className="bg-[#E3EFD3] rounded-lg p-4 border-2 border-[#AEC3B0]">
-              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:admin@vsconnecto.com" className="text-[#6B8F71] hover:text-[#345635]">admin@vsconnecto.com</a></p>
-              <p className="text-gray-700"><strong>Phone:</strong> +91 123 456 7890</p>
-              <p className="text-gray-700"><strong>Address:</strong> ConnectO Headquarters, 123 Business Street, Bangalore, Karnataka, India - 560001</p>
+                        <div className="bg-surface rounded-lg p-4 border border-border">
+              <p className="text-text-secondary"><strong>Email:</strong> <a href="mailto:admin@vsconnecto.com" className="text-text-secondary hover:text-text-primary">admin@vsconnecto.com</a></p>
+              <p className="text-text-secondary"><strong>Phone:</strong> +91 123 456 7890</p>
+              <p className="text-text-secondary"><strong>Address:</strong> ConnectO Headquarters, 123 Business Street, Bangalore, Karnataka, India - 560001</p>
             </div>
 
             {/* Social Media */}
-            <div className="bg-gradient-to-r from-[#345635] to-[#6B8F71] rounded-xl shadow-lg p-6 text-white">
+            <div className="bg-primary rounded-xl shadow-soft p-6 text-white">
               <h3 className="text-lg font-bold mb-4">Follow Us</h3>
               <div className="flex gap-4">
                 <a href="#" className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors">
@@ -121,13 +121,13 @@ const Contact = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg border-2 border-[#AEC3B0] p-8">
-              <h2 className="text-2xl font-bold text-[#0D2B1D] mb-6">Send us a Message</h2>
+            <div className="bg-white rounded-xl shadow-soft border border-border p-8">
+              <h2 className="text-2xl font-bold text-text-primary mb-6">Send us a Message</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-[#345635] mb-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-text-primary mb-2">
                     Your Name *
                   </label>
                   <input
@@ -137,14 +137,14 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
                     placeholder="John Doe"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-[#345635] mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-text-primary mb-2">
                     Your Email *
                   </label>
                   <input
@@ -154,14 +154,14 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
                     placeholder="john@example.com"
                   />
                 </div>
 
                 {/* Subject */}
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-[#345635] mb-2">
+                  <label htmlFor="subject" className="block text-sm font-semibold text-text-primary mb-2">
                     Subject *
                   </label>
                   <select
@@ -170,7 +170,7 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
                   >
                     <option value="">Select a subject</option>
                     <option value="general">General Inquiry</option>
@@ -185,7 +185,7 @@ const Contact = () => {
 
                 {/* Message */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-[#345635] mb-2">
+                  <label htmlFor="message" className="block text-sm font-semibold text-text-primary mb-2">
                     Your Message *
                   </label>
                   <textarea
@@ -195,7 +195,7 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all resize-none"
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all resize-none"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>
@@ -204,7 +204,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-[#345635] to-[#0D2B1D] text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-[#345635] to-[#0D2B1D] text-white rounded-lg font-semibold hover:shadow-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -224,24 +224,24 @@ const Contact = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="bg-white rounded-xl shadow-lg border-2 border-[#AEC3B0] p-8">
-          <h2 className="text-2xl font-bold text-[#0D2B1D] mb-6 text-center">Frequently Asked Questions</h2>
+        <div className="bg-white rounded-xl shadow-soft border border-border p-8">
+          <h2 className="text-2xl font-bold text-text-primary mb-6 text-center">Frequently Asked Questions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-bold text-[#0D2B1D] mb-2">How do I become a verified provider?</h3>
-              <p className="text-gray-700 text-sm">Complete your profile, submit required documents through the verification page, and our team will review within 24-48 hours.</p>
+              <h3 className="font-bold text-text-primary mb-2">How do I become a verified provider?</h3>
+              <p className="text-text-secondary text-sm">Complete your profile, submit required documents through the verification page, and our team will review within 24-48 hours.</p>
             </div>
             <div>
-              <h3 className="font-bold text-[#0D2B1D] mb-2">What payment methods do you accept?</h3>
-              <p className="text-gray-700 text-sm">We accept all major credit/debit cards, UPI, net banking, and digital wallets for secure transactions.</p>
+              <h3 className="font-bold text-text-primary mb-2">What payment methods do you accept?</h3>
+              <p className="text-text-secondary text-sm">We accept all major credit/debit cards, UPI, net banking, and digital wallets for secure transactions.</p>
             </div>
             <div>
-              <h3 className="font-bold text-[#0D2B1D] mb-2">How does the rating system work?</h3>
-              <p className="text-gray-700 text-sm">After job completion, clients can rate providers on a 5-star scale with written reviews. All reviews are verified and moderated.</p>
+              <h3 className="font-bold text-text-primary mb-2">How does the rating system work?</h3>
+              <p className="text-text-secondary text-sm">After job completion, clients can rate providers on a 5-star scale with written reviews. All reviews are verified and moderated.</p>
             </div>
             <div>
-              <h3 className="font-bold text-[#0D2B1D] mb-2">Is my personal information safe?</h3>
-              <p className="text-gray-700 text-sm">Yes! We use industry-standard encryption and never share your personal data without your consent. Read our Privacy Policy for details.</p>
+              <h3 className="font-bold text-text-primary mb-2">Is my personal information safe?</h3>
+              <p className="text-text-secondary text-sm">Yes! We use industry-standard encryption and never share your personal data without your consent. Read our Privacy Policy for details.</p>
             </div>
           </div>
         </div>

@@ -3,16 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #0D2B1D;
-  --color-secondary: #345635;
-  --color-tertiary: #6B8F71;
-  --color-quaternary: #AEC3B0;
-  --color-light: #E3EFD3;
-  --color-success: #10b981;
-  --color-danger: #ef4444;
-  --color-warning: #f59e0b;
-  --color-info: #06b6d4;
-  --color-dark: #0D2B1D;
+  --color-primary: #0F870F;
+  --color-primary-light: #E6F7E6;
+  --color-primary-dark: #0C6D0C;
+  --color-secondary: #2563EB;
+  --color-secondary-light: #EFF6FF;
+  --color-secondary-dark: #1D4ED8;
+  --color-background: #FFFFFF;
+  --color-surface: #F8FAFC;
+  --color-border: #E2E8F0;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94A3B8;
+  --color-success: #16A34A;
+  --color-warning: #F59E0B;
+  --color-error: #DC2626;
+  --color-info: #0284C7;
 }
 
 * {
@@ -27,34 +33,34 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-light);
-  color: var(--color-dark);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
 }
 
 code {
   font-family: 'Fira Code', 'Courier New', monospace;
 }
 
-/* Custom scrollbar - Emerald Theme */
+/* Custom scrollbar - subtle */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #E3EFD3;
+  background: var(--color-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #345635, #6B8F71);
+  background: var(--color-border);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #0D2B1D, #345635);
+  background: var(--color-text-muted);
 }
 
-/* Smooth Animations */
+/* Minimal Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -163,17 +169,7 @@ code {
   animation: slideInRight 0.6s ease-out forwards;
 }
 
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
-}
+/* Remove decorative infinite animations for minimalist feel */
 
 .animation-delay-2000 {
   animation-delay: 2s;
@@ -190,71 +186,28 @@ code {
 }
 
 /* Utility classes */
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 
-.btn {
-  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95;
-}
+.btn { @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200; }
 
-.btn-primary {
-  @apply bg-blue-500 text-white hover:bg-blue-600;
-}
+.btn-primary { @apply bg-primary text-white hover:bg-primary-dark shadow-soft; }
 
-.btn-secondary {
-  @apply bg-gray-500 text-white hover:bg-gray-600;
-}
+.btn-secondary { @apply bg-secondary text-white hover:bg-secondary-dark shadow-soft; }
 
-.btn-danger {
-  @apply bg-red-500 text-white hover:bg-red-600;
-}
+.btn-danger { @apply bg-error text-white hover:bg-error/90 shadow-soft; }
 
-.card {
-  @apply bg-white rounded-lg shadow-md p-6;
-}
+.card { @apply bg-white rounded-xl shadow-soft p-6 border border-border; }
 
-.input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500;
-}
+.input { @apply w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary; }
 
-.label {
-  @apply block text-sm font-medium text-gray-700 mb-2;
-}
+.label { @apply block text-sm font-medium text-text-secondary mb-2; }
 
-/* Gradient Text */
-.gradient-text-emerald {
-  background: linear-gradient(135deg, #0D2B1D 0%, #345635 50%, #6B8F71 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* Remove decorative gradient text for a clean, formal style */
 
-/* Glass Morphism */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
+/* Avoid glassmorphism for simplicity */
 
-/* Hover Effects */
-.hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+/* Subtle hover effect */
+.hover-elevate { transition: box-shadow 0.2s ease; }
+.hover-elevate:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
 
-.hover-lift:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(13, 43, 29, 0.2);
-}
-
-/* Text Shadows */
-.text-shadow-soft {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.text-shadow-strong {
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
+/* Avoid text shadows for crisp typography */

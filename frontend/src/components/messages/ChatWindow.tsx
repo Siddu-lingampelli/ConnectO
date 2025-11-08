@@ -1,13 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
+import { Video, Phone, ScreenShare } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { messageService, type Message, type UserStatus, type FileAttachment } from '../../services/messageService';
 import { userService } from '../../services/userService';
+import socketService from '../../services/socketService';
 import type { User } from '../../types';
 
 interface ChatWindowProps {
   otherUserId: string;
   currentUser: User;
   onNewMessage: () => void;
+}
+
+interface IncomingCall {
+  callId: string;
+  type: 'video' | 'voice';
+  caller: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  roomId?: string;
 }
 
 const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps) => {
@@ -19,10 +32,208 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
   const [userStatus, setUserStatus] = useState<UserStatus | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [incomingCall, setIncomingCall] = useState<IncomingCall | null>(null);
+  const [isInCall, setIsInCall] = useState(false);
+  const [callType, setCallType] = useState<'video' | 'voice' | null>(null);
+  const [activeCallId, setActiveCallId] = useState<string | null>(null);
+  const [callerId, setCallerId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+
+  // Call button handlers
+  const handleVideoCall = async () => {
+    try {
+      // Request camera and microphone permissions
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: true, 
+        audio: true 
+      });
+      
+      localStreamRef.current = stream;
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+      }
+
+      // Generate unique call ID
+      const callId = `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const roomId = `room_${callId}`;
+      
+      setIsInCall(true);
+      setCallType('video');
+      setActiveCallId(callId);
+      
+      // Emit video call event via Socket.io (matching backend expected format)
+      socketService.emit('initiate_video_call', {
+        callId,
+        roomId,
+        recipientId: otherUserId,
+        chatId: `chat_${currentUser.id || currentUser._id}_${otherUserId}`,
+        callerAvatar: currentUser.profilePicture
+      });
+
+      toast.success('📹 Calling ' + (otherUser?.fullName || 'user') + '...', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
+
+      console.log('📹 Video call initiated:', { callId, recipientId: otherUserId });
+    } catch (error: any) {
+      console.error('Failed to start video call:', error);
+      toast.error('Could not access camera/microphone. Please check permissions.', {
+        position: 'top-center',
+      });
+    }
+  };
+
+  const handleVoiceCall = async () => {
+    try {
+      // Request microphone permission only
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: false, 
+        audio: true 
+      });
+      
+      localStreamRef.current = stream;
+      
+      // Generate unique call ID
+      const callId = `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const roomId = `room_${callId}`;
+      
+      setIsInCall(true);
+      setCallType('voice');
+      setActiveCallId(callId);
+      
+      // Emit voice call event via Socket.io (matching backend expected format)
+      socketService.emit('initiate_voice_call', {
+        callId,
+        roomId,
+        recipientId: otherUserId,
+        chatId: `chat_${currentUser.id || currentUser._id}_${otherUserId}`,
+        callerAvatar: currentUser.profilePicture
+      });
+
+      toast.success('📞 Calling ' + (otherUser?.fullName || 'user') + '...', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
+
+      console.log('📞 Voice call initiated:', { callId, recipientId: otherUserId });
+    } catch (error: any) {
+      console.error('Failed to start voice call:', error);
+      toast.error('Could not access microphone. Please check permissions.', {
+        position: 'top-center',
+      });
+    }
+  };
+
+  const handleScreenShare = () => {
+    toast.info('�️ Screen sharing will be available in the next update. Stay tuned!', {
+      position: 'top-center',
+      autoClose: 3000,
+    });
+  };
+
+  const handleEndCall = () => {
+    // Emit end call event (matching backend expected format)
+    if (activeCallId) {
+      socketService.emit('end_call', {
+        callId: activeCallId,
+        participantIds: [otherUserId], // Notify the other user
+        duration: 0
+      });
+    }
+
+    // Stop all tracks
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach(track => track.stop());
+      localStreamRef.current = null;
+    }
+
+    // Close peer connection
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+
+    setIsInCall(false);
+    setCallType(null);
+    setActiveCallId(null);
+    setCallerId(null);
+    
+    toast.info('Call ended', {
+      position: 'top-center',
+      autoClose: 2000,
+    });
+
+    console.log('🔚 Call ended by user');
+  };
+
+  const handleAcceptCall = async () => {
+    if (!incomingCall) return;
+    
+    try {
+      // Request media permissions based on call type
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: incomingCall.type === 'video', 
+        audio: true 
+      });
+      
+      localStreamRef.current = stream;
+      if (localVideoRef.current && incomingCall.type === 'video') {
+        localVideoRef.current.srcObject = stream;
+      }
+
+      // Emit accept call event (matching backend expected format)
+      socketService.emit('accept_call', {
+        callId: incomingCall.callId,
+        callerId: callerId // Send back to the caller
+      });
+
+      setIsInCall(true);
+      setCallType(incomingCall.type);
+      setActiveCallId(incomingCall.callId);
+      setIncomingCall(null);
+      
+      toast.success('Call accepted!', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
+
+      console.log('✅ Call accepted:', incomingCall.callId);
+    } catch (error: any) {
+      console.error('Failed to accept call:', error);
+      toast.error('Could not access camera/microphone.', {
+        position: 'top-center',
+      });
+      handleDeclineCall();
+    }
+  };
+
+  const handleDeclineCall = () => {
+    if (!incomingCall) return;
+    
+    // Emit decline call event (matching backend expected format)
+    socketService.emit('decline_call', {
+      callId: incomingCall.callId,
+      callerId: callerId,
+      reason: 'User declined'
+    });
+    
+    toast.info('Call declined', {
+      position: 'top-center',
+      autoClose: 2000,
+    });
+    
+    setIncomingCall(null);
+    setCallerId(null);
+    console.log('❌ Call declined:', incomingCall.callId);
+  };
 
   // Scroll to bottom
   const scrollToBottom = () => {
@@ -91,6 +302,86 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
     
     return () => clearInterval(interval);
   }, [otherUserId]);
+
+  // Socket.io integration for real-time call signaling
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('No token found, Socket.io not connecting');
+      return;
+    }
+
+    try {
+      // Connect socket
+      socketService.connect(token);
+      console.log('🔌 Attempting Socket.io connection...');
+
+      // Listen for incoming video calls
+      socketService.onIncomingVideoCall((data) => {
+        console.log('📹 Incoming video call:', data);
+        setIncomingCall({
+          callId: data.callId,
+          type: 'video',
+          caller: data.caller,
+          roomId: data.roomId
+        });
+        setCallerId(data.caller.id);
+      });
+
+      // Listen for incoming voice calls
+      socketService.onIncomingVoiceCall((data) => {
+        console.log('📞 Incoming voice call:', data);
+        setIncomingCall({
+          callId: data.callId,
+          type: 'voice',
+          caller: data.caller,
+          roomId: data.roomId
+        });
+        setCallerId(data.caller.id);
+      });
+
+      // Listen for call accepted
+      socketService.onCallAccepted((data) => {
+        console.log('✅ Call accepted:', data);
+        toast.success(`${data.participantName} accepted the call!`, {
+          position: 'top-center',
+          autoClose: 2000,
+        });
+      });
+
+      // Listen for call declined
+      socketService.onCallDeclined((data) => {
+        console.log('❌ Call declined:', data);
+        toast.error('Call was declined', {
+          position: 'top-center',
+          autoClose: 2000,
+        });
+        handleEndCall();
+      });
+
+      // Listen for call ended
+      socketService.onCallEnded((data) => {
+        console.log('🔚 Call ended:', data);
+        handleEndCall();
+      });
+    } catch (error) {
+      console.error('❌ Socket.io connection error:', error);
+    }
+
+    return () => {
+      try {
+        // Cleanup socket listeners on unmount
+        socketService.off('incoming_video_call');
+        socketService.off('incoming_voice_call');
+        socketService.off('call_accepted');
+        socketService.off('call_declined');
+        socketService.off('call_ended');
+        console.log('🧹 Socket listeners cleaned up');
+      } catch (error) {
+        console.error('Error cleaning up socket listeners:', error);
+      }
+    };
+  }, []); // Empty dependency array - only run once on mount
 
   // Handle typing indicator
   const handleTyping = () => {
@@ -237,6 +528,118 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
 
   return (
     <div className="flex flex-col h-full">
+      {/* Incoming Call Modal */}
+      {incomingCall && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
+                {incomingCall.caller.name?.charAt(0).toUpperCase() || '?'}
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {incomingCall.caller.name || 'Unknown User'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {incomingCall.type === 'video' ? '📹 Incoming Video Call' : '📞 Incoming Voice Call'}
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleDeclineCall}
+                  className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  Decline
+                </button>
+                <button
+                  onClick={handleAcceptCall}
+                  className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                >
+                  Accept
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Active Call Interface */}
+      {isInCall && (
+        <div className="fixed inset-0 bg-gray-900 z-50 flex flex-col">
+          {/* Call Header */}
+          <div className="bg-gray-800 p-4 flex items-center justify-between">
+            <div className="text-white">
+              <h3 className="font-semibold">{otherUser?.fullName}</h3>
+              <p className="text-sm text-gray-300">
+                {callType === 'video' ? '📹 Video Call' : '📞 Voice Call'}
+              </p>
+            </div>
+            <button
+              onClick={handleEndCall}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+            >
+              End Call
+            </button>
+          </div>
+
+          {/* Video Container */}
+          <div className="flex-1 relative bg-black">
+            {callType === 'video' ? (
+              <>
+                {/* Remote Video (Full Screen) */}
+                <video
+                  ref={remoteVideoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Local Video (Picture-in-Picture) */}
+                <div className="absolute top-4 right-4 w-48 h-36 bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </>
+            ) : (
+              /* Voice Call UI */
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mx-auto mb-6 flex items-center justify-center text-white text-5xl font-bold">
+                    {otherUser?.fullName?.charAt(0).toUpperCase() || otherUser?.email?.charAt(0).toUpperCase() || '?'}
+                  </div>
+                  <h3 className="text-2xl font-semibold text-white mb-2">
+                    {otherUser?.fullName || otherUser?.email || 'Unknown User'}
+                  </h3>
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <p className="text-gray-300">Connected</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Call Controls */}
+          <div className="bg-gray-800 p-6 flex justify-center space-x-4">
+            <button className="p-4 bg-gray-700 hover:bg-gray-600 rounded-full transition-colors">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </button>
+            {callType === 'video' && (
+              <button className="p-4 bg-gray-700 hover:bg-gray-600 rounded-full transition-colors">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Chat Header */}
       <div className="p-4 border-b border-gray-200 bg-white">
         <div className="flex items-center space-x-3">
@@ -245,12 +648,12 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
             {otherUser.profilePicture ? (
               <img
                 src={otherUser.profilePicture}
-                alt={otherUser.fullName}
+                alt={otherUser?.fullName || otherUser?.email || 'User'}
                 className="w-12 h-12 rounded-full object-cover"
               />
             ) : (
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                {otherUser.fullName.charAt(0).toUpperCase()}
+                {otherUser?.fullName?.charAt(0).toUpperCase() || otherUser?.email?.charAt(0).toUpperCase() || '?'}
               </div>
             )}
             {/* Online status indicator */}
@@ -261,7 +664,7 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
           
           {/* User Info */}
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900">{otherUser.fullName}</h3>
+            <h3 className="font-semibold text-gray-900">{otherUser?.fullName || otherUser?.email || 'Unknown User'}</h3>
             <div className="flex items-center space-x-2 flex-wrap">
               {/* Online/Last Seen Status */}
               {userStatus?.isOnline ? (
@@ -289,9 +692,37 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
             </div>
           </div>
 
-          {/* Live indicator */}
+          {/* Live indicator + Call Buttons */}
           <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
+            {/* Video Call Button */}
+            <button
+              onClick={handleVideoCall}
+              className="p-2 hover:bg-emerald-50 rounded-full transition-colors group"
+              title="Start Video Call"
+            >
+              <Video className="w-5 h-5 text-emerald-600 group-hover:scale-110 transition-transform" />
+            </button>
+
+            {/* Voice Call Button */}
+            <button
+              onClick={handleVoiceCall}
+              className="p-2 hover:bg-blue-50 rounded-full transition-colors group"
+              title="Start Voice Call"
+            >
+              <Phone className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform" />
+            </button>
+
+            {/* Screen Share Button */}
+            <button
+              onClick={handleScreenShare}
+              className="p-2 hover:bg-purple-50 rounded-full transition-colors group"
+              title="Share Screen"
+            >
+              <ScreenShare className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
+            </button>
+
+            {/* Live indicator */}
+            <div className="flex items-center space-x-1 ml-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-xs text-gray-500">Live</span>
             </div>
@@ -306,7 +737,7 @@ const ChatWindow = ({ otherUserId, currentUser, onNewMessage }: ChatWindowProps)
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
             </div>
-            <span>{otherUser.fullName.split(' ')[0]} is typing...</span>
+            <span>{(otherUser?.fullName || otherUser?.email || 'User').split(' ')[0]} is typing...</span>
           </div>
         )}
       </div>

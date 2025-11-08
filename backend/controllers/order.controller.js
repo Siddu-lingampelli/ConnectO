@@ -1,6 +1,9 @@
 import Order from '../models/Order.model.js';
 import Job from '../models/Job.model.js';
 import Proposal from '../models/Proposal.model.js';
+import { sendOrderStartedEmail, sendOrderCompletedEmail } from '../services/email.service.js';
+import paymentService from '../services/payment.service.js';
+import { Escrow } from '../models/Payment.model.js';
 
 // @desc    Get my orders (Provider or Client)
 // @route   GET /api/orders/my-orders
@@ -179,6 +182,19 @@ export const updateOrderStatus = async (req, res) => {
       { path: 'provider', select: 'fullName email phone city rating' }
     ]);
 
+    // Send email notifications (non-blocking)
+    if (status === 'in_progress') {
+      sendOrderStartedEmail(order.provider.email, order.provider.fullName, order.job.title, order._id, true)
+        .catch(err => console.error('Failed to send provider email:', err));
+      sendOrderStartedEmail(order.client.email, order.client.fullName, order.job.title, order._id, false)
+        .catch(err => console.error('Failed to send client email:', err));
+    } else if (status === 'completed') {
+      sendOrderCompletedEmail(order.provider.email, order.provider.fullName, order.job.title, order._id, true)
+        .catch(err => console.error('Failed to send provider email:', err));
+      sendOrderCompletedEmail(order.client.email, order.client.fullName, order.job.title, order._id, false)
+        .catch(err => console.error('Failed to send client email:', err));
+    }
+
     res.status(200).json({
       success: true,
       message: `Order marked as ${status}`,
@@ -223,9 +239,38 @@ export const acceptDelivery = async (req, res) => {
       });
     }
 
-    // Update payment status
+    // Check if payment is already released
+    if (order.payment.status === 'released') {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment has already been released'
+      });
+    }
+
+    // Find and release escrow
+    const escrow = await Escrow.findOne({ order: order._id, status: 'held' });
+    
+    if (escrow) {
+      try {
+        // Release payment from escrow to provider's wallet
+        await paymentService.releaseEscrow(escrow._id);
+        console.log(`✅ Payment released from escrow for order: ${order._id}`);
+      } catch (escrowError) {
+        console.error('Escrow release error:', escrowError);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to release payment from escrow',
+          error: escrowError.message
+        });
+      }
+    }
+
+    // Update payment status in order
     order.payment.status = 'released';
     order.payment.releasedAt = new Date();
+    if (escrow) {
+      order.payment.escrowId = escrow._id;
+    }
 
     await order.save();
 
@@ -243,8 +288,12 @@ export const acceptDelivery = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Delivery accepted and payment released',
-      data: order
+      message: escrow 
+        ? 'Delivery accepted and payment released to provider wallet' 
+        : 'Delivery accepted',
+      data: order,
+      paymentReleased: !!escrow,
+      amountReleased: escrow?.providerAmount || 0
     });
   } catch (error) {
     console.error('Accept delivery error:', error);

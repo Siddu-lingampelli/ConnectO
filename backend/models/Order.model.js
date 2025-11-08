@@ -52,6 +52,14 @@ const orderSchema = new mongoose.Schema({
     },
     releasedAt: {
       type: Date
+    },
+    escrowId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Escrow'
+    },
+    paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Payment'
     }
   },
   milestones: [{

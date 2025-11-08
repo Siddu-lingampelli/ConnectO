@@ -1,15 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import LoginForm from '../components/auth/LoginForm';
 import RegisterForm from '../components/auth/RegisterForm';
 import { websiteReviewService, type WebsiteReview } from '../services/websiteReviewService';
 
-// New Emerald Essence Landing Page Design
 const Landing = () => {
-  const { t } = useTranslation();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [showLogin, setShowLogin] = useState(true);
@@ -17,14 +15,10 @@ const Landing = () => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState<WebsiteReview[]>([]);
   const [stats, setStats] = useState<any>(null);
-  const [isVisible, setIsVisible] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
 
-  // Check if we're on /login or /register route
   useEffect(() => {
     if (location.pathname === '/register') {
       setShowLogin(false);
-      // Get role from URL parameter
       const role = searchParams.get('role');
       if (role === 'provider') {
         setInitialRole('provider');
@@ -34,33 +28,9 @@ const Landing = () => {
     }
   }, [location.pathname, searchParams]);
 
-  // Load reviews and stats
   useEffect(() => {
     loadReviews();
     loadStats();
-  }, []);
-
-  // Scroll animations
-  useEffect(() => {
-    setIsVisible(true);
-    
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in-up');
-        }
-      });
-    }, observerOptions);
-
-    const elements = document.querySelectorAll('.animate-on-scroll');
-    elements.forEach(el => observer.observe(el));
-
-    return () => observer.disconnect();
   }, []);
 
   const loadReviews = async () => {
@@ -89,561 +59,361 @@ const Landing = () => {
     return (
       <div className="flex gap-1">
         {[...Array(5)].map((_, i) => (
-          <span
+          <svg
             key={i}
-            className={`text-lg transition-all duration-300 ${
-              i < rating ? 'text-yellow-400 scale-110' : 'text-gray-300'
-            }`}
+            className={`w-4 h-4 ${i < rating ? 'text-warning' : 'text-border'}`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
           >
-            ★
-          </span>
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
         ))}
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#AEC3B0]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       {/* Hero Section */}
-      <section 
-        ref={heroRef}
-        className={`relative overflow-hidden transition-all duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-      >
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-[#6B8F71] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-          <div className="absolute top-40 right-10 w-72 h-72 bg-[#345635] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-[#AEC3B0] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
+      <section className="relative overflow-hidden bg-background">
+        <div className="max-w-7xl mx-auto px-6 py-24 lg:py-32">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-8"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-light rounded-full">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                <span className="text-sm font-semibold text-primary tracking-tighter">Welcome to ConnectO</span>
+              </div>
+              
+              <h1 className="text-5xl lg:text-6xl xl:text-7xl font-semibold text-text-primary tracking-tighter leading-[1.1]">
+                Connect with
+                <br />
+                <span className="text-primary">trusted professionals</span>
+              </h1>
+              
+              <p className="text-xl text-text-secondary leading-relaxed max-w-xl">
+                Find skilled service providers or offer your expertise. Build meaningful connections and grow your business.
+              </p>
 
-        <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Left Side - Hero Content */}
-              <div className="text-left space-y-8 animate-on-scroll">
-                <div className="inline-block">
-                  <span className="px-4 py-2 bg-[#0D2B1D] text-[#E3EFD3] text-sm font-medium rounded-full shadow-lg animate-pulse">
-                    🚀 {t('landing.welcome')}
-                  </span>
-                </div>
-                
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#0D2B1D] leading-tight">
-                  {t('landing.heroTitle')}
-                  <span className="block text-[#345635] mt-2 relative">
-                    {t('landing.heroTitleHighlight')}
-                    <svg className="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 200 12" fill="none">
-                      <path d="M2 10C60 2 140 2 198 10" stroke="#6B8F71" strokeWidth="3" strokeLinecap="round"/>
-                    </svg>
-                  </span>
-                </h1>
-                
-                <p className="text-xl md:text-2xl text-[#345635] leading-relaxed font-light">
-                  {t('landing.heroSubtitle')}
-                  <span className="block mt-2 font-medium text-[#0D2B1D]">{t('landing.heroSubtitleBold')}</span>
-                </p>
-
-                <div className="flex flex-wrap gap-4 pt-4">
-                  <button
-                    onClick={() => setShowLogin(false)}
-                    className="group px-8 py-4 bg-[#0D2B1D] text-white rounded-xl font-semibold text-lg shadow-2xl hover:shadow-[#345635]/50 hover:scale-105 transition-all duration-300 flex items-center gap-2"
-                  >
-                    {t('landing.getStarted')}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <button
+                  onClick={() => setShowLogin(false)}
+                  className="group px-8 py-4 bg-primary text-white rounded-xl font-semibold shadow-soft hover:shadow-medium transition-all duration-200 hover:bg-primary-dark"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    Get Started
                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
-                  </button>
-                  
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-8 py-4 bg-surface text-text-primary rounded-xl font-semibold hover:bg-border transition-all duration-200"
+                >
+                  Learn More
+                </button>
+              </div>
+
+              {/* Trust Indicators */}
+              {stats && (
+                <div className="flex items-center gap-8 pt-8 border-t border-border">
+                  <div>
+                    <div className="text-3xl font-semibold text-text-primary">10K+</div>
+                    <div className="text-sm text-text-muted">Active Users</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-semibold text-text-primary">5K+</div>
+                    <div className="text-sm text-text-muted">Projects Done</div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-semibold text-text-primary">{stats.averageRating.toFixed(1)}</span>
+                      <svg className="w-6 h-6 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    </div>
+                    <div className="text-sm text-text-muted">Avg Rating</div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Right Auth Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="lg:ml-auto w-full max-w-md"
+            >
+              <div className="bg-white rounded-2xl shadow-large p-8 border border-border">
+                {/* Tab Switcher */}
+                <div className="flex gap-2 mb-8 bg-surface p-1.5 rounded-xl">
                   <button
-                    onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-8 py-4 bg-white text-[#0D2B1D] border-2 border-[#6B8F71] rounded-xl font-semibold text-lg hover:bg-[#E3EFD3] hover:scale-105 transition-all duration-300 shadow-lg"
+                    className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+                      showLogin 
+                        ? 'bg-white text-text-primary shadow-subtle' 
+                        : 'text-text-muted hover:text-text-secondary'
+                    }`}
+                    onClick={() => setShowLogin(true)}
                   >
-                    {t('landing.learnMore')}
+                    Sign In
+                  </button>
+                  <button
+                    className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+                      !showLogin 
+                        ? 'bg-white text-text-primary shadow-subtle' 
+                        : 'text-text-muted hover:text-text-secondary'
+                    }`}
+                    onClick={() => setShowLogin(false)}
+                  >
+                    Sign Up
                   </button>
                 </div>
 
-                {/* Trust Indicators */}
-                <div className="flex flex-wrap gap-8 pt-8 border-t border-[#AEC3B0]">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-[#0D2B1D]">10K+</div>
-                    <div className="text-sm text-[#345635] font-medium">{t('landing.activeUsers')}</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-[#0D2B1D]">5K+</div>
-                    <div className="text-sm text-[#345635] font-medium">{t('landing.projectsDone')}</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-[#0D2B1D]">4.8★</div>
-                    <div className="text-sm text-[#345635] font-medium">{t('landing.avgRating')}</div>
-                  </div>
-                </div>
+                {/* Auth Forms */}
+                <motion.div
+                  key={showLogin ? 'login' : 'register'}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {showLogin ? (
+                    <LoginForm onSuccess={handleAuthSuccess} />
+                  ) : (
+                    <RegisterForm
+                      onSuccess={handleAuthSuccess}
+                      onSwitchToLogin={() => setShowLogin(true)}
+                      initialRole={initialRole}
+                    />
+                  )}
+                </motion.div>
               </div>
-
-              {/* Right Side - Auth Card */}
-              <div className="animate-on-scroll">
-                <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-[#AEC3B0]/30 hover:shadow-[#345635]/20 transition-all duration-500">
-                  {/* Tab Switcher */}
-                  <div className="flex gap-2 mb-8 bg-[#E3EFD3] p-2 rounded-xl">
-                    <button
-                      className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
-                        showLogin
-                          ? 'bg-[#0D2B1D] text-white shadow-lg scale-105'
-                          : 'text-[#345635] hover:bg-[#AEC3B0]/30'
-                      }`}
-                      onClick={() => setShowLogin(true)}
-                    >
-                      {t('auth.login')}
-                    </button>
-                    <button
-                      className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
-                        !showLogin
-                          ? 'bg-[#0D2B1D] text-white shadow-lg scale-105'
-                          : 'text-[#345635] hover:bg-[#AEC3B0]/30'
-                      }`}
-                      onClick={() => setShowLogin(false)}
-                    >
-                      {t('auth.register')}
-                    </button>
-                  </div>
-
-                  {/* Auth Forms */}
-                  <div className="transition-all duration-500">
-                    {showLogin ? (
-                      <LoginForm onSuccess={handleAuthSuccess} />
-                    ) : (
-                      <RegisterForm
-                        onSuccess={handleAuthSuccess}
-                        onSwitchToLogin={() => setShowLogin(true)}
-                        initialRole={initialRole}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#E3EFD3]/10 to-transparent"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16 animate-on-scroll">
-              <h2 className="text-4xl md:text-5xl font-bold text-[#0D2B1D] mb-4">
-                {t('landing.whyChoose')}
+      <section id="features" className="py-24 bg-surface">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-block px-4 py-2 bg-secondary-light rounded-full mb-6">
+                <span className="text-sm font-semibold text-secondary">Why Choose ConnectO</span>
+              </div>
+              <h2 className="text-4xl lg:text-5xl font-semibold text-text-primary tracking-tighter mb-6">
+                Everything you need to succeed
               </h2>
-              <p className="text-xl text-[#345635] max-w-2xl mx-auto">
-                {t('landing.whyChooseSubtitle')}
+              <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+                Professional tools and features designed for modern service providers and clients
               </p>
-            </div>
+            </motion.div>
+          </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Feature 1 */}
-              <div className="group animate-on-scroll bg-gradient-to-br from-white to-[#E3EFD3]/30 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#AEC3B0]/20">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <span className="text-3xl">🔍</span>
+          {/* Feature Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                ),
+                title: 'Smart Discovery',
+                description: 'Find the perfect match with our intelligent search and recommendation system',
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                ),
+                title: 'Verified Profiles',
+                description: 'Work with confidence through our comprehensive verification process',
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                ),
+                title: 'Real-Time Communication',
+                description: 'Connect instantly with built-in messaging and collaboration tools',
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                ),
+                title: 'Secure Payments',
+                description: 'Safe and seamless transactions with enterprise-grade security',
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ),
+                title: 'Review System',
+                description: 'Build trust with transparent ratings and authentic feedback',
+              },
+              {
+                icon: (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                ),
+                title: 'Project Analytics',
+                description: 'Track performance and gain insights to optimize your business',
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group"
+              >
+                <div className="h-full bg-white rounded-2xl p-8 border border-border hover:shadow-medium transition-all duration-200">
+                  <div className="w-12 h-12 bg-primary-light text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-200">
+                    {feature.icon}
+                  </div>
+                  
+                  <h3 className="text-xl font-semibold text-text-primary mb-3">
+                    {feature.title}
+                  </h3>
+                  
+                  <p className="text-text-secondary leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
-                  {t('landing.smartDiscovery')}
-                </h3>
-                                <p className="text-[#345635] leading-relaxed">
-                  {t('landing.smartDiscoveryDesc')}
-                </p>
-              </div>
-
-              {/* Feature 2 */}
-              <div className="group animate-on-scroll bg-gradient-to-br from-white to-[#E3EFD3]/30 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#AEC3B0]/20">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <span className="text-3xl">✓</span>
-                </div>
-                <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
-                  {t('landing.verifiedProfiles')}
-                </h3>
-                <p className="text-[#345635] leading-relaxed">
-                  {t('landing.verifiedProfilesDesc')}
-                </p>
-              </div>
-
-              {/* Feature 3 */}
-              <div className="group animate-on-scroll bg-gradient-to-br from-white to-[#E3EFD3]/30 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#AEC3B0]/20">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <span className="text-3xl">💬</span>
-                </div>
-                <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
-                  {t('landing.realTimeChat')}
-                </h3>
-                <p className="text-[#345635] leading-relaxed">
-                  {t('landing.realTimeChatDesc')}
-                </p>
-              </div>
-
-              {/* Feature 4 */}
-              <div className="group animate-on-scroll bg-gradient-to-br from-white to-[#E3EFD3]/30 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#AEC3B0]/20">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#0D2B1D] to-[#6B8F71] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <span className="text-3xl">🛡️</span>
-                </div>
-                <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
-                  {t('landing.securePayments')}
-                </h3>
-                <p className="text-[#345635] leading-relaxed">
-                  {t('landing.securePaymentsDesc')}
-                </p>
-              </div>
-
-              {/* Feature 5 */}
-              <div className="group animate-on-scroll bg-gradient-to-br from-white to-[#E3EFD3]/30 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#AEC3B0]/20">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#AEC3B0] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <span className="text-3xl">⭐</span>
-                </div>
-                <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
-                  {t('landing.reviewSystem')}
-                </h3>
-                <p className="text-[#345635] leading-relaxed">
-                  {t('landing.reviewSystemDesc')}
-                </p>
-              </div>
-
-              {/* Feature 6 */}
-              <div className="group animate-on-scroll bg-gradient-to-br from-white to-[#E3EFD3]/30 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#AEC3B0]/20">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#6B8F71] to-[#0D2B1D] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
-                  <span className="text-3xl">📊</span>
-                </div>
-                <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">
-                  {t('landing.projectTracking')}
-                </h3>
-                <p className="text-[#345635] leading-relaxed">
-                  {t('landing.projectTrackingDesc')}
-                </p>
-              </div>
-            </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Customer Reviews Section */}
-      {stats && stats.totalReviews > 0 ? (
-        <section className="py-20 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#0D2B1D] relative overflow-hidden">
-          {/* Decorative Elements */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-96 h-96 bg-[#E3EFD3] rounded-full filter blur-3xl"></div>
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#6B8F71] rounded-full filter blur-3xl"></div>
-          </div>
-
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-7xl mx-auto">
-              {/* Section Header */}
-              <div className="text-center mb-16 animate-on-scroll">
-                <div className="inline-block mb-4">
-                  <span className="px-6 py-2 bg-[#E3EFD3] text-[#0D2B1D] text-sm font-bold rounded-full shadow-lg">
-                    💚 CUSTOMER SATISFACTION
-                  </span>
-                </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                  Loved by Our Community
-                </h2>
-                <p className="text-xl text-[#AEC3B0] max-w-2xl mx-auto mb-8">
-                  Real experiences from real users who trust ConnectO
-                </p>
-
-                {/* Stats Cards */}
-                <div className="flex justify-center gap-6 flex-wrap">
-                  <div className="bg-white/10 backdrop-blur-md rounded-2xl px-8 py-6 shadow-2xl border border-white/20 hover:scale-105 transition-transform duration-300">
-                    <div className="text-4xl font-bold text-[#E3EFD3] mb-2">
-                      {stats.averageRating.toFixed(1)} ★
-                    </div>
-                    <div className="text-sm text-[#AEC3B0] font-medium">Average Rating</div>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-md rounded-2xl px-8 py-6 shadow-2xl border border-white/20 hover:scale-105 transition-transform duration-300">
-                    <div className="text-4xl font-bold text-[#E3EFD3] mb-2">
-                      {stats.totalReviews}+
-                    </div>
-                    <div className="text-sm text-[#AEC3B0] font-medium">Happy Users</div>
-                  </div>
-                </div>
+      {/* Reviews Section */}
+      {stats && stats.totalReviews > 0 && (
+        <section className="py-24 bg-background">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <div className="inline-block px-4 py-2 bg-success/10 rounded-full mb-6">
+                <span className="text-sm font-semibold text-success">Trusted by Thousands</span>
               </div>
-
-              {/* Reviews Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {reviews.map((review, index) => (
-                  <div
-                    key={review._id}
-                    className="animate-on-scroll bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    {/* Stars */}
-                    <div className="mb-4">
-                      {renderStars(review.rating)}
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-bold text-xl text-[#0D2B1D] mb-3 group-hover:text-[#345635] transition-colors">
-                      {review.title}
-                    </h3>
-
-                    {/* Review Text */}
-                    <p className="text-[#345635] text-sm leading-relaxed mb-4 line-clamp-4">
-                      "{review.review}"
-                    </p>
-
-                    {/* User Info */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-[#AEC3B0]/30">
-                      {review.user.profilePicture ? (
-                        <img
-                          src={review.user.profilePicture}
-                          alt={review.user.fullName}
-                          className="w-12 h-12 rounded-full object-cover ring-2 ring-[#6B8F71]"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                          {review.user.fullName.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <div className="font-semibold text-[#0D2B1D]">
-                          {review.user.fullName}
-                        </div>
-                        <div className="text-xs text-[#6B8F71] capitalize font-medium">
-                          {review.user.role}
-                        </div>
-                      </div>
-                      {review.isFeatured && (
-                        <span className="text-yellow-400 text-xl">🏆</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="text-center flex gap-4 justify-center flex-wrap animate-on-scroll">
-                <button
-                  onClick={() => navigate('/reviews')}
-                  className="px-8 py-4 bg-white text-[#0D2B1D] rounded-xl hover:bg-[#E3EFD3] transition-all font-semibold shadow-2xl hover:scale-105 duration-300 flex items-center gap-2"
-                >
-                  <span>📖</span>
-                  View All {stats.totalReviews} Reviews
-                </button>
-                <button
-                  onClick={() => navigate('/submit-review')}
-                  className="px-8 py-4 bg-[#E3EFD3] text-[#0D2B1D] rounded-xl hover:bg-white transition-all font-semibold shadow-2xl hover:scale-105 duration-300 flex items-center gap-2"
-                >
-                  <span>✍️</span>
-                  Share Your Experience
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : stats ? (
-        /* No Reviews Yet */
-        <section className="py-20 bg-gradient-to-br from-[#6B8F71] to-[#345635]">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center animate-on-scroll">
-              <div className="text-8xl mb-8 animate-bounce">⭐</div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Be Our First Reviewer!
+              <h2 className="text-4xl lg:text-5xl font-semibold text-text-primary tracking-tighter mb-6">
+                What our users say
               </h2>
-              <p className="text-xl text-[#E3EFD3] mb-10 leading-relaxed">
-                Share your experience with ConnectO and help others discover what makes our platform special.
-              </p>
-              <button
-                onClick={() => navigate('/submit-review')}
-                className="px-10 py-5 bg-white text-[#0D2B1D] rounded-xl hover:bg-[#E3EFD3] transition-all font-bold text-lg shadow-2xl hover:scale-110 duration-300"
-              >
-                ✍️ Write the First Review
-              </button>
+              <div className="flex items-center justify-center gap-8 text-text-muted">
+                <span className="text-3xl font-semibold text-text-primary">{stats.averageRating.toFixed(1)}</span>
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <span>{stats.totalReviews} reviews</span>
+              </div>
             </div>
-          </div>
-        </section>
-      ) : (
-        /* Loading */
-        <section className="py-20 bg-gradient-to-br from-[#AEC3B0] to-[#6B8F71]">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-white border-t-[#0D2B1D] mb-6"></div>
-              <h3 className="text-2xl font-semibold text-white">
-                Loading reviews...
-              </h3>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {reviews.map((review, index) => (
+                <motion.div
+                  key={review._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white rounded-2xl p-6 border border-border hover:shadow-soft transition-all duration-200"
+                >
+                  <div className="mb-4">
+                    {renderStars(review.rating)}
+                  </div>
+
+                  <h3 className="font-semibold text-text-primary mb-2">
+                    {review.title}
+                  </h3>
+
+                  <p className="text-text-secondary text-sm leading-relaxed mb-4 line-clamp-3">
+                    {review.review}
+                  </p>
+
+                  <div className="flex items-center gap-3 pt-4 border-t border-border">
+                    {review.user.profilePicture ? (
+                      <img
+                        src={review.user.profilePicture}
+                        alt={review.user.fullName}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 bg-primary-light text-primary rounded-full flex items-center justify-center font-semibold">
+                        {review.user.fullName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <div className="font-semibold text-text-primary text-sm">
+                        {review.user.fullName}
+                      </div>
+                      <div className="text-xs text-text-muted capitalize">
+                        {review.user.role}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <button
+                onClick={() => navigate('/reviews')}
+                className="px-8 py-4 bg-surface text-text-primary rounded-xl font-semibold hover:bg-border transition-all duration-200"
+              >
+                View All Reviews
+              </button>
             </div>
           </div>
         </section>
       )}
 
-      {/* Quick Links Section */}
-      <section className="py-16 bg-white border-t-2 border-[#AEC3B0]">
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#0D2B1D] mb-4">
-                Explore ConnectO
-              </h2>
-              <p className="text-lg text-[#345635]">
-                Learn more about our platform and how we can help you
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* About Us Card */}
-              <div
-                onClick={() => navigate('/about')}
-                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#0D2B1D] to-[#345635] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                    ℹ️
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
-                      About Us
-                    </h3>
-                    <p className="text-sm text-[#345635]">
-                      Learn about our mission, vision, and what makes ConnectO unique
-                    </p>
-                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
-                      <span>Learn More</span>
-                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* How It Works Card */}
-              <div
-                onClick={() => navigate('/how-it-works')}
-                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                    🔄
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
-                      How It Works
-                    </h3>
-                    <p className="text-sm text-[#345635]">
-                      Step-by-step guide for clients and service providers
-                    </p>
-                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
-                      <span>See Guide</span>
-                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contact Card */}
-              <div
-                onClick={() => navigate('/contact')}
-                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#6B8F71] to-[#AEC3B0] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                    📧
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
-                      Contact Us
-                    </h3>
-                    <p className="text-sm text-[#345635]">
-                      Get in touch with our support team for help
-                    </p>
-                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
-                      <span>Contact Now</span>
-                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Privacy Policy Card */}
-              <div
-                onClick={() => navigate('/privacy-policy')}
-                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#0D2B1D] to-[#6B8F71] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                    🔒
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
-                      Privacy Policy
-                    </h3>
-                    <p className="text-sm text-[#345635]">
-                      Learn how we protect and handle your personal data
-                    </p>
-                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
-                      <span>Read Policy</span>
-                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Terms of Service Card */}
-              <div
-                onClick={() => navigate('/terms-of-service')}
-                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#AEC3B0] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                    📋
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
-                      Terms of Service
-                    </h3>
-                    <p className="text-sm text-[#345635]">
-                      Review our platform terms and user agreements
-                    </p>
-                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
-                      <span>View Terms</span>
-                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Community Card */}
-              <div
-                onClick={() => navigate('/community')}
-                className="group cursor-pointer bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 border-[#AEC3B0]/30"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#6B8F71] to-[#0D2B1D] rounded-lg flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300">
-                    💬
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-[#0D2B1D] mb-2 group-hover:text-[#345635] transition-colors">
-                      Community
-                    </h3>
-                    <p className="text-sm text-[#345635]">
-                      Join discussions, share tips, and connect with others
-                    </p>
-                    <div className="mt-3 flex items-center text-[#6B8F71] font-semibold text-sm">
-                      <span>Join Now</span>
-                      <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* CTA Section */}
+      <section className="py-24 bg-surface">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl lg:text-5xl font-semibold text-text-primary tracking-tighter mb-6">
+              Ready to get started?
+            </h2>
+            <p className="text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
+              Join thousands of professionals already using ConnectO to grow their business
+            </p>
+            <button
+              onClick={() => setShowLogin(false)}
+              className="px-8 py-4 bg-primary text-white rounded-xl font-semibold shadow-soft hover:shadow-medium transition-all duration-200 hover:bg-primary-dark"
+            >
+              Get Started for Free
+            </button>
+          </motion.div>
         </div>
       </section>
 

@@ -16,7 +16,9 @@ export const getConversations = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    console.log('📬 Fetching conversations for user:', userId);
+    if (process.env.ENABLE_DEBUG_LOGS === 'true') {
+      console.log('📬 Fetching conversations for user:', userId);
+    }
 
     // Find all conversations involving this user
     const conversations = await Conversation.find({
@@ -26,7 +28,9 @@ export const getConversations = async (req, res) => {
       .populate('lastMessage')
       .sort({ lastMessageAt: -1 });
 
-    console.log(`✅ Found ${conversations.length} conversations`);
+    if (process.env.ENABLE_DEBUG_LOGS === 'true') {
+      console.log(`✅ Found ${conversations.length} conversations`);
+    }
 
     res.status(200).json({
       success: true,
@@ -50,7 +54,9 @@ export const getMessages = async (req, res) => {
     const currentUserId = req.user._id;
     const otherUserId = req.params.userId;
 
-    console.log('💬 Fetching messages between:', currentUserId, 'and', otherUserId);
+    if (process.env.ENABLE_DEBUG_LOGS === 'true') {
+      console.log('💬 Fetching messages between:', currentUserId, 'and', otherUserId);
+    }
 
     const conversationId = getConversationId(currentUserId, otherUserId);
 
@@ -83,7 +89,9 @@ export const getMessages = async (req, res) => {
       await conversation.save();
     }
 
-    console.log(`✅ Found ${messages.length} messages`);
+    if (process.env.ENABLE_DEBUG_LOGS === 'true') {
+      console.log(`✅ Found ${messages.length} messages`);
+    }
 
     res.status(200).json({
       success: true,

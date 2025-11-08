@@ -60,6 +60,12 @@ export interface PaginatedDemos {
 }
 
 export const demoService = {
+  // Request demo project assignment
+  requestDemo: async (): Promise<{ message: string; demoStatus: string }> => {
+    const response = await api.post<ApiResponse<{ message: string; demoStatus: string }>>('/demo/request');
+    return response.data.data!;
+  },
+
   // Get current user's demo project
   getMyDemo: async (): Promise<DemoProject> => {
     const response = await api.get<ApiResponse<DemoProject>>('/demo/my-demo');
@@ -86,6 +92,12 @@ export const demoService = {
   // Get demo statistics (Admin)
   getDemoStats: async (): Promise<DemoStats> => {
     const response = await api.get<ApiResponse<DemoStats>>('/demo/stats');
+    return response.data.data!;
+  },
+
+  // Get pending demo requests (Admin)
+  getPendingDemoRequests: async (): Promise<any[]> => {
+    const response = await api.get<ApiResponse<any[]>>('/demo/pending-requests');
     return response.data.data!;
   },
 

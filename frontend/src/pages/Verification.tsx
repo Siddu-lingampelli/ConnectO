@@ -70,8 +70,9 @@ const Verification = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full">\n        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <p className="text-gray-600">Please login to access verification.</p>
+        </div>
         </main>
         <Footer />
       </div>
@@ -82,11 +83,12 @@ const Verification = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full">\n        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading...</p>
           </div>
+        </div>
         </main>
         <Footer />
       </div>
@@ -138,7 +140,7 @@ const Verification = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full">\n        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-6">
@@ -236,14 +238,22 @@ const Verification = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Submit Verification Documents</h2>
               
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <h3 className="text-blue-900 font-semibold mb-2">📋 Required Documents:</h3>
+              <div className="bg-emerald-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 className="text-blue-900 font-semibold mb-2 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Required Documents:
+                </h3>
                 <ul className="list-disc list-inside text-blue-800 text-sm space-y-1">
                   <li>PAN Card (Permanent Account Number)</li>
                   <li>Aadhar Card (Unique Identification Number)</li>
                 </ul>
-                <p className="text-blue-700 text-xs mt-3">
-                  ⚠️ Note: For this demo, you can provide image URLs. In production, you would upload actual documents.
+                <p className="text-emerald-700 text-xs mt-3 flex items-start gap-2">
+                  <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <span>Note: For this demo, you can provide image URLs. In production, you would upload actual documents.</span>
                 </p>
               </div>
 
@@ -257,7 +267,7 @@ const Verification = () => {
                     value={panCardUrl}
                     onChange={(e) => setPanCardUrl(e.target.value)}
                     placeholder="https://example.com/pan-card.jpg"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -274,7 +284,7 @@ const Verification = () => {
                     value={aadharCardUrl}
                     onChange={(e) => setAadharCardUrl(e.target.value)}
                     placeholder="https://example.com/aadhar-card.jpg"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -293,7 +303,7 @@ const Verification = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 font-medium"
+                  className="w-full px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:bg-gray-400 font-medium"
                 >
                   {submitting ? 'Submitting...' : 'Submit for Verification'}
                 </button>
@@ -301,6 +311,7 @@ const Verification = () => {
             </div>
           )}
         </div>
+      </div>
       </main>
       <Footer />
     </div>

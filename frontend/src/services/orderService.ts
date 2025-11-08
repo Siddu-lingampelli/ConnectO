@@ -10,6 +10,11 @@ interface OrderStats {
   totalEarnings: number;
 }
 
+interface AcceptDeliveryResponse extends Order {
+  paymentReleased?: boolean;
+  amountReleased?: number;
+}
+
 export const orderService = {
   // Get my orders
   getMyOrders: async (status?: string, page = 1, limit = 20): Promise<PaginatedResponse<Order>> => {
@@ -32,8 +37,8 @@ export const orderService = {
   },
 
   // Accept delivery (Client)
-  acceptDelivery: async (orderId: string): Promise<Order> => {
-    const response = await api.put<ApiResponse<Order>>(`/orders/${orderId}/accept-delivery`);
+  acceptDelivery: async (orderId: string): Promise<AcceptDeliveryResponse> => {
+    const response = await api.put<ApiResponse<AcceptDeliveryResponse>>(`/orders/${orderId}/accept-delivery`);
     return response.data.data!;
   },
 

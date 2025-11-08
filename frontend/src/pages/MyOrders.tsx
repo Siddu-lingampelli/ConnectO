@@ -82,11 +82,11 @@ const MyOrders = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      pending: { bg: 'bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0]', text: 'text-[#345635]', label: '⏳ Pending', icon: '⏳' },
-      in_progress: { bg: 'bg-gradient-to-r from-[#6B8F71] to-[#AEC3B0]', text: 'text-white', label: '🔨 In Progress', icon: '🔨' },
-      completed: { bg: 'bg-gradient-to-r from-[#345635] to-[#6B8F71]', text: 'text-white', label: '✅ Completed', icon: '✅' },
-      cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: '❌ Cancelled', icon: '❌' },
-      disputed: { bg: 'bg-orange-100', text: 'text-orange-800', label: '⚠️ Disputed', icon: '⚠️' }
+      pending: { bg: 'bg-gradient-to-r from-primary/10 to-primary/20', text: 'text-primary', label: 'Pending', icon: '' },
+      in_progress: { bg: 'bg-gradient-to-r from-primary/70 to-primary/40', text: 'text-white', label: 'In Progress', icon: '' },
+      completed: { bg: 'bg-primary', text: 'text-white', label: 'Completed', icon: '' },
+      cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: 'Cancelled', icon: '' },
+      disputed: { bg: 'bg-warning/10', text: 'text-warning', label: 'Disputed', icon: '' }
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
@@ -100,10 +100,10 @@ const MyOrders = () => {
 
   const getPaymentStatusBadge = (paymentStatus: string) => {
     const config = {
-      pending: { bg: 'bg-gray-100', text: 'text-gray-800', label: '💰 Payment Pending' },
-      paid: { bg: 'bg-blue-100', text: 'text-blue-800', label: '💳 Paid' },
-      released: { bg: 'bg-green-100', text: 'text-green-800', label: '✅ Payment Released' },
-      refunded: { bg: 'bg-red-100', text: 'text-red-800', label: '↩️ Refunded' }
+      pending: { bg: 'bg-surface', text: 'text-text-primary', label: 'Payment Pending' },
+      paid: { bg: 'bg-primary/10', text: 'text-primary', label: 'Paid' },
+      released: { bg: 'bg-primary/20', text: 'text-primary', label: 'Payment Released' },
+      refunded: { bg: 'bg-red-100', text: 'text-red-800', label: 'Refunded' }
     };
 
     const paymentConfig = config[paymentStatus as keyof typeof config] || config.pending;
@@ -117,31 +117,33 @@ const MyOrders = () => {
 
   if (!currentUser || currentUser.role !== 'provider') {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
-              <span className="text-5xl">🚫</span>
+        <main className="flex-1 w-full"><div className="max-w-7xl mx-auto px-6 py-24 flex items-center justify-center">
+          <div className="text-center bg-white rounded-2xl shadow-soft border border-border p-12">
+            <div className="w-24 h-24 bg-primary rounded-full mx-auto mb-6 flex items-center justify-center">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+              </svg>
             </div>
-            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-3">Access Denied</h2>
-            <p className="text-[#6B8F71]">This page is only for service providers.</p>
+            <h2 className="text-2xl font-semibold text-text-primary mb-3">Access Denied</h2>
+            <p className="text-text-secondary">This page is only for service providers.</p>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full"><div className="max-w-7xl mx-auto px-6 py-24">
         <div className="max-w-7xl mx-auto">
           {/* Back Button */}
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-6 transition-all duration-300 group"
+            className="flex items-center text-primary hover:text-text-primary mb-6 transition-all duration-200 group"
           >
             <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -152,57 +154,59 @@ const MyOrders = () => {
           {/* Header */}
           <div className="mb-6">
             <div className="flex items-center mb-3">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                <span className="text-3xl">📦</span>
+              <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center mr-4 shadow-soft">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-[#0D2B1D]">My Orders</h1>
-                <p className="text-[#6B8F71] mt-1">Track and manage your ongoing work</p>
+                <h1 className="text-4xl font-semibold text-text-primary tracking-tighter">My Orders</h1>
+                <p className="text-text-secondary mt-1">Track and manage your ongoing work</p>
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="text-sm text-[#6B8F71] mb-1 font-medium">Total Orders</div>
-              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.total}</div>
+            <div className="bg-white rounded-xl shadow-soft p-5 border border-border hover:border-primary hover:shadow-soft transition-all duration-200 ">
+              <div className="text-sm text-text-secondary mb-1 font-medium">Total Orders</div>
+              <div className="text-2xl font-semibold text-text-primary">{stats.total}</div>
             </div>
-            <div className="bg-gradient-to-br from-[#E3EFD3] to-white rounded-xl shadow-lg p-5 border-2 border-[#AEC3B0] hover:border-[#6B8F71] hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="text-sm text-[#345635] mb-1 font-medium">⏳ Pending</div>
-              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.pending}</div>
+            <div className="bg-surface rounded-xl shadow-soft p-5 border border-border hover:border-primary/30 hover:shadow-soft transition-all duration-200">
+              <div className="text-sm text-text-secondary mb-1 font-medium">Pending</div>
+              <div className="text-2xl font-semibold text-text-primary">{stats.pending}</div>
             </div>
-            <div className="bg-gradient-to-br from-[#6B8F71]/10 to-white rounded-xl shadow-lg p-5 border-2 border-[#6B8F71] hover:border-[#345635] hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="text-sm text-[#345635] mb-1 font-medium">🔨 In Progress</div>
-              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.in_progress}</div>
+            <div className="bg-surface rounded-xl shadow-soft p-5 border border-border hover:border-primary/30 hover:shadow-soft transition-all duration-200">
+              <div className="text-sm text-text-secondary mb-1 font-medium">In Progress</div>
+              <div className="text-2xl font-semibold text-text-primary">{stats.in_progress}</div>
             </div>
-            <div className="bg-gradient-to-br from-[#6B8F71]/20 to-white rounded-xl shadow-lg p-5 border-2 border-[#6B8F71] hover:border-[#345635] hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <div className="text-sm text-[#345635] mb-1 font-medium">✅ Completed</div>
-              <div className="text-2xl font-bold text-[#0D2B1D]">{stats.completed}</div>
+            <div className="bg-surface rounded-xl shadow-soft p-5 border border-border hover:border-primary/30 hover:shadow-soft transition-all duration-200">
+              <div className="text-sm text-text-secondary mb-1 font-medium">Completed</div>
+              <div className="text-2xl font-semibold text-text-primary">{stats.completed}</div>
             </div>
-            <div className="bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl shadow-xl p-5 text-white hover:shadow-2xl transition-all duration-300 hover:scale-105">
-              <div className="text-sm opacity-90 mb-1 font-medium">💰 Total Earnings</div>
-              <div className="text-2xl font-bold">₹{stats.totalEarnings.toLocaleString()}</div>
+            <div className="bg-primary rounded-xl shadow-soft p-5 text-white hover:shadow-medium transition-all duration-200">
+              <div className="text-sm opacity-90 mb-1 font-medium">Total Earnings</div>
+              <div className="text-2xl font-semibold">₹{stats.totalEarnings.toLocaleString()}</div>
             </div>
           </div>
 
           {/* Filter Tabs */}
-          <div className="bg-white rounded-xl shadow-lg p-3 mb-8 border-2 border-[#AEC3B0]">
+          <div className="bg-white rounded-xl shadow-soft p-3 mb-8 border border-border">
             <div className="flex space-x-2">
               {[
                 { value: 'all', label: 'All Orders' },
-                { value: 'pending', label: '⏳ Pending' },
-                { value: 'in_progress', label: '🔨 In Progress' },
-                { value: 'completed', label: '✅ Completed' },
-                { value: 'cancelled', label: '❌ Cancelled' }
+                { value: 'pending', label: 'Pending' },
+                { value: 'in_progress', label: 'In Progress' },
+                { value: 'completed', label: 'Completed' },
+                { value: 'cancelled', label: 'Cancelled' }
               ].map((filter) => (
                 <button
                   key={filter.value}
                   onClick={() => setActiveFilter(filter.value)}
-                  className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${
+                  className={`flex-1 px-4 py-2.5 rounded-xl font-semibold transition-all duration-200 ${
                     activeFilter === filter.value
-                      ? 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white shadow-lg scale-105'
-                      : 'bg-[#E3EFD3] text-[#345635] hover:bg-[#AEC3B0] hover:scale-102'
+                      ? 'bg-primary text-white'
+                      : 'bg-surface text-text-primary hover:bg-primary/10'
                   }`}
                 >
                   {filter.label}
@@ -215,20 +219,22 @@ const MyOrders = () => {
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
-                <p className="text-[#6B8F71] font-medium">Loading orders...</p>
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-border border-t-primary mx-auto mb-4"></div>
+                <p className="text-text-secondary font-medium">Loading orders...</p>
               </div>
             </div>
           ) : orders.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12 text-center">
-              <div className="w-28 h-28 bg-gradient-to-br from-[#E3EFD3] to-[#AEC3B0] rounded-full mx-auto mb-6 flex items-center justify-center">
-                <span className="text-6xl">📦</span>
+            <div className="bg-white rounded-2xl shadow-soft border border-border p-12 text-center">
+              <div className="w-28 h-28 bg-surface rounded-full mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-14 h-14 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
               </div>
-              <h3 className="text-2xl font-bold text-[#0D2B1D] mb-3">No Orders Yet</h3>
-              <p className="text-[#6B8F71] mb-8 text-lg">Start applying to jobs to get your first order!</p>
+              <h3 className="text-2xl font-semibold text-text-primary mb-3">No Orders Yet</h3>
+              <p className="text-text-secondary mb-8 text-lg">Start applying to jobs to get your first order!</p>
               <button
                 onClick={() => navigate('/jobs')}
-                className="px-8 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
+                className="px-8 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-200 font-semibold"
               >
                 Browse Jobs
               </button>
@@ -240,38 +246,38 @@ const MyOrders = () => {
                 const client = typeof order.client !== 'string' ? order.client : null;
 
                 return (
-                  <div key={order._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                  <div key={order._id} className="bg-white rounded-2xl border border-border overflow-hidden hover:shadow-soft transition-all duration-200">
                     <div className="p-6">
                       {/* Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                          <h3 className="text-xl font-semibold text-text-primary mb-2">
                             {job?.title || 'Job Title'}
                           </h3>
                           <div className="flex flex-wrap items-center gap-3">
                             {getStatusBadge(order.status)}
                             {getPaymentStatusBadge(order.payment?.status || 'pending')}
                             {job && (
-                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
                                 {job.category}
                               </span>
                             )}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-3xl font-bold text-green-600">
+                          <div className="text-3xl font-semibold text-primary">
                             ₹{order.amount.toLocaleString()}
                           </div>
-                          <div className="text-sm text-gray-500">Project Amount</div>
+                          <div className="text-sm text-text-muted">Project Amount</div>
                         </div>
                       </div>
 
                       {/* Client Info */}
                       {client && (
-                        <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                        <div className="bg-surface rounded-xl p-4 mb-4">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
-                              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-semibold text-lg">
                                 {client.profilePicture ? (
                                   <img 
                                     src={client.profilePicture} 
@@ -283,20 +289,36 @@ const MyOrders = () => {
                                 )}
                               </div>
                               <div>
-                                <p className="font-semibold text-gray-900">{client.fullName}</p>
-                                <div className="flex items-center text-sm text-gray-600">
-                                  {client.city && <span>📍 {client.city}</span>}
+                                <p className="font-semibold text-text-primary">{client.fullName}</p>
+                                <div className="flex items-center text-sm text-text-secondary gap-3">
+                                  {client.city && (
+                                    <span className="flex items-center gap-1">
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                      </svg>
+                                      {client.city}
+                                    </span>
+                                  )}
                                   {client.rating && (
-                                    <span className="ml-3">⭐ {client.rating.toFixed(1)}</span>
+                                    <span className="flex items-center gap-1">
+                                      <svg className="w-4 h-4 text-warning fill-current" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                      </svg>
+                                      {client.rating.toFixed(1)}
+                                    </span>
                                   )}
                                 </div>
                               </div>
                             </div>
                             <button
                               onClick={() => navigate(`/messages?userId=${typeof order.client === 'string' ? order.client : client._id}`)}
-                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                              className="px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-200 text-sm font-semibold flex items-center gap-2"
                             >
-                              💬 Message Client
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                              </svg>
+                              Message Client
                             </button>
                           </div>
                         </div>
@@ -305,42 +327,42 @@ const MyOrders = () => {
                       {/* Timeline */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
                         <div>
-                          <div className="text-gray-600">Started</div>
-                          <div className="font-semibold text-gray-900">
+                          <div className="text-text-secondary">Started</div>
+                          <div className="font-semibold text-text-primary">
                             {order.startDate ? formatDate(order.startDate) : 'Not started'}
                           </div>
                         </div>
                         <div>
-                          <div className="text-gray-600">Deadline</div>
-                          <div className="font-semibold text-gray-900">
+                          <div className="text-text-secondary">Deadline</div>
+                          <div className="font-semibold text-text-primary">
                             {formatDate(order.deadline)}
                           </div>
                         </div>
                         <div>
-                          <div className="text-gray-600">Completed</div>
-                          <div className="font-semibold text-gray-900">
+                          <div className="text-text-secondary">Completed</div>
+                          <div className="font-semibold text-text-primary">
                             {order.completedDate ? formatDate(order.completedDate) : 'Not completed'}
                           </div>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
+                      <div className="flex flex-wrap gap-3 pt-4 border-t border-border">
                         {order.status === 'pending' && (
                           <button
                             onClick={() => handleStartWork(order._id)}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-200 font-semibold"
                           >
-                            🚀 Start Work
+                            Start Work
                           </button>
                         )}
                         
                         {order.status === 'in_progress' && (
                           <button
                             onClick={() => handleMarkComplete(order._id)}
-                            className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+                            className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-200 font-semibold"
                           >
-                            ✅ Mark as Completed
+                            Mark as Completed
                           </button>
                         )}
 
@@ -360,7 +382,7 @@ const MyOrders = () => {
 
                         <button
                           onClick={() => navigate(`/orders/${order._id}`)}
-                          className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                          className="px-6 py-2 border border-border rounded-xl hover:bg-surface transition-colors font-medium"
                         >
                           View Details
                         </button>
@@ -372,7 +394,7 @@ const MyOrders = () => {
             </div>
           )}
         </div>
-      </main>
+      </div></main>
       <Footer />
     </div>
   );

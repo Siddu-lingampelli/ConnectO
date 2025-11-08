@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { selectCurrentUser } from '../../store/authSlice';
 import { demoService, type DemoProject } from '../../services/demoService';
 
 const DemoStatusCard = () => {
+  const currentUser = useSelector(selectCurrentUser);
   const [demo, setDemo] = useState<DemoProject | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [requesting, setRequesting] = useState(false);
   const [submissionLink, setSubmissionLink] = useState('');
   const [submissionFile, setSubmissionFile] = useState('');
+
+  const demoStatus = currentUser?.demoVerification?.status || 'not_assigned';
 
   useEffect(() => {
     loadDemo();
@@ -25,6 +31,26 @@ const DemoStatusCard = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // If demo is verified in user profile, don't show anything
+  if (demoStatus === 'verified') {
+    return null;
+  }
+
+  const handleRequestDemo = async () => {
+    try {
+      setRequesting(true);
+      await demoService.requestDemo();
+      toast.success('Demo request submitted! Admin will assign you a demo project soon.');
+      // Reload user data or update demo status
+      window.location.reload(); // Simple reload to refresh user data
+    } catch (error: any) {
+      console.error('Error requesting demo:', error);
+      toast.error(error.response?.data?.message || 'Failed to request demo');
+    } finally {
+      setRequesting(false);
     }
   };
 
@@ -90,15 +116,51 @@ const DemoStatusCard = () => {
         <div className="flex items-start gap-4">
           <div className="text-4xl">⚠️</div>
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Demo Project Not Assigned</h3>
-            <p className="text-gray-700 mb-4">
-              You need to complete a demo project before applying for jobs. Please wait for admin to assign you a demo task.
-            </p>
-            <div className="bg-white rounded-lg p-4 border border-yellow-300">
-              <p className="text-sm text-gray-600">
-                <strong>Note:</strong> You cannot apply for jobs until your demo project is verified with a score of 60 or above.
-              </p>
-            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              {demoStatus === 'pending_request' ? 'Demo Request Pending' : 'Demo Project Required'}
+            </h3>
+            
+            {demoStatus === 'pending_request' ? (
+              <div>
+                <p className="text-gray-700 mb-4">
+                  Your demo request has been submitted! Admin will review and assign you a demo project soon.
+                </p>
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-300">
+                  <p className="text-sm text-blue-700 flex items-center gap-2">
+                    <span className="text-xl">⏳</span>
+                    <strong>Status: Waiting for admin to assign demo project</strong>
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-gray-700 mb-4">
+                  You need to complete a demo project before applying for jobs. Click the button below to request a demo assignment from admin.
+                </p>
+                <button
+                  onClick={handleRequestDemo}
+                  disabled={requesting}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  {requesting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Requesting...
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-xl">🎯</span>
+                      Request Demo Project
+                    </>
+                  )}
+                </button>
+                <div className="bg-white rounded-lg p-4 border border-yellow-300 mt-4">
+                  <p className="text-sm text-gray-600">
+                    <strong>Note:</strong> After requesting, admin will review your profile and assign a suitable demo project. You'll receive a notification once it's assigned.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -227,7 +289,7 @@ const DemoStatusCard = () => {
           </div>
         )}
 
-        {/* Verified */}
+        {/* Verified - This should not appear if demoStatus is 'verified' because we return early */}
         {demo.status === 'Verified' && (
           <div className="bg-green-50 rounded-lg p-4 border border-green-200">
             <p className="text-green-700 font-semibold mb-2">✅ Demo Verified!</p>
@@ -241,6 +303,7 @@ const DemoStatusCard = () => {
               </p>
             )}
             <p className="text-sm text-green-700 font-medium">✨ You can now apply for jobs!</p>
+            <p className="text-xs text-gray-500 mt-2">This card will disappear once your profile is updated.</p>
           </div>
         )}
 

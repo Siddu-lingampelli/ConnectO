@@ -39,10 +39,16 @@ const Chatbot = () => {
     } else {
       // Welcome message
       const userName = currentUser?.fullName ? `, ${currentUser.fullName.split(' ')[0]}` : '';
+      const userRole = currentUser?.role === 'provider' 
+        ? ' As a service provider,' 
+        : currentUser?.role === 'client' 
+          ? ' As a client,'
+          : '';
+      
       setMessages([
         {
           role: 'assistant',
-          content: `👋 Hi${userName}! I'm the ConnectO Assistant. I can help you with questions about our platform, registration, verification, referrals, and more. How can I help you today?`,
+          content: `👋 Hi${userName}! I'm your ConnectO Assistant.${userRole} I'm here to help you with:\n\n✅ Registration & verification\n✅ Job posting & applications\n✅ Referral system & rewards\n✅ Profile management\n✅ Payments & earnings\n✅ Platform features & navigation\n\nWhat would you like to know?`,
           timestamp: new Date().toISOString()
         }
       ]);
@@ -139,7 +145,7 @@ const Chatbot = () => {
     setMessages([
       {
         role: 'assistant',
-        content: `Chat cleared! How can I help you today${userName}? 😊`,
+        content: `Chat cleared! I'm here to help you with ConnectO${userName}. What would you like to know? 😊`,
         timestamp: new Date().toISOString()
       }
     ]);
@@ -166,7 +172,7 @@ const Chatbot = () => {
         className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full shadow-lg flex items-center justify-center text-white transition-all duration-300 ${
           isOpen 
             ? 'bg-red-500 hover:bg-red-600' 
-            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+            : 'bg-primary hover:bg-primary/90 shadow-medium'
         }`}
         title={isOpen ? 'Close chat' : 'Chat with ConnectO Assistant'}
       >
@@ -192,14 +198,16 @@ const Chatbot = () => {
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center justify-between">
+          <div className="bg-primary text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <span className="text-2xl">🤖</span>
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-soft">
+                <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
               </div>
               <div>
                 <h3 className="font-bold text-lg">ConnectO Assistant</h3>
-                <p className="text-xs text-blue-100">Always here to help!</p>
+                <p className="text-xs text-white/90">Powered by AI • Always here to help!</p>
               </div>
             </div>
             <button
@@ -223,14 +231,14 @@ const Chatbot = () => {
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                     msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none'
-                      : 'bg-white text-gray-800 rounded-bl-none shadow-md'
+                      ? 'bg-primary text-white rounded-br-none shadow-soft'
+                      : 'bg-white text-gray-800 rounded-bl-none shadow-md border border-gray-100'
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                   <p
                     className={`text-xs mt-1 ${
-                      msg.role === 'user' ? 'text-blue-100' : 'text-gray-400'
+                      msg.role === 'user' ? 'text-white/80' : 'text-gray-400'
                     }`}
                   >
                     {formatTime(msg.timestamp)}
@@ -257,13 +265,13 @@ const Chatbot = () => {
           {/* Suggestions */}
           {showSuggestions && messages.length <= 2 && suggestions.length > 0 && (
             <div className="px-4 py-2 bg-white border-t border-gray-200">
-              <p className="text-xs text-gray-500 mb-2 font-medium">Suggested questions:</p>
+              <p className="text-xs text-gray-500 mb-2 font-medium">Quick questions:</p>
               <div className="flex flex-wrap gap-2">
-                {suggestions.slice(0, 3).map((suggestion, index) => (
+                {suggestions.slice(0, 4).map((suggestion, index) => (
                   <button
                     key={index}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
+                    className="text-xs px-3 py-1.5 bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors font-medium border border-primary/20"
                   >
                     {suggestion}
                   </button>
@@ -283,12 +291,12 @@ const Chatbot = () => {
                 onKeyPress={handleKeyPress}
                 placeholder="Ask me anything about ConnectO..."
                 disabled={isLoading}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed text-sm"
               />
               <button
                 onClick={() => handleSendMessage()}
                 disabled={isLoading || !inputMessage.trim()}
-                className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+                className="px-6 py-3 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center shadow-soft"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -296,7 +304,7 @@ const Chatbot = () => {
               </button>
             </div>
             <p className="text-xs text-gray-400 mt-2 text-center">
-              Powered by Mistral AI • Multi-language support
+              Powered by Mistral AI • Multilingual support available
             </p>
           </div>
         </div>

@@ -78,14 +78,24 @@ const OrderDetails = () => {
   const handleAcceptDelivery = async () => {
     if (!order || !id) return;
     
-    if (!window.confirm('Are you sure you want to accept this delivery and release payment?')) {
+    if (!window.confirm('Are you sure you want to accept this delivery and release payment to the provider?')) {
       return;
     }
 
     try {
       setUpdating(true);
-      await orderService.acceptDelivery(id);
-      toast.success('Delivery accepted! Payment released to provider.');
+      const response = await orderService.acceptDelivery(id);
+      
+      // Show success message with payment info
+      if (response.paymentReleased && response.amountReleased) {
+        toast.success(
+          `✅ Delivery accepted! ₹${response.amountReleased.toLocaleString()} released to provider's wallet.`,
+          { autoClose: 5000 }
+        );
+      } else {
+        toast.success('✅ Delivery accepted!');
+      }
+      
       await loadOrder();
     } catch (error: any) {
       console.error('Error accepting delivery:', error);
@@ -150,9 +160,9 @@ const OrderDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <p className="text-gray-600">Please login to view order details.</p>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -162,12 +172,12 @@ const OrderDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Loading order details...</p>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -177,9 +187,9 @@ const OrderDetails = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <p className="text-gray-600">Order not found.</p>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -196,7 +206,7 @@ const OrderDetails = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-6">
@@ -509,7 +519,7 @@ const OrderDetails = () => {
             </div>
           </div>
         </div>
-      </main>
+      </div></main>
       <Footer />
 
       {/* Review Modal */}

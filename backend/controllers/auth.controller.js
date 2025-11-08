@@ -5,6 +5,7 @@ import User from '../models/User.model.js';
 import { Wallet } from '../models/Wallet.model.js';
 import notificationHelper from '../utils/notificationHelper.js';
 import { applyReferralCode } from './referral.controller.js';
+import { sendWelcomeEmail } from '../services/email.service.js';
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -85,6 +86,11 @@ export const register = async (req, res) => {
     // Generate tokens
     const token = generateToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(user.email, user.fullName, user.role).catch(err => {
+      console.error('Failed to send welcome email:', err);
+    });
 
     res.status(201).json({
       success: true,

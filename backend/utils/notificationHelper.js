@@ -14,6 +14,18 @@ export const notificationHelper = {
     });
   },
 
+  // Demo project request notification (for user)
+  demoRequested: async (userId) => {
+    await Notification.createNotification({
+      recipient: userId,
+      type: 'demo_pending',
+      title: '🎯 Demo Request Submitted',
+      message: 'Your demo project request has been submitted. Admin will review and assign you a demo project soon.',
+      actionUrl: '/dashboard',
+      priority: 'normal'
+    });
+  },
+
   // Demo project assigned
   demoAssigned: async (userId, demoTitle) => {
     await Notification.createNotification({

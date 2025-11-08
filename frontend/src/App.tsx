@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+﻿import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './i18n/config'; // Initialize i18n
@@ -42,6 +42,8 @@ import HowItWorks from './pages/HowItWorks';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import ProviderEarnings from './pages/ProviderEarnings';
+import GDPRSettings from './pages/GDPRSettings';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -106,10 +108,26 @@ function App() {
           }
         />
         <Route
+          path="/gdpr-settings"
+          element={
+            <ProtectedRoute>
+              <GDPRSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/verification"
           element={
             <ProtectedRoute>
               <Verification />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/earnings"
+          element={
+            <ProtectedRoute>
+              <ProviderEarnings />
             </ProtectedRoute>
           }
         />

@@ -86,9 +86,10 @@ export interface User {
 
   // Demo Project Verification
   demoVerification?: {
-    status?: 'not_assigned' | 'pending' | 'under_review' | 'verified' | 'rejected';
+    status?: 'not_assigned' | 'pending_request' | 'pending' | 'under_review' | 'verified' | 'rejected';
     score?: number;
     demoProject?: string;
+    requestedAt?: string;
     lastUpdated?: string;
     adminComments?: string;
   };

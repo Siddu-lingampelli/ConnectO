@@ -1,6 +1,105 @@
 import DemoProject from '../models/DemoProject.model.js';
 import User from '../models/User.model.js';
+import Notification from '../models/Notification.model.js';
 import notificationHelper from '../utils/notificationHelper.js';
+
+// @desc    Request demo project assignment
+// @route   POST /api/demo/request
+// @access  Private (Provider only)
+export const requestDemo = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if already has demo assigned
+    const existingDemo = await DemoProject.findOne({ freelancer: userId });
+    if (existingDemo) {
+      return res.status(400).json({
+        success: false,
+        message: 'You already have a demo project assigned',
+        demo: existingDemo
+      });
+    }
+
+    // Check if demo verification status is not_assigned or rejected
+    const demoStatus = user.demoVerification?.status || 'not_assigned';
+    
+    if (demoStatus === 'verified') {
+      return res.status(400).json({
+        success: false,
+        message: 'You are already demo verified'
+      });
+    }
+
+    // Update user's demo verification status to 'pending_request'
+    user.demoVerification = {
+      status: 'pending_request',
+      requestedAt: new Date()
+    };
+    await user.save();
+
+    // Send notification to user
+    await notificationHelper.demoRequested(userId);
+
+    // Notify all admins about the demo request
+    const admins = await User.find({ role: 'admin' });
+    for (const admin of admins) {
+      await Notification.createNotification({
+        recipient: admin._id,
+        type: 'system',
+        title: '🎯 New Demo Request',
+        message: `${user.fullName || user.email} (${user.providerType}) has requested a demo project assignment.`,
+        actionUrl: '/admin/demo-projects',
+        priority: 'high',
+        metadata: { userId: user._id, providerType: user.providerType }
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Demo project request submitted successfully. Admin will assign you a demo project soon.',
+      demoStatus: 'pending_request'
+    });
+  } catch (error) {
+    console.error('Error requesting demo:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
+
+// @desc    Get pending demo requests (Admin only)
+// @route   GET /api/demo/pending-requests
+// @access  Private (Admin only)
+export const getPendingDemoRequests = async (req, res) => {
+  try {
+    const pendingUsers = await User.find({
+      'demoVerification.status': 'pending_request',
+      role: 'provider'
+    })
+    .select('fullName email phone city providerType demoVerification.requestedAt profilePicture')
+    .sort('-demoVerification.requestedAt');
+
+    res.status(200).json({
+      success: true,
+      data: pendingUsers
+    });
+  } catch (error) {
+    console.error('Error fetching pending requests:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
 
 // @desc    Get demo project for current freelancer
 // @route   GET /api/demo/my-demo

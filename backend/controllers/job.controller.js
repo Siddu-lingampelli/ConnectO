@@ -1,6 +1,7 @@
 import Job from '../models/Job.model.js';
 import User from '../models/User.model.js';
 import Proposal from '../models/Proposal.model.js';
+import { sendJobNotification } from '../services/email.service.js';
 
 // @desc    Create new job
 // @route   POST /api/jobs
@@ -33,6 +34,24 @@ export const createJob = async (req, res) => {
     });
 
     const populatedJob = await Job.findById(job._id).populate('client', 'fullName email phone');
+
+    // Send job notifications to matching providers (non-blocking)
+    User.find({ 
+      role: 'provider',
+      providerType,
+      isActive: true 
+    }).then(providers => {
+      providers.forEach(provider => {
+        sendJobNotification(
+          provider.email,
+          provider.fullName,
+          title,
+          budget,
+          description,
+          job._id
+        ).catch(err => console.error('Failed to send job notification:', err));
+      });
+    }).catch(err => console.error('Failed to fetch providers:', err));
 
     res.status(201).json({
       success: true,

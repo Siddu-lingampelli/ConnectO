@@ -139,19 +139,19 @@ const Collaboration = () => {
       cancelled: 'bg-red-100 text-red-700',
       disputed: 'bg-purple-100 text-purple-700'
     };
-    return badges[status] || 'bg-gray-100 text-gray-700';
+    return badges[status] || 'bg-gray-100 text-text-secondary';
   };
 
   if (currentUser?.role !== 'provider') {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8">
+        <main className="flex-1 w-full"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-20">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-            <p className="text-gray-600">This page is only available for service providers.</p>
+            <p className="text-text-secondary">This page is only available for service providers.</p>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -160,11 +160,11 @@ const Collaboration = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Team Collaboration</h1>
-          <p className="text-gray-600">
+          <p className="text-text-secondary">
             Manage your collaboration invitations and view projects you're working on with other providers
           </p>
         </div>
@@ -176,8 +176,8 @@ const Collaboration = () => {
               onClick={() => setActiveTab('invitations')}
               className={`pb-4 px-2 font-semibold transition-colors relative ${
                 activeTab === 'invitations'
-                  ? 'text-[#345635] border-b-2 border-[#345635]'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'text-text-primary border-b-2 border-[#345635]'
+                  : 'text-gray-500 hover:text-text-secondary'
               }`}
             >
               Pending Invitations
@@ -191,8 +191,8 @@ const Collaboration = () => {
               onClick={() => setActiveTab('active')}
               className={`pb-4 px-2 font-semibold transition-colors relative ${
                 activeTab === 'active'
-                  ? 'text-[#345635] border-b-2 border-[#345635]'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'text-text-primary border-b-2 border-[#345635]'
+                  : 'text-gray-500 hover:text-text-secondary'
               }`}
             >
               Active Collaborations
@@ -222,20 +222,20 @@ const Collaboration = () => {
                       </svg>
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">No Pending Invitations</h3>
-                    <p className="text-gray-600">You don't have any collaboration invitations at the moment.</p>
+                    <p className="text-text-secondary">You don't have any collaboration invitations at the moment.</p>
                   </div>
                 ) : (
                   invitations.map((invitation) => (
                     <div
                       key={invitation._id}
-                      className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+                      className="bg-white rounded-xl shadow-md p-6 hover:shadow-soft transition-shadow"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <h3 className="text-xl font-bold text-gray-900 mb-2">
                             {invitation.jobTitle}
                           </h3>
-                          <p className="text-gray-600 mb-3">
+                          <p className="text-text-secondary mb-3">
                             {invitation.jobDescription.substring(0, 150)}
                             {invitation.jobDescription.length > 150 ? '...' : ''}
                           </p>
@@ -319,20 +319,20 @@ const Collaboration = () => {
                         <button
                           onClick={() => handleRespond(invitation.jobId, invitation._id, 'accepted')}
                           disabled={responding === invitation._id}
-                          className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                          className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:shadow-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                         >
                           {responding === invitation._id ? 'Processing...' : '✓ Accept Invitation'}
                         </button>
                         <button
                           onClick={() => handleRespond(invitation.jobId, invitation._id, 'declined')}
                           disabled={responding === invitation._id}
-                          className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                          className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-lg hover:shadow-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                         >
                           {responding === invitation._id ? 'Processing...' : '✗ Decline'}
                         </button>
                         <button
                           onClick={() => navigate(`/jobs/${invitation.jobId}`)}
-                          className="px-6 py-3 border-2 border-[#345635] text-[#345635] rounded-lg hover:bg-[#345635] hover:text-white transition-all font-medium"
+                          className="px-6 py-3 border border-primary text-text-primary rounded-lg hover:bg-primary hover:text-white transition-all font-medium"
                         >
                           View Details →
                         </button>
@@ -354,13 +354,13 @@ const Collaboration = () => {
                       </svg>
                     </div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">No Active Collaborations</h3>
-                    <p className="text-gray-600">You're not currently working on any collaborative projects.</p>
+                    <p className="text-text-secondary">You're not currently working on any collaborative projects.</p>
                   </div>
                 ) : (
                   collaborativeJobs.map((job) => (
                     <div
                       key={job._id}
-                      className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                      className="bg-white rounded-xl shadow-md p-6 hover:shadow-soft transition-shadow cursor-pointer"
                       onClick={() => navigate(`/orders/${job._id}`)}
                     >
                       <div className="flex items-start justify-between mb-4">
@@ -375,7 +375,7 @@ const Collaboration = () => {
                           </div>
                           {typeof job.job === 'object' && (
                             <>
-                              <p className="text-gray-600 mb-3">
+                              <p className="text-text-secondary mb-3">
                                 {job.job.description.substring(0, 120)}...
                               </p>
                               <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-full font-medium">
@@ -413,12 +413,12 @@ const Collaboration = () => {
 
                       <div className="flex items-center justify-between pt-4 border-t">
                         <div className="flex items-center gap-2">
-                          <svg className="w-5 h-5 text-[#345635]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
-                          <span className="text-sm text-gray-600">Team Collaboration</span>
+                          <span className="text-sm text-text-secondary">Team Collaboration</span>
                         </div>
-                        <button className="text-[#345635] font-medium hover:text-[#0D2B1D]">
+                        <button className="text-text-primary font-medium hover:text-text-primary">
                           View Details →
                         </button>
                       </div>
@@ -429,7 +429,7 @@ const Collaboration = () => {
             )}
           </>
         )}
-      </main>
+      </div></main>
       <Footer />
     </div>
   );

@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { motion } from 'framer-motion';
+import { 
+  Briefcase, MapPin, DollarSign, Calendar, Clock, 
+  User, Award, FileText, Send, ArrowLeft, AlertCircle,
+  CheckCircle, TrendingUp, Target, Sparkles
+} from 'lucide-react';
 import { selectCurrentUser } from '../store/authSlice';
 import { jobService } from '../services/jobService';
 import { proposalService } from '../services/proposalService';
@@ -14,10 +20,7 @@ const ApplyJob = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectCurrentUser);
   
-  // Get active role for dual role system
   const activeRole = currentUser?.activeRole || currentUser?.role || 'client';
-  
-  // Check verification and demo status
   const isVerified = currentUser?.verification?.status === 'verified';
   const demoStatus = currentUser?.demoVerification?.status;
   const isDemoVerified = demoStatus === 'verified';
@@ -30,7 +33,6 @@ const ApplyJob = () => {
   const [proposedBudget, setProposedBudget] = useState('');
   const [estimatedDuration, setEstimatedDuration] = useState('');
 
-  // Check if user is in provider mode
   useEffect(() => {
     if (activeRole !== 'provider') {
       toast.error('Only providers can apply to jobs. Switch to provider mode first.');
@@ -61,7 +63,6 @@ const ApplyJob = () => {
       if (!id) return;
       const jobData = await jobService.getJob(id);
       setJob(jobData);
-      // Set proposed budget to job budget by default
       setProposedBudget(jobData.budget.toString());
     } catch (error: any) {
       console.error('Error loading job:', error);
@@ -80,7 +81,6 @@ const ApplyJob = () => {
       return;
     }
 
-    // Check provider type match
     if (currentUser?.providerType !== job.providerType) {
       toast.error(`This job requires ${job.providerType} service providers. Your profile is set as ${currentUser?.providerType}.`);
       return;
@@ -113,14 +113,12 @@ const ApplyJob = () => {
 
       toast.success('Proposal submitted successfully!');
       
-      // Navigate back to jobs page after a short delay
       setTimeout(() => {
         navigate('/jobs');
       }, 1500);
     } catch (error: any) {
       console.error('Error submitting proposal:', error);
       
-      // Show specific error message for provider type mismatch
       if (error.response?.data?.providerTypeMismatch) {
         toast.error(`❌ ${error.response.data.message}`, { autoClose: 5000 });
       } else {
@@ -131,87 +129,28 @@ const ApplyJob = () => {
     }
   };
 
-  // Only providers can access this page
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-[#6B8F71] font-medium">Please login to apply for jobs.</p>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (currentUser.role !== 'provider') {
-    return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
-              <span className="text-5xl">🚫</span>
+        <main className="flex-1 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center bg-white rounded-2xl shadow-soft border border-border p-12"
+          >
+            <div className="w-20 h-20 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
+              <User className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-3">Access Denied</h2>
-            <p className="text-[#6B8F71] mb-6">Only service providers can apply for jobs.</p>
+            <h2 className="text-2xl font-bold text-text-primary mb-3">Login Required</h2>
+            <p className="text-text-secondary mb-6">Please login to apply for jobs</p>
             <button
-              onClick={() => navigate('/jobs')}
-              className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
+              onClick={() => navigate('/login')}
+              className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl font-medium hover:shadow-medium transition-all"
             >
-              Browse Jobs
+              Login Now
             </button>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  // Check if provider's demo project is verified
-  if (demoStatus !== 'verified') {
-    return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <div className="max-w-2xl bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-8 text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-6 flex items-center justify-center">
-              <span className="text-5xl">⚠️</span>
-            </div>
-            <h2 className="text-2xl font-bold text-[#0D2B1D] mb-4">Demo Project Verification Required</h2>
-            <p className="text-[#345635] mb-6">
-              {demoStatus === 'not_assigned' || !demoStatus
-                ? 'You need to complete a demo project before applying for jobs. Please wait for admin to assign you a demo task.'
-                : demoStatus === 'pending'
-                ? 'Your demo project is pending submission. Please complete and submit it first.'
-                : demoStatus === 'under_review'
-                ? 'Your demo project is under review. Please wait for admin approval before applying for jobs.'
-                : demoStatus === 'rejected'
-                ? `Your demo project was rejected${currentUser.demoVerification?.score ? ` with a score of ${currentUser.demoVerification.score}/100` : ''}. You need a score of at least 60 to apply for jobs. Please resubmit your demo.`
-                : 'Your demo project status is unclear. Please contact admin.'}
-            </p>
-            {currentUser.demoVerification?.adminComments && (
-              <div className="bg-yellow-50 rounded-lg p-4 mb-6 text-left border border-yellow-200">
-                <p className="text-sm text-gray-700">
-                  <strong>Admin Feedback:</strong> {currentUser.demoVerification.adminComments}
-                </p>
-              </div>
-            )}
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="px-6 py-3 bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white rounded-xl hover:shadow-xl transition-all font-medium hover:scale-105"
-              >
-                Go to Dashboard
-              </button>
-              <button
-                onClick={() => navigate('/jobs')}
-                className="px-6 py-3 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium hover:scale-105"
-              >
-                Browse Jobs
-              </button>
-            </div>
-          </div>
+          </motion.div>
         </main>
         <Footer />
       </div>
@@ -220,12 +159,12 @@ const ApplyJob = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
-            <p className="text-[#6B8F71] font-medium">Loading job details...</p>
+            <p className="text-text-secondary font-medium">Loading job details...</p>
           </div>
         </main>
         <Footer />
@@ -235,10 +174,10 @@ const ApplyJob = () => {
 
   if (!job) {
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
-          <p className="text-[#6B8F71] font-medium">Job not found.</p>
+        <main className="flex-1 flex items-center justify-center">
+          <p className="text-text-secondary font-medium">Job not found</p>
         </main>
         <Footer />
       </div>
@@ -246,230 +185,342 @@ const ApplyJob = () => {
   }
 
   const client = typeof job.client !== 'string' ? job.client : null;
-
-  // Check if provider type matches job requirement
   const providerTypeMismatch = currentUser?.providerType !== job.providerType;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+      
+      <main className="flex-1 w-full">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-16">
           {/* Header */}
-          <div className="mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
             <button
               onClick={() => navigate('/jobs')}
-              className="flex items-center text-[#345635] hover:text-[#0D2B1D] mb-4 transition-all duration-300 group"
+              className="flex items-center text-text-secondary hover:text-text-primary mb-4 transition-colors group"
             >
-              <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
               <span className="font-medium">Back to Jobs</span>
             </button>
-            <div className="flex items-center mb-3">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-xl flex items-center justify-center mr-4 shadow-lg">
-                <span className="text-3xl">📝</span>
+
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-2xl flex items-center justify-center shadow-soft">
+                <FileText className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-[#0D2B1D]">Apply for Job</h1>
-                <p className="text-[#6B8F71] mt-1">Submit your proposal to the client</p>
+                <h1 className="text-4xl font-bold text-text-primary">Apply for Job</h1>
+                <p className="text-text-secondary mt-1">Submit your proposal to the client</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Provider Type Mismatch Warning */}
           {providerTypeMismatch && (
-            <div className="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
-              <div className="flex items-start">
-                <div className="text-3xl mr-4">🚫</div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 mb-6"
+            >
+              <div className="flex items-start gap-4">
+                <AlertCircle className="w-8 h-8 text-red-600 flex-shrink-0" />
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-red-900 mb-2">Cannot Apply - Provider Type Mismatch</h3>
                   <p className="text-red-800 mb-3">
                     This job requires <strong>{job.providerType}</strong> service providers, 
                     but your profile is set as <strong>{currentUser?.providerType}</strong>.
                   </p>
-                  <p className="text-sm text-red-700">
-                    You can only apply to jobs that match your provider type. 
-                    Please browse jobs suitable for {currentUser?.providerType} providers.
+                  <p className="text-sm text-red-700 mb-4">
+                    You can only apply to jobs that match your provider type.
                   </p>
                   <button
                     onClick={() => navigate('/jobs')}
-                    className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                    className="px-6 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all font-medium"
                   >
                     Browse Suitable Jobs
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
-          {/* Job Details Card */}
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 mb-6 hover:shadow-2xl hover:border-[#6B8F71] transition-all duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold text-[#0D2B1D] mb-2">{job.title}</h2>
-                <div className="flex flex-wrap items-center gap-3 text-sm text-[#6B8F71]">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white font-medium">
-                    {job.category}
-                  </span>
-                  {job.location?.city && (
-                    <span>📍 {job.location.city}{job.location.area && `, ${job.location.area}`}</span>
-                  )}
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-[#345635]">
-                  ₹{job.budget.toLocaleString()}
-                </div>
-                <div className="text-sm text-[#6B8F71]">
-                  {job.budgetType === 'hourly' ? 'Per Hour' : 'Fixed Price'}
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content - Proposal Form */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="lg:col-span-2"
+            >
+              <div className="bg-white rounded-2xl shadow-soft border border-border p-6">
+                <h2 className="text-2xl font-bold text-text-primary mb-6 flex items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-[#6B8F71]" />
+                  Your Proposal
+                </h2>
 
-            <div className="border-t-2 border-[#AEC3B0] pt-4">
-              <h3 className="font-semibold text-[#0D2B1D] mb-2">Job Description:</h3>
-              <p className="text-[#345635] mb-4">{job.description}</p>
-
-              {client && (
-                <div className="bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] rounded-xl p-4 mt-4 border-l-4 border-[#345635]">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-[#0D2B1D]">About the Client:</h4>
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/profile/${client.id || client._id}`)}
-                      className="px-4 py-2 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium text-sm hover:scale-105"
-                    >
-                      👤 View Full Profile
-                    </button>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                      {client.profilePicture ? (
-                        <img 
-                          src={client.profilePicture} 
-                          alt={client.fullName}
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : (
-                        client.fullName?.charAt(0).toUpperCase()
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Cover Letter */}
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-2">
+                      Cover Letter *
+                    </label>
+                    <textarea
+                      value={coverLetter}
+                      onChange={(e) => setCoverLetter(e.target.value)}
+                      placeholder="Explain why you're the best fit for this job. Highlight your relevant experience and skills..."
+                      rows={8}
+                      className="w-full px-4 py-3 border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
+                      required
+                      disabled={providerTypeMismatch}
+                    />
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-xs text-text-secondary">
+                        {coverLetter.length}/50 characters minimum
+                      </p>
+                      {coverLetter.length >= 50 && (
+                        <span className="text-xs text-green-600 flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          Great!
+                        </span>
                       )}
                     </div>
-                    <div>
-                      <p className="font-semibold text-[#0D2B1D]">{client.fullName}</p>
-                      <div className="flex items-center text-sm text-[#6B8F71]">
-                        {client.city && <span>📍 {client.city}</span>}
-                        {client.rating && (
-                          <span className="ml-3">⭐ {client.rating.toFixed(1)}</span>
-                        )}
+                  </div>
+
+                  {/* Proposed Budget */}
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-2">
+                      Proposed Budget (₹) *
+                    </label>
+                    <div className="relative">
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+                      <input
+                        type="number"
+                        value={proposedBudget}
+                        onChange={(e) => setProposedBudget(e.target.value)}
+                        disabled={providerTypeMismatch}
+                        placeholder="Enter your proposed budget"
+                        min="0"
+                        step="1"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
+                        required
+                      />
+                    </div>
+                    <p className="text-xs text-text-secondary mt-2">
+                      Client's budget: ₹{job.budget.toLocaleString()} ({job.budgetType})
+                    </p>
+                  </div>
+
+                  {/* Estimated Duration */}
+                  <div>
+                    <label className="block text-sm font-semibold text-text-primary mb-2">
+                      Estimated Duration *
+                    </label>
+                    <div className="relative">
+                      <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+                      <input
+                        type="text"
+                        value={estimatedDuration}
+                        onChange={(e) => setEstimatedDuration(e.target.value)}
+                        placeholder="e.g., 2-3 days, 1 week, 2 weeks"
+                        className="w-full pl-10 pr-4 py-3 border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71] transition-all"
+                        required
+                        disabled={providerTypeMismatch}
+                      />
+                    </div>
+                    <p className="text-xs text-text-secondary mt-2">
+                      How long will it take to complete this job?
+                    </p>
+                  </div>
+
+                  {/* Tips Box */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="bg-gradient-to-r from-[#E3EFD3] to-[#AEC3B0] rounded-xl p-4 border-l-4 border-[#345635]"
+                  >
+                    <h4 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
+                      <Target className="w-5 h-5 text-[#345635]" />
+                      Tips for a Great Proposal
+                    </h4>
+                    <ul className="space-y-2 text-sm text-text-primary">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-[#345635] mt-0.5 flex-shrink-0" />
+                        <span>Personalize your cover letter for this specific job</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-[#345635] mt-0.5 flex-shrink-0" />
+                        <span>Highlight relevant experience and skills</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-[#345635] mt-0.5 flex-shrink-0" />
+                        <span>Be realistic with your budget and timeline</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-[#345635] mt-0.5 flex-shrink-0" />
+                        <span>Proofread before submitting</span>
+                      </li>
+                    </ul>
+                  </motion.div>
+
+                  {/* Submit Buttons */}
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      type="submit"
+                      disabled={submitting || providerTypeMismatch}
+                      className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
+                        providerTypeMismatch 
+                          ? 'bg-surface text-text-secondary cursor-not-allowed' 
+                          : 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white hover:shadow-medium disabled:bg-surface hover:scale-[1.02]'
+                      }`}
+                    >
+                      {submitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                          Submitting...
+                        </>
+                      ) : providerTypeMismatch ? (
+                        'Cannot Apply'
+                      ) : (
+                        <>
+                          <Send className="w-5 h-5" />
+                          Submit Proposal
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/jobs')}
+                      className="px-6 py-3 border-2 border-border text-text-primary rounded-xl hover:bg-surface transition-all font-semibold hover:scale-[1.02]"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+
+            {/* Sidebar - Job Details */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-1"
+            >
+              <div className="bg-white rounded-2xl shadow-soft border border-border p-6 sticky top-24">
+                <h3 className="text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-[#6B8F71]" />
+                  Job Details
+                </h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-bold text-lg text-text-primary mb-2">{job.title}</h4>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      <span className="px-3 py-1 bg-[#E3EFD3] text-[#345635] rounded-full text-xs font-semibold">
+                        {job.category}
+                      </span>
+                      {job.providerType && (
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          job.providerType === 'Technical'
+                            ? 'bg-purple-100 text-purple-700'
+                            : 'bg-orange-100 text-orange-700'
+                        }`}>
+                          {job.providerType}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-4 border-t border-border">
+                    <div className="flex items-center gap-3">
+                      <DollarSign className="w-5 h-5 text-[#6B8F71]" />
+                      <div>
+                        <p className="text-xs text-text-secondary">Budget</p>
+                        <p className="font-bold text-text-primary">₹{job.budget.toLocaleString()}</p>
+                      </div>
+                    </div>
+
+                    {job.location?.city && (
+                      <div className="flex items-center gap-3">
+                        <MapPin className="w-5 h-5 text-[#6B8F71]" />
+                        <div>
+                          <p className="text-xs text-text-secondary">Location</p>
+                          <p className="font-semibold text-text-primary">{job.location.city}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-[#6B8F71]" />
+                      <div>
+                        <p className="text-xs text-text-secondary">Posted</p>
+                        <p className="font-semibold text-text-primary">
+                          {new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <TrendingUp className="w-5 h-5 text-[#6B8F71]" />
+                      <div>
+                        <p className="text-xs text-text-secondary">Proposals</p>
+                        <p className="font-semibold text-text-primary">{job.proposals?.length || 0}</p>
                       </div>
                     </div>
                   </div>
+
+                  {client && (
+                    <>
+                      <div className="pt-4 border-t border-border">
+                        <p className="text-xs text-text-secondary mb-3">CLIENT</p>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[#345635] to-[#6B8F71] rounded-full flex items-center justify-center text-white font-bold shadow-soft">
+                            {client.profilePicture ? (
+                              <img 
+                                src={client.profilePicture} 
+                                alt={client.fullName}
+                                className="w-full h-full rounded-full object-cover"
+                              />
+                            ) : (
+                              client.fullName?.charAt(0).toUpperCase()
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-text-primary">{client.fullName}</p>
+                            {client.city && (
+                              <p className="text-xs text-text-secondary flex items-center gap-1">
+                                <MapPin className="w-3 h-3" />
+                                {client.city}
+                              </p>
+                            )}
+                            {client.rating && (
+                              <p className="text-xs text-text-secondary flex items-center gap-1">
+                                <Award className="w-3 h-3" />
+                                {client.rating.toFixed(1)} rating
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => navigate(`/profile/${client.id || client._id}`)}
+                          className="w-full px-4 py-2 border-2 border-border text-text-primary rounded-xl hover:bg-surface transition-all font-medium text-sm"
+                        >
+                          View Profile
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Proposal Form */}
-          <div className={`bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-6 ${providerTypeMismatch ? 'opacity-50 pointer-events-none' : ''}`}>
-            <h2 className="text-xl font-bold text-[#0D2B1D] mb-4">Your Proposal</h2>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Cover Letter */}
-              <div>
-                <label className="block text-sm font-medium text-[#345635] mb-2">
-                  Cover Letter *
-                </label>
-                <textarea
-                  value={coverLetter}
-                  onChange={(e) => setCoverLetter(e.target.value)}
-                  placeholder="Explain why you're the best fit for this job. Minimum 50 characters."
-                  rows={8}
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
-                  required
-                  disabled={providerTypeMismatch}
-                />
-                <p className="text-xs text-[#6B8F71] mt-1">
-                  {coverLetter.length}/50 characters minimum
-                </p>
               </div>
-
-              {/* Proposed Budget */}
-              <div>
-                <label className="block text-sm font-medium text-[#345635] mb-2">
-                  Proposed Budget (₹) *
-                </label>
-                <input
-                  type="number"
-                  value={proposedBudget}
-                  onChange={(e) => setProposedBudget(e.target.value)}
-                  disabled={providerTypeMismatch}
-                  placeholder="Enter your proposed budget"
-                  min="0"
-                  step="1"
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
-                  required
-                />
-                <p className="text-xs text-[#6B8F71] mt-1">
-                  Client's budget: ₹{job.budget.toLocaleString()} ({job.budgetType})
-                </p>
-              </div>
-
-              {/* Estimated Duration */}
-              <div>
-                <label className="block text-sm font-medium text-[#345635] mb-2">
-                  Estimated Duration *
-                </label>
-                <input
-                  type="text"
-                  value={estimatedDuration}
-                  onChange={(e) => setEstimatedDuration(e.target.value)}
-                  placeholder="e.g., 2-3 days, 1 week, 2 weeks"
-                  className="w-full px-4 py-3 border-2 border-[#AEC3B0] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6B8F71] focus:border-[#6B8F71]"
-                  required
-                  disabled={providerTypeMismatch}
-                />
-                <p className="text-xs text-[#6B8F71] mt-1">
-                  How long will it take to complete this job?
-                </p>
-              </div>
-
-              {/* Info Box */}
-              <div className="bg-gradient-to-r from-[#E3EFD3] to-[#F8FBF9] border-2 border-[#AEC3B0] rounded-xl p-4">
-                <h4 className="font-semibold text-[#0D2B1D] mb-2">💡 Tips for a Great Proposal:</h4>
-                <ul className="list-disc list-inside text-[#345635] text-sm space-y-1">
-                  <li>Personalize your cover letter for this specific job</li>
-                  <li>Highlight relevant experience and skills</li>
-                  <li>Be realistic with your budget and timeline</li>
-                  <li>Proofread before submitting</li>
-                </ul>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex space-x-3">
-                <button
-                  type="submit"
-                  disabled={submitting || providerTypeMismatch}
-                  className={`flex-1 px-6 py-3 rounded-xl transition-all font-medium ${
-                    providerTypeMismatch 
-                      ? 'bg-gray-400 cursor-not-allowed text-white' 
-                      : 'bg-gradient-to-r from-[#345635] to-[#6B8F71] text-white hover:shadow-xl disabled:bg-gray-400 hover:scale-105'
-                  }`}
-                >
-                  {submitting ? 'Submitting...' : providerTypeMismatch ? 'Cannot Apply' : '✨ Submit Proposal'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => navigate('/jobs')}
-                  className="px-6 py-3 border-2 border-[#6B8F71] text-[#345635] rounded-xl hover:bg-[#E3EFD3] transition-all font-medium hover:scale-105"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            </motion.div>
           </div>
         </div>
       </main>
+
       <Footer />
     </div>
   );

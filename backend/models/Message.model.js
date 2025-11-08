@@ -20,6 +20,49 @@ const messageSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  type: {
+    type: String,
+    enum: ['text', 'image', 'file', 'video_call', 'voice_call', 'screen_share'],
+    default: 'text'
+  },
+  // Call-specific metadata
+  callData: {
+    duration: {
+      type: Number, // in seconds
+    },
+    startedAt: {
+      type: Date
+    },
+    endedAt: {
+      type: Date
+    },
+    status: {
+      type: String,
+      enum: ['initiated', 'ringing', 'answered', 'missed', 'declined', 'ended', 'failed'],
+      default: 'initiated'
+    },
+    roomId: {
+      type: String, // For WebRTC room
+      trim: true
+    },
+    participants: [{
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      joinedAt: Date,
+      leftAt: Date
+    }],
+    recordingUrl: {
+      type: String,
+      trim: true
+    },
+    quality: {
+      type: String,
+      enum: ['low', 'medium', 'high', 'hd'],
+      default: 'medium'
+    }
+  },
   attachments: [{
     filename: String,
     originalName: String,

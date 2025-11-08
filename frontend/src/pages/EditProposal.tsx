@@ -122,9 +122,9 @@ const EditProposal = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <p className="text-[#6B8F71] font-medium">Please login to edit proposals.</p>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -134,7 +134,7 @@ const EditProposal = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <div className="text-center bg-white rounded-2xl shadow-lg border-2 border-[#AEC3B0] p-12">
             <div className="w-24 h-24 bg-gradient-to-br from-[#0D2B1D] via-[#345635] to-[#6B8F71] rounded-full mx-auto mb-6 flex items-center justify-center">
               <span className="text-5xl">🚫</span>
@@ -148,7 +148,7 @@ const EditProposal = () => {
               Browse Jobs
             </button>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -158,12 +158,12 @@ const EditProposal = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#AEC3B0] border-t-[#345635] mx-auto mb-4"></div>
             <p className="text-[#6B8F71] font-medium">Loading proposal...</p>
           </div>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -173,9 +173,9 @@ const EditProposal = () => {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
         <Header />
-        <main className="flex-1 container mx-auto px-4 py-8 flex items-center justify-center">
+        <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-center">
           <p className="text-[#6B8F71] font-medium">Proposal not found</p>
-        </main>
+        </div></main>
         <Footer />
       </div>
     );
@@ -187,7 +187,7 @@ const EditProposal = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#E3EFD3] via-white to-[#F8FBF9]">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 w-full"><div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-6">
@@ -310,7 +310,7 @@ const EditProposal = () => {
             </form>
           </div>
         </div>
-      </main>
+      </div></main>
       <Footer />
     </div>
   );
