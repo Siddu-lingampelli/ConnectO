@@ -5,6 +5,8 @@ import './i18n/config'; // Initialize i18n
 
 // Components
 import Chatbot from './components/Chatbot';
+import AdvancedVoiceNavigator from './components/voice/AdvancedVoiceNavigator';
+import EnhancedAIAssistant from './components/ai/EnhancedAIAssistant';
 
 // Pages
 import Home from './pages/Home';
@@ -62,6 +64,12 @@ function App() {
     <>
       {/* AI Chatbot Assistant - Available on all pages */}
       <Chatbot />
+      
+      {/* Advanced Voice Navigation - Available on all pages */}
+      <AdvancedVoiceNavigator />
+      
+      {/* Enhanced AI Assistant - Available on all pages */}
+      <EnhancedAIAssistant />
       
       <Routes>
         <Route path="/" element={<Home />} />

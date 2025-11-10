@@ -1,11 +1,15 @@
 import express from 'express';
 import axios from 'axios';
 import { authenticate } from '../middleware/auth.middleware.js';
+import { rateLimiter } from '../middleware/rateLimiter.js';
 import User from '../models/User.model.js';
 import Job from '../models/Job.model.js';
 import Order from '../models/Order.model.js';
 
 const router = express.Router();
+
+// Apply rate limiter to all AI routes: 5 requests per minute per user
+router.use(rateLimiter(5, 60000));
 
 /**
  * @route   POST /api/ai-assistant/chat
@@ -15,7 +19,7 @@ const router = express.Router();
 router.post('/chat', authenticate, async (req, res) => {
   try {
     const { message, context, conversationHistory } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user._id;
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({
@@ -26,6 +30,13 @@ router.post('/chat', authenticate, async (req, res) => {
 
     // Get user info for personalized responses
     const user = await User.findById(userId).select('name email userType');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
     // Build conversation context
     const systemPrompt = `You are an advanced AI assistant for ConnectO, a freelance marketplace platform.
@@ -53,25 +64,40 @@ Be helpful, professional, and concise. Provide actionable advice.`;
       { role: 'user', content: message }
     ];
 
-    // Call Mistral AI
-    const mistralResponse = await axios.post(
-      'https://api.mistral.ai/v1/chat/completions',
-      {
-        model: 'mistral-small-latest',
-        messages: messages,
-        temperature: 0.7,
-        max_tokens: 1000
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
+    // Call Mistral AI with error handling
+    let aiResponse;
+    try {
+      const mistralResponse = await axios.post(
+        'https://api.mistral.ai/v1/chat/completions',
+        {
+          model: 'mistral-small-latest',
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 1000
         },
-        timeout: 15000
-      }
-    );
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
+          },
+          timeout: 15000
+        }
+      );
 
-    const aiResponse = mistralResponse.data.choices[0].message.content;
+      aiResponse = mistralResponse.data.choices[0].message.content;
+    } catch (aiError) {
+      console.error('Mistral AI Error:', aiError.response?.status, aiError.response?.data);
+      
+      if (aiError.response?.status === 429) {
+        return res.status(429).json({
+          success: false,
+          message: 'AI service rate limit reached. Please wait a moment and try again.',
+          retryAfter: aiError.response.headers['retry-after'] || 60
+        });
+      }
+      
+      throw aiError;
+    }
 
     res.json({
       success: true,
@@ -299,7 +325,14 @@ router.post('/negotiate', authenticate, async (req, res) => {
       });
     }
 
-    const user = await User.findById(req.user.userId).select('userType');
+    const user = await User.findById(req.user._id).select('userType');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
     const systemPrompt = `You are an expert negotiation coach for ConnectO marketplace.
 
@@ -477,7 +510,7 @@ Return ONLY valid JSON:
  */
 router.post('/analyze-profile', authenticate, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user._id;
 
     // Get comprehensive user data
     const user = await User.findById(userId)
@@ -595,7 +628,14 @@ Return ONLY valid JSON:
  */
 router.get('/quick-tips', authenticate, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select('userType name');
+    const user = await User.findById(req.user._id).select('userType name');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
 
     const tips = user.userType === 'provider' ? [
       "💼 Update your portfolio weekly with recent work to stay relevant",
