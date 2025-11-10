@@ -56,6 +56,7 @@ import searchRoutes from './routes/search.routes.js';
 import gdprRoutes from './routes/gdpr.routes.js';
 import securityRoutes from './routes/security.routes.js';
 import voiceIntentRoutes from './routes/voiceIntent.routes.js';
+import aiAssistantRoutes from './routes/aiAssistant.routes.js';
 import cronService from './services/cron.service.js';
 
 // ES Module fix for __dirname
@@ -164,6 +165,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/gdpr', gdprRoutes);
 app.use('/api/security', securityRoutes);
 app.use('/api', voiceIntentRoutes);
+app.use('/api/ai-assistant', aiAssistantRoutes);
 
 // Health Check Route
 app.get('/api/health', (req, res) => {
