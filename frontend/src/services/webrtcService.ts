@@ -13,12 +13,7 @@ class WebRTCService {
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'stun:stun2.l.google.com:19302' },
-      // Add TURN servers for production
-      // {
-      //   urls: 'turn:your-turn-server.com:3478',
-      //   username: 'username',
-      //   credential: 'password'
-      // }
+      // Add TURN servers via env vars in production
     ]
   };
 

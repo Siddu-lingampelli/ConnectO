@@ -50,7 +50,8 @@ async function createAdminUser() {
       }
     } else {
       // Create new admin user
-      const hashedPassword = await bcrypt.hash('admin123', 10);
+      const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
       
       const admin = new User({
         fullName: 'Admin User',
@@ -71,7 +72,8 @@ async function createAdminUser() {
 
     console.log('\n📋 Admin Login Credentials:');
     console.log('Email: admin@vsconnecto.com');
-    console.log('Password: admin123');
+    console.log('Password: ' + (process.env.ADMIN_PASSWORD || 'admin123'));
+    console.log('\n⚠️  CHANGE THE DEFAULT PASSWORD IMMEDIATELY after first login.');
     console.log('\n🔗 Access admin panel at: http://localhost:3011/admin');
     
   } catch (error) {

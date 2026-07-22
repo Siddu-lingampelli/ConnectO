@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './i18n/config'; // Initialize i18n
 
 // Components
+import OfflineBanner from './components/OfflineBanner';
 import Chatbot from './components/Chatbot';
 import AdvancedVoiceNavigator from './components/voice/AdvancedVoiceNavigator';
 import EnhancedAIAssistant from './components/ai/EnhancedAIAssistant';
@@ -62,6 +63,7 @@ import ProtectedRoute from './middleware/protectedRoute';
 function App() {
   return (
     <>
+      <OfflineBanner />
       {/* AI Chatbot Assistant - Available on all pages */}
       <Chatbot />
       
